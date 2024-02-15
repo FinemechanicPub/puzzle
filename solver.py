@@ -94,9 +94,9 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
         for piece_index in range(next_piece, len(piece_set)):
             if piece_index in pieces_on_board:
                 continue
-            directions = piece_set[piece_index]
+            directions = piece_set[piece_index][position]
             for direction_index in range(next_direction, len(directions)):
-                mask = directions[direction_index][position]
+                mask = directions[direction_index]
                 if mask and board & mask == 0:
                     entry = (position, piece_index, direction_index, board)
                     if board | mask == full_board:
@@ -130,8 +130,17 @@ if __name__ == "__main__":
             for transform in transforms(displacements)
         ) for _, displacements in pieces.items()
     )
+    inversed_piece_set = tuple(
+        tuple(
+            tuple(
+                piece[transform][position] for transform in range(len(piece))
+            )
+            for position in range(height * width)
+        )       
+        for piece in piece_set
+    )
     t1 = time.time()
-    s = list(solutions(piece_set, height * width))
+    s = list(solutions(inversed_piece_set, height * width))
     t2 = time.time()
     print(f"Time elapsed: {t2 - t1:.2f}")
     print("Solutions found:", len(s))
