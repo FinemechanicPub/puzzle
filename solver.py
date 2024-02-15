@@ -97,7 +97,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             directions = piece_set[piece_index][position]
             for direction_index in range(next_direction, len(directions)):
                 mask = directions[direction_index]
-                if mask and board & mask == 0:
+                if not (board & mask):
                     entry = (position, piece_index, direction_index, board)
                     if board | mask == full_board:
                         yield format_solution(history + [entry])
@@ -133,10 +133,12 @@ if __name__ == "__main__":
     inversed_piece_set = tuple(
         tuple(
             tuple(
-                piece[transform][position] for transform in range(len(piece))
+                piece[transform][position]
+                for transform in range(len(piece))
+                if piece[transform][position]
             )
             for position in range(height * width)
-        )       
+        )
         for piece in piece_set
     )
     t1 = time.time()
