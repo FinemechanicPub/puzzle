@@ -23,7 +23,6 @@ def position_masks(
     piece_mask = 0
     for y, x in displacements:
         piece_mask |= 1 << ((max_y - y) * width + max_x - x)
-
     masks = [0] * (width * height)
     for y in reversed(range(height - max_y)):
         for x in reversed(range(-min_x, width - max_x)):
@@ -62,6 +61,29 @@ def transforms(displacements, rotate=True, flip=True):
         for quarter in range(4 if rotate else 1)
     )
     return tuple(result)
+
+
+def count_area(board: int, height: int, width: int, initial_point: int) -> int:
+    size = height * width
+    edge = set([initial_point])
+    empty_probes = tuple(1 << k for k in reversed(range(size)))
+    shifts = (-1, 1, -width, width)
+    count = 0
+
+    while edge:
+        n = len(edge)
+        for _ in range(n):
+            point = edge.pop()
+            count += not board & empty_probes[point]
+            board |= empty_probes[point]
+            row = point // width
+            for shift in shifts:
+                neighbour = point + shift
+                if (neighbour >= size or neighbour < 0) or neighbour // width != row and shift in (-1, 1):
+                    continue
+                if not board & empty_probes[neighbour]:
+                    edge.add(neighbour)
+    return count
 
 
 def solutions(piece_set: tuple[tuple[int]], board_size: int):
@@ -124,6 +146,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
 if __name__ == "__main__":
     height = 15
     width = 4
+    print("Board area:", count_area(0, height, width, 0))
     piece_set = tuple(
         tuple(
             position_masks(height, width, transform)
