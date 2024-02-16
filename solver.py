@@ -64,7 +64,7 @@ def transforms(displacements, rotate=True, flip=True):
     return tuple(result)
 
 
-def solutions(piece_set: dict[str, list[int]], board_size: int):
+def solutions(piece_set: tuple[tuple[int]], board_size: int):
 
     def advance_position():
         nonlocal position
@@ -76,12 +76,11 @@ def solutions(piece_set: dict[str, list[int]], board_size: int):
 
     def format_solution(history):
         return tuple(
-            (pieces[piece_index], direction_index, position)
+            (piece_index, direction_index, position)
             for position, piece_index, direction_index, _ in history
         )
 
     empty_probes = tuple(1 << k for k in reversed(range(board_size)))
-    pieces = list(piece_set)
     pieces_on_board = set()
     full_board = 2**len(empty_probes) - 1
 
@@ -92,13 +91,13 @@ def solutions(piece_set: dict[str, list[int]], board_size: int):
     next_piece = 0
     next_direction = 0
     while True:
-        for piece_index in range(next_piece, len(pieces)):
+        for piece_index in range(next_piece, len(piece_set)):
             if piece_index in pieces_on_board:
                 continue
-            directions = piece_set[pieces[piece_index]]
+            directions = piece_set[piece_index][position]
             for direction_index in range(next_direction, len(directions)):
-                mask = directions[direction_index][position]
-                if mask and board & mask == 0:
+                mask = directions[direction_index]
+                if not (board & mask):
                     entry = (position, piece_index, direction_index, board)
                     if board | mask == full_board:
                         yield format_solution(history + [entry])
@@ -125,14 +124,25 @@ def solutions(piece_set: dict[str, list[int]], board_size: int):
 if __name__ == "__main__":
     height = 15
     width = 4
-    piece_set = {
-        symbol: tuple(
+    piece_set = tuple(
+        tuple(
             position_masks(height, width, transform)
             for transform in transforms(displacements)
-        ) for symbol, displacements in pieces.items()
-    }
+        ) for _, displacements in pieces.items()
+    )
+    inversed_piece_set = tuple(
+        tuple(
+            tuple(
+                piece[transform][position]
+                for transform in range(len(piece))
+                if piece[transform][position]
+            )
+            for position in range(height * width)
+        )
+        for piece in piece_set
+    )
     t1 = time.time()
-    s = list(solutions(piece_set, height * width))
+    s = list(solutions(inversed_piece_set, height * width))
     t2 = time.time()
     print(f"Time elapsed: {t2 - t1:.2f}")
     print("Solutions found:", len(s))
