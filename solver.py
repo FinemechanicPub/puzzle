@@ -123,10 +123,11 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                 mask = directions[direction_index]
                 if not (board & mask):
                     entry = (position, piece_index, direction_index, board)
-                    if board | mask == full_board:
+                    new_board = board | mask
+                    if new_board == full_board:
                         yield format_solution(history + [entry])
                     else:
-                        board |= mask                      
+                        board = new_board
                         history.append(entry)
                         pieces_on_board.add(piece_index)
                     break
