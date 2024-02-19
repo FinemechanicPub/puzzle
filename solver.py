@@ -103,6 +103,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
 
     empty_probes = probe_masks(board_size)
     pieces_on_board = set()
+    piece_count = len(piece_set)
     full_board = 2**len(empty_probes) - 1
 
     history = []
@@ -113,7 +114,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
     next_direction = 0
     while True:
         placed = False
-        for piece_index in range(next_piece, len(piece_set)):
+        for piece_index in range(next_piece, piece_count):
             if piece_index in pieces_on_board:
                 continue
             directions = piece_set[piece_index][position]
@@ -141,7 +142,6 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                 pieces_on_board.remove(piece_index)
                 next_piece = piece_index
                 next_direction = direction_index + 1
-                position = advance_position(board, position)
             else:
                 break
 
