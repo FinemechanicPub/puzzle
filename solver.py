@@ -9,8 +9,8 @@ def visualize(height, width, mask, empty=" ", fill="*"):
     return [string[row*width:(row+1)*width] for row in range(height)]
 
 
-def probe_masks(height: int, width: int) -> list[int]:
-    return [1 << k for k in reversed(range(width * height))]
+def probe_masks(size: int) -> list[int]:
+    return tuple(1 << k for k in reversed(range(size)))
 
 
 def position_masks(
@@ -65,8 +65,10 @@ def transforms(displacements, rotate=True, flip=True):
 
 def count_area(board: int, height: int, width: int, initial_point: int) -> int:
     size = height * width
+    if initial_point >= size:
+        return -1
     edge = set([initial_point])
-    empty_probes = tuple(1 << k for k in reversed(range(size)))
+    empty_probes = probe_masks(size)
     shifts = (-1, 1, -width, width)
     count = 0
 
@@ -88,13 +90,13 @@ def count_area(board: int, height: int, width: int, initial_point: int) -> int:
 
 def solutions(piece_set: tuple[tuple[int]], board_size: int):
 
-    def advance_position():
-        nonlocal position
+    def advance_position(board, position):
         while (
             position < len(empty_probes)
             and board & empty_probes[position]
         ):
             position += 1
+        return position
 
     def format_solution(history):
         return tuple(
@@ -102,7 +104,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             for position, piece_index, direction_index, _ in history
         )
 
-    empty_probes = tuple(1 << k for k in reversed(range(board_size)))
+    empty_probes = probe_masks(board_size)
     pieces_on_board = set()
     full_board = 2**len(empty_probes) - 1
 
@@ -124,7 +126,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                     if board | mask == full_board:
                         yield format_solution(history + [entry])
                     else:
-                        board |= mask
+                        board |= mask                      
                         history.append(entry)
                         pieces_on_board.add(piece_index)
                     break
@@ -140,13 +142,18 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             next_piece = piece_index
             next_direction = direction_index + 1
 
-        advance_position()
+        position = advance_position(board, position)
 
 
 if __name__ == "__main__":
     height = 15
     width = 4
-    print("Board area:", count_area(0, height, width, 0))
+    t1 = time.time()
+    for _ in range(1000):
+        area = count_area(0, height, width, 0)
+    t2 = time.time()
+    print(f"Time elapsed: {t2 - t1:.3f}")
+    print("Board area:", area)
     piece_set = tuple(
         tuple(
             position_masks(height, width, transform)
