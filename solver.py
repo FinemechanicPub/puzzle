@@ -91,10 +91,7 @@ def count_area(board: int, height: int, width: int, initial_point: int) -> int:
 def solutions(piece_set: tuple[tuple[int]], board_size: int):
 
     def advance_position(board, position):
-        while (
-            position < len(empty_probes)
-            and board & empty_probes[position]
-        ):
+        while board & empty_probes[position]:
             position += 1
         return position
 
