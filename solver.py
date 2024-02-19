@@ -101,7 +101,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
     def format_solution(history):
         return tuple(
             (piece_index, direction_index, position)
-            for position, piece_index, direction_index, _ in history
+            for position, piece_index, direction_index, *rest in history
         )
 
     empty_probes = probe_masks(board_size)
@@ -139,14 +139,14 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                 position = advance_position(board, position)
                 break
         else:
-            if not history:
+            if history:
+                position, piece_index, direction_index, board = history.pop()
+                pieces_on_board.remove(piece_index)
+                next_piece = piece_index
+                next_direction = direction_index + 1
+                position = advance_position(board, position)
+            else:
                 break
-            position, piece_index, direction_index, board = history.pop()
-            pieces_on_board.remove(piece_index)
-            next_piece = piece_index
-            next_direction = direction_index + 1
-            position = advance_position(board, position)
-
 
 
 if __name__ == "__main__":
