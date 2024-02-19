@@ -128,15 +128,15 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                     if new_board == full_board:
                         yield format_solution(history + [entry])
                     else:
-                        placed = True
                         board = new_board
                         history.append(entry)
                         pieces_on_board.add(piece_index)
+                        position = advance_position(board, position)
+                        placed = True
+                        next_piece = 0
                     break
             next_direction = 0
             if placed:
-                next_piece = 0
-                position = advance_position(board, position)
                 break
         else:
             if history:
