@@ -63,12 +63,16 @@ def transforms(displacements, rotate=True, flip=True):
     return tuple(result)
 
 
-def count_area(board: int, height: int, width: int, initial_point: int) -> int:
+def count_area(
+        board: int,
+        height: int, width: int,
+        initial_point: int,
+        empty_probes: list[int]
+) -> int:
     size = height * width
     if initial_point >= size:
         return -1
     edge = set([initial_point])
-    empty_probes = probe_masks(size)
     shifts = (-1, 1, -width, width)
     count = 0
 
@@ -88,7 +92,7 @@ def count_area(board: int, height: int, width: int, initial_point: int) -> int:
     return count
 
 
-def solutions(piece_set: tuple[tuple[int]], board_size: int):
+def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
 
     def advance_position(board, position):
         while board & empty_probes[position]:
@@ -101,6 +105,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             for position, piece_index, direction_index, *rest in history
         )
 
+    board_size = height * width
     empty_probes = probe_masks(board_size)
     pieces_on_board = set()
     piece_count = len(piece_set)
@@ -136,7 +141,8 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             next_direction = 0
             if placed:
                 break
-        else:
+
+        if not placed:
             if history:
                 position, piece_index, direction_index, board = history.pop()
                 pieces_on_board.remove(piece_index)
@@ -147,11 +153,11 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
 
 
 if __name__ == "__main__":
-    height = 15
-    width = 4
+    height = 10
+    width = 6
     t1 = time.time()
     for _ in range(1000):
-        area = count_area(0, height, width, 0)
+        area = count_area(0, height, width, 0, probe_masks(height*width))
     t2 = time.time()
     print(f"Time elapsed: {t2 - t1:.3f}")
     print("Board area:", area)
@@ -173,7 +179,7 @@ if __name__ == "__main__":
         for piece in piece_set
     )
     t1 = time.time()
-    s = list(solutions(inversed_piece_set, height * width))
+    s = list(solutions(inversed_piece_set, height, width))
     t2 = time.time()
     print(f"Time elapsed: {t2 - t1:.2f}")
     print("Solutions found:", len(s))
