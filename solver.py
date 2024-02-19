@@ -115,6 +115,7 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
     next_piece = 0
     next_direction = 0
     while True:
+        placed = False
         for piece_index in range(next_piece, len(piece_set)):
             if piece_index in pieces_on_board:
                 continue
@@ -127,13 +128,15 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
                     if new_board == full_board:
                         yield format_solution(history + [entry])
                     else:
+                        placed = True
                         board = new_board
                         history.append(entry)
                         pieces_on_board.add(piece_index)
                     break
             next_direction = 0
-            if piece_index in pieces_on_board:
+            if placed:
                 next_piece = 0
+                position = advance_position(board, position)
                 break
         else:
             if not history:
@@ -142,8 +145,8 @@ def solutions(piece_set: tuple[tuple[int]], board_size: int):
             pieces_on_board.remove(piece_index)
             next_piece = piece_index
             next_direction = direction_index + 1
+            position = advance_position(board, position)
 
-        position = advance_position(board, position)
 
 
 if __name__ == "__main__":
