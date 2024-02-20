@@ -116,8 +116,8 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
             if piece_index in history:
                 continue
             directions = piece_set[piece_index][position]
-            for next_direction in range(next_direction, len(directions)):
-                mask = directions[next_direction]
+            for direction_index in range(next_direction, len(directions)):
+                mask = directions[direction_index]
                 if not (board & mask):
                     new_board = board | mask
                     if new_board == full_board:
@@ -125,10 +125,10 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
                             (position, piece_index, direction_index)
                             for piece_index, (direction_index, position, _)
                             in history.items()
-                        ] + [position, piece_index, next_direction]
+                        ] + [position, piece_index, direction_index]
                     else:
                         history[piece_index] = (
-                            next_direction, position, board
+                            direction_index, position, board
                         )
                         board = new_board
                         position = advance_position(board, position)
@@ -139,12 +139,13 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
             if placed:
                 break
 
-        if not placed:
-            if history:
-                next_piece, (next_direction, position, board) = history.popitem()
-                next_direction += 1
-            else:
-                break
+        if placed:
+            continue
+        if not history:
+            break
+
+        next_piece, (next_direction, position, board) = history.popitem()
+        next_direction += 1
 
 
 if __name__ == "__main__":
