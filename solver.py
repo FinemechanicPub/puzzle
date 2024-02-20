@@ -99,19 +99,12 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
             position += 1
         return position
 
-    def format_solution(history):
-        return tuple(
-            (piece_index, direction_index, position)
-            for position, piece_index, direction_index, *rest in history
-        )
-
     board_size = height * width
-    empty_probes = probe_masks(board_size)
-    pieces_on_board = set()
     piece_count = len(piece_set)
+    empty_probes = probe_masks(board_size)
     full_board = 2**len(empty_probes) - 1
 
-    history = []
+    history = dict()
 
     board = 0
     position = 0
@@ -120,20 +113,24 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
     while True:
         placed = False
         for piece_index in range(next_piece, piece_count):
-            if piece_index in pieces_on_board:
+            if piece_index in history:
                 continue
             directions = piece_set[piece_index][position]
-            for direction_index in range(next_direction, len(directions)):
-                mask = directions[direction_index]
+            for next_direction in range(next_direction, len(directions)):
+                mask = directions[next_direction]
                 if not (board & mask):
-                    entry = (position, piece_index, direction_index, board)
                     new_board = board | mask
                     if new_board == full_board:
-                        yield format_solution(history + [entry])
+                        yield [
+                            (position, piece_index, direction_index)
+                            for piece_index, (direction_index, position, _)
+                            in history.items()
+                        ] + [position, piece_index, next_direction]
                     else:
+                        history[piece_index] = (
+                            next_direction, position, board
+                        )
                         board = new_board
-                        history.append(entry)
-                        pieces_on_board.add(piece_index)
                         position = advance_position(board, position)
                         placed = True
                         next_piece = 0
@@ -144,17 +141,15 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
 
         if not placed:
             if history:
-                position, piece_index, direction_index, board = history.pop()
-                pieces_on_board.remove(piece_index)
-                next_piece = piece_index
-                next_direction = direction_index + 1
+                next_piece, (next_direction, position, board) = history.popitem()
+                next_direction += 1
             else:
                 break
 
 
 if __name__ == "__main__":
-    height = 10
-    width = 6
+    height = 15
+    width = 4
     t1 = time.time()
     for _ in range(1000):
         area = count_area(0, height, width, 0, probe_masks(height*width))
