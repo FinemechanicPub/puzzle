@@ -13,6 +13,16 @@ def probe_masks(size: int) -> list[int]:
     return tuple(1 << k for k in reversed(range(size)))
 
 
+def is_connected(board: int, height: int, width: int,  probes: list[int]) -> bool:
+    position = 0
+    while board & probes[position]:
+        position += 1
+    return (
+        count_area(board, height, width, position, probes)
+        % board.bit_count() == 0
+    )
+
+
 def position_masks(
         height: int, width: int, displacements: tuple[tuple[int, int]]
 ) -> list[int]:
@@ -23,10 +33,22 @@ def position_masks(
     piece_mask = 0
     for y, x in displacements:
         piece_mask |= 1 << ((max_y - y) * width + max_x - x)
+    probes = probe_masks(width * height)
     masks = [0] * (width * height)
+
+    def not_edge(x, y):
+        return (
+            y not in (height - max_y - 1, 0)
+            and x not in (-min_x, width - max_x - 1)
+        )
     for y in reversed(range(height - max_y)):
         for x in reversed(range(-min_x, width - max_x)):
-            masks[y*width + x] = piece_mask
+            masks[y*width + x] = (
+                piece_mask
+                if not_edge(x, y)
+                or is_connected(piece_mask, height, width, probes)
+                else 0
+            )
             piece_mask <<= 1
         piece_mask <<= max_x - min_x
     return masks
@@ -102,7 +124,7 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
     board_size = height * width
     piece_count = len(piece_set)
     empty_probes = probe_masks(board_size)
-    full_board = 2**len(empty_probes) - 1
+    full_board = 2**board_size - 1
 
     history = dict()
 
@@ -150,8 +172,8 @@ def solutions(piece_set: tuple[tuple[int]], height: int, width: int):
 
 
 if __name__ == "__main__":
-    height = 15
-    width = 4
+    height = 10
+    width = 6
     t1 = time.time()
     for _ in range(1000):
         area = count_area(0, height, width, 0, probe_masks(height*width))
