@@ -7,8 +7,9 @@ fastapi==0.110.1
 h11==0.14.0
 httptools==0.6.1
 idna==3.6
-line-profiler==4.1.2
+line_profiler==4.1.2
 pydantic==2.6.4
+pydantic-settings==2.2.1
 pydantic_core==2.16.3
 python-dotenv==1.0.1
 PyYAML==6.0.1
