@@ -225,3 +225,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# SQLite
+*.db
