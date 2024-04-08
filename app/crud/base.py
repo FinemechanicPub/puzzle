@@ -13,12 +13,12 @@ class CRUDBase:
 
     async def get(
             self,
-            obj_id: int,
+            instance_id: int,
             session: AsyncSession,
     ):
         db_obj = await session.execute(
             select(self.model).where(
-                self.model.id == obj_id
+                self.model.id == instance_id
             )
         )
         return db_obj.scalars().first()
@@ -32,45 +32,45 @@ class CRUDBase:
 
     async def create(
             self,
-            obj_in: BaseModel,
+            data: BaseModel,
             session: AsyncSession,
             extra: Optional[dict] = None,
             commit: Optional[bool] = True
     ):
-        obj_in_data = obj_in.model_dump()
+        data_dict = data.model_dump()
         if extra is not None:
-            obj_in_data.update(extra)
-        db_obj = self.model(**obj_in_data)
-        session.add(db_obj)
+            data_dict.update(extra)
+        instance = self.model(**data_dict)
+        session.add(instance)
         if commit:
             await session.commit()
-            await session.refresh(db_obj)
-        return db_obj
+            await session.refresh(instance)
+        return instance
 
     async def update(
             self,
-            db_obj,
-            obj_in: BaseModel,
+            instance,
+            data: BaseModel,
             session: AsyncSession,
             commit: Optional[bool] = True
     ):
-        obj_data = jsonable_encoder(db_obj)
-        update_data = obj_in.model_dump(exclude_unset=True)
+        instance_data = jsonable_encoder(instance)
+        updates_dict = data.model_dump(exclude_unset=True)
 
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
-        session.add(db_obj)
+        for field in instance_data:
+            if field in updates_dict:
+                setattr(instance, field, updates_dict[field])
+        session.add(instance)
         if commit:
             await session.commit()
-            await session.refresh(db_obj)
-        return db_obj
+            await session.refresh(instance)
+        return instance
 
     async def remove(
             self,
-            db_obj,
+            instance,
             session: AsyncSession,
     ):
-        await session.delete(db_obj)
+        await session.delete(instance)
         await session.commit()
-        return db_obj
+        return instance
