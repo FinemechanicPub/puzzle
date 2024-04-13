@@ -25,9 +25,13 @@ class CRUDBase:
 
     async def get_many(
             self,
-            session: AsyncSession
+            session: AsyncSession,
+            ids: list[int] | None = None
     ):
-        db_objs = await session.execute(select(self.model))
+        statement = select(self.model)
+        if ids:
+            statement = statement.where(self.model.id.in_(ids))
+        db_objs = await session.execute(statement)
         return db_objs.scalars().all()
 
     async def create(

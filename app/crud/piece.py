@@ -1,8 +1,8 @@
 from typing import Optional
 
 from app.crud.base import AsyncSession, CRUDBase
-from app.models.piece import Piece
-from app.schemas.piece import Piece as PieceSchema
+from app.core.base import Piece
+from app.schemas.piece import PieceCreateRequest as PieceSchema
 
 
 class CRUDGame(CRUDBase):
