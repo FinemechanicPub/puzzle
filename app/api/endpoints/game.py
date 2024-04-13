@@ -14,7 +14,9 @@ game_router = APIRouter()
     response_model=GameResponse,
     response_model_exclude_none=True,
 )
-async def game(game_id: int, session: AsyncSession = Depends(get_async_session)):
+async def game(
+    game_id: int, session: AsyncSession = Depends(get_async_session)
+):
     games = await game_crud.get(game_id, session)
     return games
 

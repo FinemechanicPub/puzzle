@@ -20,7 +20,9 @@ class CRUDGame(CRUDBase):
             )
         return game
 
-    async def get_many(self, session: AsyncSession, ids: list[int] | None = None):
+    async def get_many(
+            self, session: AsyncSession, ids: list[int] | None = None
+    ):
         games = await session.execute(
             select(Game)
             .options(
