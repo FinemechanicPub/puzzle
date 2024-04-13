@@ -1,10 +1,60 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.types import SmallInteger
+from sqlalchemy import ForeignKey
+from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.types import JSON, SmallInteger, String
 
-from app.models.base import Base
+from app.models.base import Base, EmptyBase
+
+
+class Piece(Base):
+    name: Mapped[str] = mapped_column(String(1))
+    size: Mapped[int] = mapped_column(SmallInteger)
+    points: Mapped[list] = mapped_column(JSON)
+
+    def __repr__(self) -> str:
+        return (
+            f'Piece(id={self.id}, name="{self.name}", '
+            f'size={self.size}, points={repr(self.points)})'
+        )
 
 
 class Game(Base):
 
     width: Mapped[int] = mapped_column(SmallInteger)
     height: Mapped[int] = mapped_column(SmallInteger)
+    game_pieces: Mapped[list['GamePieces']] = relationship(
+        back_populates='game', cascade='all, delete-orphan'
+    )
+    pieces: AssociationProxy[list[Piece]] = association_proxy(
+        target_collection='game_pieces', attr='piece'
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f'Game(id={self.id}, width={self.width}, '
+            f'height={self.height}, pieces={repr(self.pieces)})'
+        )
+
+
+class GamePieces(EmptyBase):
+    game_id: Mapped[int] = mapped_column(
+        ForeignKey("game.id"), primary_key=True
+    )
+    piece_id: Mapped[int] = mapped_column(
+        ForeignKey("piece.id"), primary_key=True
+    )
+    color: Mapped[int] = mapped_column()
+    game: Mapped[Game] = relationship('Game', back_populates='game_pieces')
+    piece: Mapped[Piece] = relationship('Piece')
+    piece_name: AssociationProxy[str] = association_proxy(
+        target_collection='piece', attr='name'
+    )
+    points: AssociationProxy[list] = association_proxy(
+        target_collection='piece', attr='points'
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f'GamePieces(game_id={self.game_id}, piece_id={self.piece_id}, '
+            f'color={self.color})'
+        )
