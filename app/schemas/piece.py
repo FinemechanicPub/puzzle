@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class PieceBase(BaseModel):
     name: str = Field(..., max_length=1)
-    points: list[tuple[int, int]]
+    points: tuple[tuple[int, int], ...]
 
 
 class PieceGetResponse(PieceBase):

@@ -6,10 +6,20 @@ from sqlalchemy.types import JSON, SmallInteger, String
 from app.models.base import Base, EmptyBase
 
 
+class PieceRotation(Base):
+    piece_id: Mapped[int] = mapped_column(
+        ForeignKey('piece.id', ondelete='CASCADE')
+    )
+    points: Mapped[list] = mapped_column(JSON)
+    order: Mapped[int] = mapped_column(SmallInteger)
+    piece: Mapped['Piece'] = relationship('Piece', back_populates='rotations')
+
+
 class Piece(Base):
     name: Mapped[str] = mapped_column(String(1))
     size: Mapped[int] = mapped_column(SmallInteger)
     points: Mapped[list] = mapped_column(JSON)
+    rotations: Mapped[list[PieceRotation]] = relationship()
 
     def __repr__(self) -> str:
         return (
