@@ -3,10 +3,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
 from app.crud.game import game_crud
-from app.schemas.game import CreateGameRequest, GameResponse
+from app.schemas.game import (
+    CreateGameRequest, GameResponseBase, GameResponse
+)
 
 
 game_router = APIRouter()
+
+
+@game_router.get(
+        '/{game_id}/full/'
+)
+async def game_full(
+    game_id: int, session: AsyncSession = Depends(get_async_session)
+):
+    game = await game_crud.get(game_id, session)
+    return game
 
 
 @game_router.get(
@@ -17,8 +29,8 @@ game_router = APIRouter()
 async def game(
     game_id: int, session: AsyncSession = Depends(get_async_session)
 ):
-    games = await game_crud.get(game_id, session)
-    return games
+    game = await game_crud.get(game_id, session)
+    return game
 
 
 @game_router.get(
@@ -33,7 +45,7 @@ async def list_games(session: AsyncSession = Depends(get_async_session)):
 
 @game_router.post(
     '/',
-    response_model=GameResponse,
+    response_model=GameResponseBase,
     response_model_exclude_none=True,
 )
 async def create_game(

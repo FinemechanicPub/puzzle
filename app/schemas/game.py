@@ -21,10 +21,16 @@ class GamePieceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class GameResponse(BaseModel):
+class GameResponseBase(BaseModel):
     id: int
     width: int
     height: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class GameResponse(GameResponseBase):
+
     pieces: list[GamePieceResponse] = Field(
         ..., validation_alias='game_pieces'
     )

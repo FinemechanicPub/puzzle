@@ -2,7 +2,7 @@ from typing import Optional
 
 from app.crud.base import AsyncSession, CRUDBase
 from app.core.base import Piece
-from app.schemas.piece import PieceCreateRequest as PieceSchema
+from app.schemas.piece import PieceBase as PieceSchema
 
 
 class CRUDGame(CRUDBase):

@@ -49,16 +49,6 @@ class CRUDGame(CRUDBase):
         if commit:
             await session.commit()
             await session.refresh(game)
-            game_id = game.id
-            game = await session.get_one(
-                Game,
-                game_id,
-                options=[
-                    joinedload(Game.game_pieces)
-                    .selectinload(GamePieces.piece)
-                ],
-                populate_existing=True
-            )
         return game
 
 
