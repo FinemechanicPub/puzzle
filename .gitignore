@@ -228,3 +228,7 @@ coverage
 
 # SQLite
 *.db
+
+# Experimental
+/example.py
+/test.py
