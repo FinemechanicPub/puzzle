@@ -1,14 +1,18 @@
-from typing import Optional
+from typing import Generic, Optional, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.base import Base
 
-class CRUDBase:
+ModelType = TypeVar('ModelType', bound=Base)
 
-    def __init__(self, model):
+
+class CRUDBase(Generic[ModelType]):
+
+    def __init__(self, model: Type[ModelType]):
         self.model = model
 
     async def get(
