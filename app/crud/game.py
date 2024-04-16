@@ -3,34 +3,37 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.crud.base import CRUDBase
-from app.core.base import GamePieces, Game
+from app.core.base import GamePieces, Game, Piece
 from app.schemas.game import CreateGameRequest
 
 
 class CRUDGame(CRUDBase):
 
-    async def get(self, instance_id: int, session: AsyncSession):
-        game = await session.get_one(
-                Game,
-                instance_id,
-                options=[
-                    joinedload(Game.game_pieces)
-                    .selectinload(GamePieces.piece)
-                ]
+    selector = (select(Game).options(
+            joinedload(Game.game_pieces).joinedload(GamePieces.piece)
+        ))
+
+    async def get(
+            self, instance_id: int, session: AsyncSession, load_rotations=False
+    ):
+        if load_rotations:
+            stmt = select(Game).options(
+                joinedload(Game.game_pieces)
+                .joinedload(GamePieces.piece)
+                .joinedload(Piece.rotations)
             )
+        else:
+            stmt = self.selector
+        game = await session.scalar(
+            stmt.where(Game.id == instance_id)
+        )
         return game
 
     async def get_many(
             self, session: AsyncSession, ids: list[int] | None = None
     ):
-        games = await session.execute(
-            select(Game)
-            .options(
-                joinedload(Game.game_pieces)
-                .joinedload(GamePieces.piece)
-            )
-        )
-        return games.unique().scalars()
+        games = await session.scalars(self.selector)
+        return games.unique()
 
     async def create_game(
         self,

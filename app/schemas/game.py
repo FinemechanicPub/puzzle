@@ -21,6 +21,21 @@ class GamePieceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class Rotation(BaseModel):
+    id: int
+    points: list[tuple[int, int]]
+
+
+class GamePieceResponseLong(BaseModel):
+    id: int = Field(..., validation_alias='piece_id')
+    name: str = Field(..., validation_alias='piece_name')
+    color: int
+
+    rotations: list[Rotation]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class GameResponseBase(BaseModel):
     id: int
     width: int
@@ -32,6 +47,15 @@ class GameResponseBase(BaseModel):
 class GameResponse(GameResponseBase):
 
     pieces: list[GamePieceResponse] = Field(
+        ..., validation_alias='game_pieces'
+    )
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class GameResponseLong(GameResponseBase):
+
+    pieces: list[GamePieceResponseLong] = Field(
         ..., validation_alias='game_pieces'
     )
 
