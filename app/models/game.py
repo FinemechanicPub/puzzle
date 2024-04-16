@@ -62,6 +62,9 @@ class GamePieces(EmptyBase):
     points: AssociationProxy[list] = association_proxy(
         target_collection='piece', attr='points'
     )
+    rotations: AssociationProxy[list] = association_proxy(
+        target_collection='piece', attr='rotations'
+    )
 
     def __repr__(self) -> str:
         return (
