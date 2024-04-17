@@ -1,4 +1,10 @@
+from collections import namedtuple
+from typing import TypeAlias
 from engine.piece import Point
+
+Mask: TypeAlias = int
+Orientations: TypeAlias = tuple[Mask, ...]
+Placements: TypeAlias = tuple[Orientations, ...]
 
 
 class Projection:
@@ -58,6 +64,7 @@ class Board:
         self.height = height
         self.width = width
         self.size = height * width
+        self.full = 2**self.size - 1
         self.probes = tuple(1 << k for k in reversed(range(self.size)))
 
     def count_area(self, board_mask: int, initial_point: int) -> int:
@@ -97,7 +104,7 @@ class Board:
             + board_mask.bit_count() == self.size
         )
 
-    def piece_masks(self, points: tuple[Point, ...]) -> list[int]:
+    def piece_masks(self, points: tuple[Point, ...]) -> tuple[int, ...]:
         """Массив битовых масок для фигуры, установленной на доске."""
         piece = Projection(self, points)
         piece_mask = piece.mask
@@ -112,4 +119,32 @@ class Board:
                 )
                 piece_mask <<= 1
             piece_mask <<= piece.piece_width
-        return masks
+        return tuple(masks)
+
+
+def invert(
+    masks: tuple[tuple[int, ...], ...]
+) -> tuple[tuple[tuple[int, int], ...], ...]:
+    """Создание массива масок фигуры:
+    - внешний массив по всем позициями доски
+    - внутренний массив по тем ориентациям фигуры,
+    которые могут быть установлены в заданную позицию"""
+    return tuple(
+        tuple(
+            (masks[rotation_index][position_index], rotation_index)
+            for rotation_index in range(len(masks[0]))
+            if masks[rotation_index][position_index]
+        )
+        for position_index in range(len(masks))
+    )
+
+
+def rotation_indices(masks: tuple[tuple[int, ...], ...]):
+    return tuple(
+        tuple(
+            rotation_index
+            for rotation_index in range(len(masks[0]))
+            if masks[rotation_index][position_index]
+        )
+        for position_index in range(len(masks))
+    )

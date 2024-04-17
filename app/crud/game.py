@@ -54,5 +54,19 @@ class CRUDGame(CRUDBase):
             await session.refresh(game)
         return game
 
+    async def invalid_game_pieces(
+            self,
+            session: AsyncSession,
+            instance_id: int,
+            piece_ids: list[int]
+    ) -> list[int]:
+        stmt = (
+            select(GamePieces.piece_id)
+            .where(GamePieces.game_id == instance_id)
+            .where(GamePieces.piece_id.in_(piece_ids))
+        )
+        valid_ids = await session.scalars(stmt)
+        return list(set(piece_ids) - set(valid_ids))
+
 
 game_crud = CRUDGame(Game)

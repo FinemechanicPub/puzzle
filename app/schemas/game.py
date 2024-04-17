@@ -1,9 +1,18 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic_core.core_schema import FieldValidationInfo
 
 
 class PieceColor(BaseModel):
     id: int
-    color: int = Field(..., ge=0, le=256**3)
+    color: int | str
+
+    @field_validator('color')
+    def validate_color(cls, value, info: FieldValidationInfo):
+        if isinstance(value, str):
+            return int(value, 16)
+        if isinstance(value, int):
+            return value
+        raise ValueError("Value cannot be converted to integer number")
 
 
 class CreateGameRequest(BaseModel):
