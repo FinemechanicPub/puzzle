@@ -66,6 +66,7 @@ class Board:
         self.size = height * width
         self.full = 2**self.size - 1
         self.probes = tuple(1 << k for k in reversed(range(self.size)))
+        self.board_mask = 0
 
     def count_area(self, board_mask: int, initial_point: int) -> int:
         """Подсчет количества достижимых ячеек"""
@@ -121,6 +122,11 @@ class Board:
             piece_mask <<= piece.piece_width
         return tuple(masks)
 
+    def merge_piece(self, points: tuple[Point, ...], position: int):
+        projection = Projection(self, points)
+        self.board_mask |= projection.at_position(position)
+        return
+
 
 def invert(
     masks: tuple[tuple[int, ...], ...]
@@ -132,10 +138,10 @@ def invert(
     return tuple(
         tuple(
             (masks[rotation_index][position_index], rotation_index)
-            for rotation_index in range(len(masks[0]))
+            for rotation_index in range(len(masks))
             if masks[rotation_index][position_index]
         )
-        for position_index in range(len(masks))
+        for position_index in range(len(masks[0]))
     )
 
 

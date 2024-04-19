@@ -1,9 +1,11 @@
+from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.crud.base import CRUDBase
 from app.core.base import GamePieces, Game, Piece
+from app.models.game import PieceRotation
 from app.schemas.game import CreateGameRequest
 
 
@@ -54,19 +56,26 @@ class CRUDGame(CRUDBase):
             await session.refresh(game)
         return game
 
-    async def invalid_game_pieces(
+    async def valid_game_pieces(
             self,
             session: AsyncSession,
-            instance_id: int,
-            piece_ids: list[int]
-    ) -> list[int]:
+            game_id: int,
+            rotation_ids: list[int]
+    ) -> Sequence[PieceRotation]:
+        # stmt = (
+        #     select(GamePieces.piece_id)
+        #     .where(GamePieces.game_id == game_id)
+        #     .where(GamePieces.piece_id.in_(piece_ids))
+        #     .options(joinedload(GamePieces.piece).joinedload(Piece.rotations))
+        # )
         stmt = (
-            select(GamePieces.piece_id)
-            .where(GamePieces.game_id == instance_id)
-            .where(GamePieces.piece_id.in_(piece_ids))
+            select(PieceRotation)
+            .join(Piece).join(GamePieces)
+            .where(GamePieces.game_id == game_id)
+            .where(PieceRotation.id.in_(rotation_ids))
         )
-        valid_ids = await session.scalars(stmt)
-        return list(set(piece_ids) - set(valid_ids))
+        rotations = await session.scalars(stmt)
+        return rotations.all()
 
 
 game_crud = CRUDGame(Game)

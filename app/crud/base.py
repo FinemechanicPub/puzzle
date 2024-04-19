@@ -1,4 +1,4 @@
-from typing import Generic, Optional, Type, TypeVar
+from typing import Generic, Optional, Sequence, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -30,7 +30,7 @@ class CRUDBase(Generic[ModelType]):
     async def get_many(
             self,
             session: AsyncSession,
-            ids: list[int] | None = None
+            ids: Sequence[int] | None = None
     ):
         statement = select(self.model)
         if ids:
