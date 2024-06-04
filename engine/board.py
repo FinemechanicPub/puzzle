@@ -1,5 +1,5 @@
-from collections import namedtuple
 from typing import TypeAlias
+
 from engine.piece import Point
 
 Mask: TypeAlias = int
@@ -101,8 +101,7 @@ class Board:
         while board_mask & self.probes[position]:
             position += 1
         return (
-            self.count_area(board_mask, position)
-            + board_mask.bit_count() == self.size
+            self.count_area(board_mask, position) % board_mask.bit_count() == 0
         )
 
     def piece_masks(self, points: tuple[Point, ...]) -> tuple[int, ...]:
