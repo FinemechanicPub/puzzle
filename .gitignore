@@ -225,3 +225,10 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# SQLite
+*.db
+
+# Experimental
+/example.py
+/test.py
