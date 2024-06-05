@@ -10,10 +10,13 @@ Placements: TypeAlias = tuple[Rotations, ...]
 
 def solutions(board: Board, piece_set: tuple[Placements, ...], board_mask=0):
 
-    def advance_position(board, position):
+    def advance_position(board: int, position: int) -> int:
         while board & empty_probes[position]:
             position += 1
         return position
+
+    if board_mask == board.full:
+        return
 
     piece_count = len(piece_set)
     empty_probes = board.probes
@@ -21,9 +24,9 @@ def solutions(board: Board, piece_set: tuple[Placements, ...], board_mask=0):
 
     history = dict[int, tuple[int, int, int, int]]()
 
-    position: int = 0
     next_piece: int = 0
     next_rotation: int = 0
+    position = advance_position(board_mask, 0)
     while True:
         placed = False
         for piece_index in range(next_piece, piece_count):
