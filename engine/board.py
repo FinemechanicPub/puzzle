@@ -48,7 +48,7 @@ class Projection:
 
     def at_position(self, position: int) -> int:
         """Маска фигуры в заданной позиции на доске"""
-        return self.mask << self.board_size - position + self.max_x - 1
+        return self.mask << self.board_size - position - self.mask.bit_length()
 
     def at_cell(self, row: int, col: int) -> int:
         """Маска фигуры в заданной ячейке на доске"""
