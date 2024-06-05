@@ -21,8 +21,7 @@ def make_hint(
         board: Board,
         pieces: Sequence[Piece]
 ) -> PiecePlacement | None:
-    print("Debug info", bin(board.board_mask))
-    print(pieces)
+
     piece_set = tuple(
         invert(tuple(
             board.piece_masks(rotation.points)
