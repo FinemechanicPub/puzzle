@@ -1,0 +1,20 @@
+Generic single-database configuration with an async dbapi.
+
+
+Автоматически создать миграции
+
+```shell
+alembic revision --autogenerate -m "Migration name" 
+```
+
+Применить все миграции
+
+```shell
+alembic upgrade head
+```
+
+Отменить все миграции
+
+```shell
+alembic downgrade base
+```
