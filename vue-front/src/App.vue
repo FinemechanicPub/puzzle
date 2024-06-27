@@ -6,8 +6,7 @@ import Board from './components/Board.vue'
   <header>
     <h1>Puzzle</h1>
   </header>
-
   <main>
-    <Board />
+    <RouterView />
   </main>
 </template>
