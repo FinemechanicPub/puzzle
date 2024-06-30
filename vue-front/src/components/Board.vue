@@ -94,12 +94,14 @@
     display: grid;
     grid-template-columns: repeat(v-bind(width), 1fr);
     border: 1px solid #19b440;
+    width: fit-content;
   }
   .square {
     aspect-ratio: 1/ 1;
+    width: 20px;
     display: flex;
     justify-content: center;
-    padding: 1%;
+    /* padding: 1%; */
     border: 1px solid #19b440;
     color: #8252d4;
   }
