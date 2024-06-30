@@ -11,6 +11,14 @@
     const error = ref(null)
     const game = ref(null)
 
+    const board = ref(null)
+    const piece = ref({
+        id: 1,
+        rotation: 3,
+        color: 0x750f83,
+        points: [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1]]
+    })
+
     // watch the params of the route to fetch the data again
     watch(() => props.id, fetchData, { immediate: true })
 
@@ -34,7 +42,10 @@
         <div v-if="loading" class="loading">Загружается...</div>
         <div v-if="error" class="error">{{ error }}</div>
         <div v-if="game" class="content">
-            <Board />
+            <Board :width="game.width" :height="game.height" :piece="piece" ref="board"/>
+            <button @click="board.reset">Reset</button>
+
         </div>
+        
     </main>
 </template>
