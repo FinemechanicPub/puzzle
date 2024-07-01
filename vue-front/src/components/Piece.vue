@@ -61,7 +61,7 @@
   }
   .square {
     aspect-ratio: 1/ 1;
-    width: 20px;
+    width: 18px;
     display: flex;
     justify-content: center;
     margin: 1px;
