@@ -44,13 +44,6 @@
             points: piece_data.rotations[0].points
         }
     }
-
-    function startDrag(evt, item){
-        console.log('dragging piece')
-        evt.dataTransfer.dropEffect = 'move'
-        evt.dataTransfer.effectAllowed = 'move'        
-        evt.dataTransfer.setData('pieceId', item.id)
-    }
 </script>
 
 <style scoped>
@@ -80,10 +73,8 @@
             <div>
                 <Board :width="game.width" :height="game.height" :piece="piece" ref="board"/>
             </div>
-            <button @click="board.reset">Reset</button>
             <div class="piece-palette">
-                <!-- <div draggable="true" @dragstart="startDrag($event, piece)" class="piece-frame" v-for="(piece, index) in game.pieces/*.slice(0,1)*/"> -->
-                <div draggable="true" class="piece-frame" v-for="(piece, index) in game.pieces/*.slice(0,1)*/">
+                <div class="piece-frame" v-for="(piece, index) in game.pieces/*.slice(0,1)*/">
                     <Piece  @cell-click="(dy, dx) => select_piece(piece, dy, dx)" :piece="{color: piece.color, points: piece.rotations[0].points}"/>
                 </div>
             </div>

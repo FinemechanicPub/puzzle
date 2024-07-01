@@ -21,8 +21,6 @@
   const color = `#${piece.color.toString(16)}`
   const mouse_index = ref(null)
 
-  console.log(min_x, max_x, max_y)
-
   function piece_click(cell, index){
     console.log(`clicked cell, which is '${cell}'`)
     if (cell){
@@ -36,7 +34,6 @@
     console.log(`mouse down in cell #${index}`)
     mouse_index.value = index
   }
-
 
   function startDrag(evt){
       console.log('dragging piece')

@@ -11,8 +11,9 @@
   const grid = ref(Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff)))
   // const piece = ref([[0, 0], [1, 0], [2, 0], [3, 0], [3, 1]])
   const history = ref([])
+  const redo = ref([])
 
-  watch(() => history, render_board, { immediate: true, deep: true })
+  watch(history, render_board, { immediate: true, deep: true })
 
   function render_board(){
     console.log(`render board`)
@@ -70,13 +71,28 @@
       const flat_points = flatten(index, piece.points)
       if (!collision(history.value, piece.points, index, flat_points)){
         history.value.push([index, piece, flat_points])
+        redo.value = []
       }
+    }
+  }
+
+  function remove_piece(){
+    if (history.value.length){
+      redo.value.push(history.value.pop())
+    }
+  }
+
+  function restore_piece(){
+    if (redo.value.length){
+      history.value.push(redo.value.pop())
     }
   }
 
   function reset(){
     console.log("reset")
-    history.value =[]
+    while (history.value.length){
+      remove_piece()
+    }
   }
 
   function onDrop(evt, index){
@@ -96,8 +112,6 @@
     display: grid;
     grid-template-columns: repeat(v-bind(width), 1fr);
     border: 1px solid #19b440;
-    width: fit-content;
-    margin: auto;
   }
   .square {
     aspect-ratio: 1/ 1;
@@ -108,10 +122,19 @@
     border: 1px solid #19b440;
     color: #8252d4;
   }
+  .centered {
+    width: fit-content;
+    margin: auto;
+  }
 </style>
 
 <template>
-  <div class="board grid" >
+  <div class="board grid centered" >
     <div class="square" @click="place_piece(index, props.piece)" @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
+  </div>
+  <div class="centered">
+    <button :disabled="history.length == 0"  @click="remove_piece">Убрать ({{ history.length }})</button>
+    <button :disabled="history.length == 0"  @click="reset">Сбросить</button>
+    <button :disabled="redo.length == 0" @click="restore_piece">Вернуть ({{ redo.length }})</button>
   </div>
 </template>
