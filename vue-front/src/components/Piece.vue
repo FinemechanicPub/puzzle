@@ -1,5 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue'
+  import { ref } from 'vue'
+
+  import divmod from '@/utils/divmod'
+
   const props = defineProps({
     piece: Object
   })
@@ -16,15 +19,38 @@ import { ref, watch } from 'vue'
     grid[y][x - min_x] = true
   }
   const color = `#${piece.color.toString(16)}`
+  const mouse_index = ref(null)
 
   console.log(min_x, max_x, max_y)
 
-  function piece_click(cell){
+  function piece_click(cell, index){
     console.log(`clicked cell, which is '${cell}'`)
     if (cell){
-      emit('cell-click')
+      const dy = Math.floor(index / width)
+      const dx = index % width
+      emit('cell-click', dy, dx)
     }
   }
+
+  function on_mouse_down(index){
+    console.log(`mouse down in cell #${index}`)
+    mouse_index.value = index
+  }
+
+
+  function startDrag(evt){
+      console.log('dragging piece')
+      const [dy, dx] = divmod(mouse_index.value, width)
+      const piece_data = {
+        dy: -dy,
+        dx: -dx - min_x,
+        piece: piece
+      }
+      evt.dataTransfer.dropEffect = 'move'
+      evt.dataTransfer.effectAllowed = 'move'
+      evt.dataTransfer.setData('piece_data', JSON.stringify(piece_data))
+  }
+
 </script>
 
 <style scoped>
@@ -46,7 +72,7 @@ import { ref, watch } from 'vue'
 </style>
 
 <template>
-  <div class="piece grid" >
-    <div class="square" :class="{ colored: cell }" @click="piece_click(cell)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+  <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
+    <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
   </div>
 </template>

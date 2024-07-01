@@ -1,5 +1,8 @@
 <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, watch } from 'vue';
+
+  import divmod from '@/utils/divmod';
+
   const props = defineProps({
     width: Number,
     height: Number,
@@ -14,25 +17,17 @@
   function render_board(){
     console.log(`render board`)
     grid.value = Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff))
-    console.log(history.value)
     for (const [position, piece, flat_points] of history.value){
       render_piece(position, piece.points, piece.color)
     }
   }
 
   function render_piece(index, points, color){
-    console.log(`render ${index}`)
+    console.log(`render at cell #${index}`)
     const [row, column] = divmod(index, props.width)
-    console.log(row, column)
     for (const [y, x] of points){
       grid.value[row + y][column + x] = color
     }
-  }
-
-  function divmod(divisor, divident){
-    const quotinet = Math.floor(divisor / divident)
-    const remainder = divisor % divident
-    return [quotinet, remainder]
   }
 
   function collision(pieces, points, position, flat_points){
@@ -69,12 +64,12 @@
     return flat_points
   }
 
-  function place_piece(index){
-    console.log(`click ${index}`)
-    if (props.piece){
-      const flat_points = flatten(index, props.piece.points)
-      if (!collision(history.value, props.piece.points, index, flat_points)){
-        history.value.push([index, props.piece, flat_points])
+  function place_piece(index, piece){
+    console.log(`place_piece to cell #${index}`)
+    if (piece){
+      const flat_points = flatten(index, piece.points)
+      if (!collision(history.value, piece.points, index, flat_points)){
+        history.value.push([index, piece, flat_points])
       }
     }
   }
@@ -82,6 +77,13 @@
   function reset(){
     console.log("reset")
     history.value =[]
+  }
+
+  function onDrop(evt, index){
+      console.log('drop piece on cell #', index)
+      const piece_data = JSON.parse(evt.dataTransfer.getData('piece_data'))
+      const corrected_index = index + piece_data.dx + piece_data.dy*props.width
+      place_piece(corrected_index, piece_data.piece)
   }
 
   defineExpose({
@@ -109,8 +111,7 @@
 </style>
 
 <template>
-  <p>{{ props.width }} x {{ props.height }}</p>
   <div class="board grid" >
-    <div class="square" @click="place_piece(index)" v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
+    <div class="square" @click="place_piece(index, props.piece)" @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
   </div>
 </template>
