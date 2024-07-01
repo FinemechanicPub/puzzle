@@ -95,6 +95,7 @@
     grid-template-columns: repeat(v-bind(width), 1fr);
     border: 1px solid #19b440;
     width: fit-content;
+    margin: auto;
   }
   .square {
     aspect-ratio: 1/ 1;

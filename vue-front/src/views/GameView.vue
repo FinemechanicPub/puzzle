@@ -1,7 +1,8 @@
 <script setup>
-    import { ref, watch } from 'vue'
-    import getGame from '@/api/game'
+    import { ref, watch } from 'vue';
+    import getGame from '@/api/game';
     import Board from '@/components/Board.vue';
+    import Piece from '@/components/Piece.vue';
 
     const props = defineProps({
         id: String
@@ -34,7 +35,34 @@
             loading.value = false
         }
     }
+
+    function select_piece(piece_data){
+        console.log("piece clicked")
+        piece.value = {
+            id: piece_data.id,
+            color: piece_data.color,
+            points: piece_data.rotations[0].points
+        }
+    }
 </script>
+
+<style scoped>
+    .content {
+        width: 60%;
+        margin: auto;
+    }
+    .piece-palette{
+        /* display: grid; */
+        display: flex;
+        flex-wrap: wrap;
+        /* width: fit-content; */
+        /* grid-template-columns: repeat(3, 1fr); */
+        /* grid-template-columns: fit-content(40%);  */
+    }
+    .piece-frame{
+        margin: 5px;
+    }
+</style>
 
 <template>
     <h2>Game #{{ id }}</h2>
@@ -44,7 +72,11 @@
         <div v-if="game" class="content">
             <Board :width="game.width" :height="game.height" :piece="piece" ref="board"/>
             <button @click="board.reset">Reset</button>
-
+            <div class="piece-palette">
+                <div class="piece-frame" v-for="(piece, index) in game.pieces/*.slice(0,1)*/">
+                    <Piece @cell-click="select_piece(piece)" :piece="{color: piece.color, points: piece.rotations[0].points}"/>
+                </div>
+            </div>
         </div>
         
     </main>
