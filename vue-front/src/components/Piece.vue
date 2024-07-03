@@ -13,7 +13,6 @@
   const rotationIndex = ref(0)
   const rotation = computed(() => props.piece.rotations[rotationIndex.value]) 
   const points = computed(() => rotation.value.points)
-  const color = computed(() => props.piece.color)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
   const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
   const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
@@ -52,7 +51,8 @@
       const piece_data = {
         dy: -dy,
         dx: -dx - minX.value,
-        piece: {color: color.value, points: points.value}
+        pieceId: props.piece.id,
+        rotationId: rotation.value.id
       }
       evt.dataTransfer.dropEffect = 'move'
       evt.dataTransfer.effectAllowed = 'move'
