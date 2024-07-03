@@ -1,6 +1,7 @@
 <script setup>
     import { computed, ref, watch } from 'vue';
     import getGame from '@/api/game';
+    import getHint from '@/api/hint';
     import divmod from '@/utils/divmod';
     import Board from '@/components/Board.vue';
     import Piece from '@/components/Piece.vue';
@@ -13,6 +14,7 @@
     const error = ref(null)
     const game = ref(null)
     const gamePieces = ref([])
+    const gameError = ref(null)
     const availablePieces = computed(() => gamePieces.value.filter((item) => item.count > 0).map((item) => item.piece))
     const installed_pieces = ref([])
 
@@ -39,6 +41,17 @@
             error.value = err.toString()
         } finally {
             loading.value = false
+        }
+    }
+
+    async function fetchHint(){
+        gameError.value = null
+        try{
+            const hint = await getHint(props.id, installed_pieces.value.map((item)=> ({piece_id: item.piece.id, rotation_id: item.rotation.id, position: item.index})))
+            console.log("hint ", hint)
+            handleInstall(hint.piece_id, hint.rotation_id, hint.position)
+        } catch (err) {
+            gameError.value = err.toString()
         }
     }
 
@@ -101,12 +114,18 @@
             gameItem.count++
         }
     }
+
+
 </script>
 
 <style scoped>
     .content {
         width: 90%;
         margin: auto;
+    }
+    .center{
+        display: flex;
+        justify-content: center;
     }
     .piece-palette{
         /* display: grid; */
@@ -119,6 +138,13 @@
     .piece-frame{
         margin: 5px;
     }
+    .error{
+        border-radius: 25px;
+        background: peachpuff;
+        border: 2px solid orange;
+        padding: 20px;
+        width: 200px;
+    }
 </style>
 
 <template>
@@ -129,6 +155,17 @@
         <div v-if="game" class="content">
             <div>
                 <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
+            </div>
+            <div v-if="gameError" class="error center">
+                <div>
+                    <button @click="gameError=null">x</button>
+                </div>
+                <div>
+                    {{ gameError }}
+                </div>
+            </div>
+            <div class="center">
+                <button  @click="fetchHint">Подсказка</button>
             </div>
             <div class="piece-palette" v-auto-animate>
                 <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
