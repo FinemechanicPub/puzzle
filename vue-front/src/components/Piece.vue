@@ -55,7 +55,17 @@
   }
 
   function rotate(direction){
-    rotationIndex.value = (props.piece.rotations.length + rotationIndex.value + direction) % props.piece.rotations.length
+    if (props.piece.rotations.length > 4){
+      const [half, index] = divmod(rotationIndex.value, 4)
+      rotationIndex.value = 4 * half + (index + 4 + direction) % 4
+    } else {
+      rotationIndex.value = (props.piece.rotations.length + rotationIndex.value + direction) % props.piece.rotations.length
+    }
+  }
+
+  function flip(){
+    const cycleLength = props.piece.rotations.length > 2 ? Math.floor(props.piece.rotations.length / 2) : 0
+    rotationIndex.value = (rotationIndex.value + cycleLength) % props.piece.rotations.length
   }
 </script>
 
@@ -89,5 +99,8 @@
       <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
     </div>
     <div @click="rotate(-1)">R</div>
+  </div>
+  <div>
+    <div @click="flip">F</div>
   </div>
 </template>
