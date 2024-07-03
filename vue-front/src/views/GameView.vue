@@ -48,7 +48,7 @@
 
 <style scoped>
     .content {
-        width: 60%;
+        width: 90%;
         margin: auto;
     }
     .piece-palette{

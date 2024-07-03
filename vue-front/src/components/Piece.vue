@@ -7,6 +7,9 @@
     piece: Object
   })
   const emit = defineEmits(['cell-click'])
+
+  const hovering = ref(false)
+
   const rotationIndex = ref(0)
   const rotation = computed(() => props.piece.rotations[rotationIndex.value]) 
   const points = computed(() => rotation.value.points)
@@ -17,6 +20,8 @@
   const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
   const grid = computed(make_grid)
   const width = computed(() => maxX.value - minX.value + 1)
+  const canFlip = computed(() => props.piece.rotations.length > 4)
+  const canRotate = computed(() => props.piece.rotations.length > 1)
 
   function make_grid(){
     const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
@@ -79,7 +84,7 @@
     aspect-ratio: 1/ 1;
     width: 18px;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     margin: 1px;
   }
   .colored {
@@ -89,18 +94,35 @@
     display: flex;
     flex-direction: row;
   }
-
+  .piece-area{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    /* background: gray; */
+  }
+  .invisible {
+    visibility: hidden;
+  }
+  .centered {
+    text-align: center;
+  }
 </style>
 
 <template>
-  <div class="placeholder" >
-    <div @click="rotate(1)">L</div>
-    <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
-      <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+  <div @mouseenter="hovering=true" @mouseleave="hovering=false">
+    <div class="placeholder" >
+      <div :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">L</div>
+      <div class="piece-area">
+        <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
+          <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+        </div>
+      </div>
+      <div :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">R</div>
     </div>
-    <div @click="rotate(-1)">R</div>
-  </div>
-  <div>
-    <div @click="flip">F</div>
+    <div>
+      <div class="centered" :class="{invisible: !(hovering && canFlip)}" @click="flip">F</div>
+    </div>
   </div>
 </template>
