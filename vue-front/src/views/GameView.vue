@@ -74,8 +74,8 @@
                 <Board :width="game.width" :height="game.height" :piece="piece" ref="board"/>
             </div>
             <div class="piece-palette">
-                <div class="piece-frame" v-for="(piece, index) in game.pieces/*.slice(0,1)*/">
-                    <Piece  @cell-click="(dy, dx) => select_piece(piece, dy, dx)" :piece="{color: piece.color, points: piece.rotations[0].points}"/>
+                <div class="piece-frame" :key="piece.id" v-for="piece in game.pieces">
+                    <Piece  @cell-click="(dy, dx) => select_piece(piece, dy, dx)" :piece="piece"/>
                 </div>
             </div>
         </div>

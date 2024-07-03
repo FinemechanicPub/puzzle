@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
 
   import divmod from '@/utils/divmod'
 
@@ -7,25 +7,31 @@
     piece: Object
   })
   const emit = defineEmits(['cell-click'])
+  const rotationIndex = ref(0)
+  const rotation = computed(() => props.piece.rotations[rotationIndex.value]) 
+  const points = computed(() => rotation.value.points)
+  const color = computed(() => props.piece.color)
+  const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
+  const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
+  const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
+  const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
+  const grid = computed(make_grid)
+  const width = computed(() => maxX.value - minX.value + 1)
 
-  const piece = props.piece
-  const max_x = Math.max(...piece.points.map((point) => point[1]))
-  const min_x = Math.min(...piece.points.map((point) => point[1]))
-  const max_y = Math.max(...piece.points.map((point) => point[0]))
-  const height = max_y + 1
-  const width = max_x - min_x + 1
-  const grid = Array(height).fill().map(()=>Array(width).fill(false))
-  for (const [y, x] of piece.points){
-    grid[y][x - min_x] = true
+  function make_grid(){
+    const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
+    for (const [y, x] of points.value){
+      grid[y][x - minX.value] = true
+    }
+    return grid
   }
-  const color = `#${piece.color.toString(16)}`
   const mouse_index = ref(null)
 
   function piece_click(cell, index){
     console.log(`clicked cell, which is '${cell}'`)
     if (cell){
-      const dy = Math.floor(index / width)
-      const dx = index % width
+      const dy = Math.floor(index / width.value)
+      const dx = index % width.value
       emit('cell-click', dy, dx)
     }
   }
@@ -37,17 +43,20 @@
 
   function startDrag(evt){
       console.log('dragging piece')
-      const [dy, dx] = divmod(mouse_index.value, width)
+      const [dy, dx] = divmod(mouse_index.value, width.value)
       const piece_data = {
         dy: -dy,
-        dx: -dx - min_x,
-        piece: piece
+        dx: -dx - minX.value,
+        piece: {color: color.value, points: points.value}
       }
       evt.dataTransfer.dropEffect = 'move'
       evt.dataTransfer.effectAllowed = 'move'
       evt.dataTransfer.setData('piece_data', JSON.stringify(piece_data))
   }
 
+  function rotate(direction){
+    rotationIndex.value = (props.piece.rotations.length + rotationIndex.value + direction) % props.piece.rotations.length
+  }
 </script>
 
 <style scoped>
@@ -64,12 +73,21 @@
     margin: 1px;
   }
   .colored {
-    background-color: v-bind(color)
+    background-color: v-bind(colorString);
   }
+  .placeholder{
+    display: flex;
+    flex-direction: row;
+  }
+
 </style>
 
 <template>
-  <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
-    <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+  <div class="placeholder" >
+    <div @click="rotate(1)">L</div>
+    <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
+      <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+    </div>
+    <div @click="rotate(-1)">R</div>
   </div>
 </template>

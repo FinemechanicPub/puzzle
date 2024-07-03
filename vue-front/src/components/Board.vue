@@ -27,6 +27,7 @@
     console.log(`render at cell #${index}`)
     const [row, column] = divmod(index, props.width)
     for (const [y, x] of points){
+      console.log(row + y, column + x)
       grid.value[row + y][column + x] = color
     }
   }
@@ -98,6 +99,7 @@
   function onDrop(evt, index){
       console.log('drop piece on cell #', index)
       const piece_data = JSON.parse(evt.dataTransfer.getData('piece_data'))
+      console.log(piece_data)
       const corrected_index = index + piece_data.dx + piece_data.dy*props.width
       place_piece(corrected_index, piece_data.piece)
   }
