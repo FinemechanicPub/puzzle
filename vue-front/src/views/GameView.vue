@@ -23,9 +23,7 @@
         )), []
         )
     )
-    const occupiedPoints = computed(() => occupiedCells.value.map((item) => item[0]))
-
-    const board = ref(null)
+    const occupiedPositions = computed(() => occupiedCells.value.map((item) => item[0]))
 
     // watch the params of the route to fetch the data again
     watch(() => props.id, fetchData, { immediate: true })
@@ -67,7 +65,7 @@
     }
     for (const [y, x] of points){
       const p = position + y*game.value.width + x
-      if (occupiedPoints.value.includes(p)){
+      if (occupiedPositions.value.includes(p)){
         console.log('collision with another piece')
         return true
       }
@@ -130,7 +128,7 @@
         <div v-if="error" class="error">{{ error }}</div>
         <div v-if="game" class="content">
             <div>
-                <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" ref="board"/>
+                <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
             </div>
             <div class="piece-palette" v-auto-animate>
                 <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
