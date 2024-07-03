@@ -132,7 +132,7 @@
             <div>
                 <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" ref="board"/>
             </div>
-            <div class="piece-palette">
+            <div class="piece-palette" v-auto-animate>
                 <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
                     <Piece :piece="piece"/>
                 </div>
