@@ -4,7 +4,7 @@
     import getHint from '@/api/hint';
     import divmod from '@/utils/divmod';
     import Board from '@/components/Board.vue';
-    import Piece from '@/components/Piece.vue';
+    import PiecePalette from '@/components/PiecePalette.vue'
 
     const props = defineProps({
         id: String
@@ -189,11 +189,7 @@
                 <div class="flex-center-content">
                     <button class="button" :disabled="gameComplete"  @click="fetchHint">Показать подсказку</button>
                 </div>
-                <div class="piece-palette" v-auto-animate>
-                    <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
-                        <Piece :piece="piece"/>
-                    </div>
-                </div>
+                <PiecePalette :availablePieces="availablePieces" />
             </div>
             
         </div>
