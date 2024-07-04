@@ -1,0 +1,18 @@
+h1, h2 {
+    text-align: center;
+}
+.flex-center-content{
+    display: flex;
+    justify-content: center;
+  }
+.one-column{
+    flex-direction: column;
+}
+.transparent-button{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+  }

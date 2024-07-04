@@ -108,21 +108,29 @@
   .centered {
     text-align: center;
   }
+  .cursor-pointer{
+    cursor: pointer
+  }
+  .flex-center-content{
+    display: flex;
+    justify-content: center;
+  }
+
 </style>
 
 <template>
   <div @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="placeholder" >
-      <div :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">L</div>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
       <div class="piece-area">
-        <div class="piece grid" draggable="true" @dragstart="startDrag($event)">
+        <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
           <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
         </div>
       </div>
-      <div :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">R</div>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">⤸</button>
     </div>
-    <div>
-      <div class="centered" :class="{invisible: !(hovering && canFlip)}" @click="flip">F</div>
+    <div class="flex-center-content">
+      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">⮍</button>
     </div>
   </div>
 </template>

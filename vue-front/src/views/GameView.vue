@@ -139,40 +139,45 @@
         margin: 5px;
     }
     .error{
-        border-radius: 25px;
-        background: peachpuff;
-        border: 2px solid orange;
+        border-radius: 10px;
+        background: papayawhip;
+        border: 2px solid peachpuff;
         padding: 20px;
         width: 200px;
+        margin: 1ch auto;
+    }
+    .button{
+        margin-top: 1ch;
     }
 </style>
 
 <template>
-    <h2>Game #{{ id }}</h2>
-    <main>
-        <div v-if="loading" class="loading">Загружается...</div>
-        <div v-if="error" class="error">{{ error }}</div>
-        <div v-if="game" class="content">
-            <div>
-                <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
-            </div>
-            <div v-if="gameError" class="error center">
+    <div>
+        <h2>Game #{{ id }}</h2>
+        <div class="flex-center-content">
+            <div v-if="loading" class="loading">Загружается...</div>
+            <div v-if="error" class="error">{{ error }}</div>
+            <div v-if="game" class="content flex-center-content one-column">
                 <div>
-                    <button @click="gameError=null">x</button>
+                    <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
                 </div>
-                <div>
-                    {{ gameError }}
+                <div v-if="gameError" class="error">
+                    <div>
+                        {{ gameError }}
+                    </div>
+                    <button class="transparent-button" @click="gameError=null">[закрыть]</button>
+                </div>
+                <div class="flex-center-content">
+                    <button class="button"  @click="fetchHint">Показать подсказку</button>
+                </div>
+                <div class="piece-palette" v-auto-animate>
+                    <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
+                        <Piece :piece="piece"/>
+                    </div>
                 </div>
             </div>
-            <div class="center">
-                <button  @click="fetchHint">Подсказка</button>
-            </div>
-            <div class="piece-palette" v-auto-animate>
-                <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
-                    <Piece :piece="piece"/>
-                </div>
-            </div>
+            
         </div>
-        
-    </main>
+
+    </div>
 </template>
