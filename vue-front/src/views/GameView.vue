@@ -12,7 +12,10 @@
 
     const loading = ref(false)
     const error = ref(null)
-    const game = ref(null)
+    const game = ref({
+        width: -1,
+        height: -1,
+    })
     const gamePieces = ref([])
     const gameError = ref(null)
     const availablePieces = computed(() => gamePieces.value.filter((item) => item.count > 0).map((item) => item.piece))
@@ -26,6 +29,7 @@
         )
     )
     const occupiedPositions = computed(() => occupiedCells.value.map((item) => item[0]))
+    const gameComplete = computed(() => occupiedPositions.value.length == game.value.width * game.value.height)
 
     // watch the params of the route to fetch the data again
     watch(() => props.id, fetchData, { immediate: true })
@@ -146,6 +150,15 @@
         width: 200px;
         margin: 1ch auto;
     }
+    .card{
+        border-radius: 10px;
+        padding: 20px;
+        margin: 1ch auto;
+    }
+    .card-green{
+        background: palegreen;
+        border: 2px solid lawngreen;
+    }
     .button{
         margin-top: 1ch;
     }
@@ -158,6 +171,9 @@
             <div v-if="loading" class="loading">Загружается...</div>
             <div v-if="error" class="error">{{ error }}</div>
             <div v-if="game" class="content flex-center-content one-column">
+                <div v-if="gameComplete" class="card card-green">
+                    Победа!
+                </div>
                 <div>
                     <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
                 </div>
@@ -168,7 +184,7 @@
                     <button class="transparent-button" @click="gameError=null">[закрыть]</button>
                 </div>
                 <div class="flex-center-content">
-                    <button class="button"  @click="fetchHint">Показать подсказку</button>
+                    <button class="button" :disabled="gameComplete"  @click="fetchHint">Показать подсказку</button>
                 </div>
                 <div class="piece-palette" v-auto-animate>
                     <div class="piece-frame" :key="piece.id" v-for="piece in availablePieces">
