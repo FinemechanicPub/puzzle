@@ -6,7 +6,6 @@
   const props = defineProps({
     piece: Object
   })
-  const emit = defineEmits(['cell-click'])
 
   const hovering = ref(false)
 
@@ -30,15 +29,6 @@
     return grid
   }
   const mouse_index = ref(null)
-
-  function piece_click(cell, index){
-    console.log(`clicked cell, which is '${cell}'`)
-    if (cell){
-      const dy = Math.floor(index / width.value)
-      const dx = index % width.value
-      emit('cell-click', dy, dx)
-    }
-  }
 
   function on_mouse_down(index){
     console.log(`mouse down in cell #${index}`)
@@ -124,7 +114,7 @@
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
       <div class="piece-area">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
         </div>
       </div>
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">⤸</button>
