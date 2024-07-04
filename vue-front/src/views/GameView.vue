@@ -167,7 +167,7 @@
 <template>
     <div>
         <h2>Game #{{ id }}</h2>
-        <div class="flex-center-content">
+        <div>
             <div v-if="loading" class="loading">Загружается...</div>
             <div v-if="error" class="error">{{ error }}</div>
             <div v-if="game" class="content flex-center-content one-column">
