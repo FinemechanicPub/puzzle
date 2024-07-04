@@ -80,7 +80,7 @@
     grid-template-columns: repeat(v-bind(width), 1fr);
     width: fit-content;
   }
-  .square {
+  .piece-cell {
     aspect-ratio: 1/ 1;
     width: 18px;
     display: flex;
@@ -124,7 +124,7 @@
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
       <div class="piece-area">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="square" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" @click="piece_click(cell, index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
         </div>
       </div>
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">⤸</button>

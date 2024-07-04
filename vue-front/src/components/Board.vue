@@ -33,8 +33,12 @@
 
   function onDrop(evt, index){
       console.log('drop piece on cell #', index)
-      const piece_data = JSON.parse(evt.dataTransfer.getData('piece_data'))
-      console.log(piece_data)
+      const raw_data = evt.dataTransfer.getData('piece_data')
+      if (!raw_data){
+        console.log("no drop data")
+        return
+      }
+      const piece_data = JSON.parse(raw_data)
       const corrected_index = index + piece_data.dx + piece_data.dy*props.width
       emit('install', piece_data.pieceId, piece_data.rotationId, corrected_index)
   }
@@ -48,7 +52,7 @@
 <style scoped>
   .grid {
     display: grid;
-    grid-template-columns: repeat(v-bind(width), 1fr);
+    grid-template-columns: repeat(v-bind("props.width"), 1fr);
     border: 1px solid gray;
   }
   .square {

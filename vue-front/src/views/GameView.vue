@@ -109,9 +109,12 @@
 
     function handleRemove(position){
         console.log('handleRemove ', position)
-        const [_, piece] = occupiedCells.value.find((item) => item[0] == position)
-        console.log('piece to remove: ', piece)
-        if (piece){
+        if (occupiedPositions.value.length == 0){
+            return
+        }
+        const cell_data = occupiedCells.value.find((item) => item[0] == position)
+        if (cell_data){
+            const piece = cell_data[1]
             const index = installed_pieces.value.findIndex((item) => item.piece == piece)
             installed_pieces.value.splice(index, 1)
             const gameItem = gamePieces.value.find((item) => item.piece == piece)
