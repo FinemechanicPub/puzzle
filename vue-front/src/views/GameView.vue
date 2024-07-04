@@ -135,12 +135,9 @@
         justify-content: center;
     }
     .piece-palette{
-        /* display: grid; */
         display: flex;
         flex-wrap: wrap;
-        /* width: fit-content; */
-        /* grid-template-columns: repeat(3, 1fr); */
-        /* grid-template-columns: fit-content(40%);  */
+        justify-content: center;
     }
     .piece-frame{
         margin: 5px;
@@ -163,36 +160,27 @@
         border: 2px solid lawngreen;
     }
     .button{
-        margin-top: 1ch;
+        margin: 1ch auto;
+        width: fit-content;
     }
 </style>
 
 <template>
-    <div>
+    <div v-if="loading" class="loading">Загружается...</div>
+    <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="game" class="content flex-center-content one-column">
         <h2>Game #{{ id }}</h2>
-        <div>
-            <div v-if="loading" class="loading">Загружается...</div>
-            <div v-if="error" class="error">{{ error }}</div>
-            <div v-if="game" class="content flex-center-content one-column">
-                <div v-if="gameComplete" class="card card-green">
-                    Победа!
-                </div>
-                <div>
-                    <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
-                </div>
-                <div v-if="gameError" class="error">
-                    <div>
-                        {{ gameError }}
-                    </div>
-                    <button class="transparent-button" @click="gameError=null">[закрыть]</button>
-                </div>
-                <div class="flex-center-content">
-                    <button class="button" :disabled="gameComplete"  @click="fetchHint">Показать подсказку</button>
-                </div>
-                <PiecePalette :availablePieces="availablePieces" />
-            </div>
-            
+        <div v-if="gameComplete" class="card card-green">
+            Победа!
         </div>
-
+        <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
+        <div v-if="gameError" class="error">
+            <div>
+                {{ gameError }}
+            </div>
+            <button class="transparent-button" @click="gameError=null">[закрыть]</button>
+        </div>
+        <button class="button" :disabled="gameComplete"  @click="fetchHint">Показать подсказку</button>
+        <PiecePalette :availablePieces="availablePieces" />            
     </div>
 </template>
