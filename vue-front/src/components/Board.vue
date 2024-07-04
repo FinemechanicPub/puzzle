@@ -54,15 +54,12 @@
     display: grid;
     grid-template-columns: repeat(v-bind("props.width"), 1fr);
     border: 1px solid gray;
+    overflow: hidden;
   }
   .square {
     aspect-ratio: 1/ 1;
     width: 20px;
-    display: flex;
-    justify-content: center;
-    /* padding: 1%; */
     border: 1px solid gray;
-    color: #8252d4;
   }
   .centered {
     width: fit-content;
