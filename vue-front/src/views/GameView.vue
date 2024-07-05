@@ -1,10 +1,10 @@
 <script setup>
     import { computed, ref, watch } from 'vue';
     import getGame from '@/api/game';
-    import getHint from '@/api/hint';
     import divmod from '@/utils/divmod';
     import Board from '@/components/Board.vue';
     import PiecePalette from '@/components/PiecePalette.vue'
+    import HintBox from '@/components/HintBox.vue'
 
     const props = defineProps({
         id: String
@@ -12,12 +12,8 @@
 
     const loading = ref(false)
     const error = ref(null)
-    const game = ref({
-        width: -1,
-        height: -1,
-    })
+    const game = ref(null)
     const gamePieces = ref([])
-    const gameError = ref(null)
     const availablePieces = computed(() => gamePieces.value.filter((item) => item.count > 0).map((item) => item.piece))
     const installed_pieces = ref([])
 
@@ -48,20 +44,10 @@
         }
     }
 
-    async function fetchHint(){
-        gameError.value = null
-        try{
-            const hint = await getHint(props.id, installed_pieces.value.map((item)=> ({piece_id: item.piece.id, rotation_id: item.rotation.id, position: item.index})))
-            console.log("hint ", hint)
-            handleInstall(hint.piece_id, hint.rotation_id, hint.position)
-        } catch (err) {
-            gameError.value = err.toString()
-        }
-    }
-
     function setupGame(game_data){
         gamePieces.value = game_data.pieces.map((item) => ({count: 1, piece: item}))
         game.value = {
+            id: game_data.id,
             width: game_data.width,
             height: game_data.height
         }
@@ -165,6 +151,11 @@
         margin: 1ch auto;
         width: fit-content;
     }
+    .hint-box{
+        display: inline-flex;
+        margin: auto;
+        gap: 1ch;
+    }
 </style>
 
 <template>
@@ -178,13 +169,7 @@
             </div>
         </div>
         <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
-        <div v-if="gameError" class="error">
-            <div>
-                {{ gameError }}
-            </div>
-            <button class="transparent-button" @click="gameError=null">[закрыть]</button>
-        </div>
-        <button class="button" :disabled="gameComplete"  @click="fetchHint">Показать подсказку</button>
+        <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installed_pieces" />
         <PiecePalette :availablePieces="availablePieces" />            
     </div>
 </template>
