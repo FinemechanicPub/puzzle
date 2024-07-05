@@ -150,14 +150,16 @@
         width: 200px;
         margin: 1ch auto;
     }
-    .card{
+    .card-green{
         border-radius: 10px;
         padding: 20px;
         margin: 1ch auto;
-    }
-    .card-green{
-        background: palegreen;
-        border: 2px solid lawngreen;
+        width: fit-content;
+        font-weight: bolder;
+        color: slateblue;
+        background: mediumaquamarine;
+        border: 2px solid lightseagreen;
+        text-align: center; 
     }
     .button{
         margin: 1ch auto;
@@ -170,8 +172,10 @@
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="game" class="content flex-center-content one-column">
         <h2>Game #{{ id }}</h2>
-        <div v-if="gameComplete" class="card card-green">
-            Победа!
+        <div v-auto-animate>
+            <div :key=1 v-if="gameComplete" class="card-green">
+                Доска заполнена!
+            </div>
         </div>
         <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
         <div v-if="gameError" class="error">
