@@ -15,10 +15,10 @@
     const game = ref(null)
     const gamePieces = ref([])
     const availablePieces = computed(() => gamePieces.value.filter((item) => item.count > 0).map((item) => item.piece))
-    const installed_pieces = ref([])
+    const installedPieces = ref([])
 
     const occupiedCells = computed(
-        () => installed_pieces.value.reduce(
+        () => installedPieces.value.reduce(
         (prev, item) => prev.concat(item.rotation.points.map(
             (point) => [item.index + point[0]*game.value.width + point[1], item.piece]
         )), []
@@ -86,7 +86,7 @@
             return
         }
         item.count--;
-        installed_pieces.value.push({
+        installedPieces.value.push({
             piece: piece,
             rotation: rotation,
             index: index
@@ -101,8 +101,8 @@
         const cell_data = occupiedCells.value.find((item) => item[0] == position)
         if (cell_data){
             const piece = cell_data[1]
-            const index = installed_pieces.value.findIndex((item) => item.piece == piece)
-            installed_pieces.value.splice(index, 1)
+            const index = installedPieces.value.findIndex((item) => item.piece == piece)
+            installedPieces.value.splice(index, 1)
             const gameItem = gamePieces.value.find((item) => item.piece == piece)
             gameItem.count++
         }
@@ -168,8 +168,8 @@
                 Доска заполнена!
             </div>
         </div>
-        <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installed_pieces" />
-        <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installed_pieces" />
+        <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />
+        <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
         <PiecePalette :availablePieces="availablePieces" />            
     </div>
 </template>
