@@ -156,6 +156,9 @@
         margin: auto;
         gap: 1ch;
     }
+    .big{
+        font-size: larger;
+    }
 </style>
 
 <template>
@@ -165,7 +168,8 @@
         <h2>Game #{{ id }}</h2>
         <div v-auto-animate>
             <div :key=1 v-if="gameComplete" class="card-green">
-                Доска заполнена!
+                <p class="big">🏅</p>
+                <p>Доска заполнена!</p>
             </div>
         </div>
         <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />

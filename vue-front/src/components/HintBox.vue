@@ -57,7 +57,7 @@
         <p class="hint-item">
             {{ message }}
         </p>
-        <button @click="emit('hint', hint)" class="hint-item" v-if="hint">Давай</button>
-        <button @click="fetchHint" class="hint-item" v-if="error">⟳</button>
+        <button @click="emit('hint', hint)" class="hint-item transparent-button" v-if="hint">🆗</button>
+        <button @click="fetchHint" class="hint-item transparent-button" v-if="error">↩️</button>
     </div>
 </template>
