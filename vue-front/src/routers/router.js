@@ -1,9 +1,11 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-import GameView from '../views/GameView.vue'
+import MainPage from '@/views/MainPage.vue'
+import GameView from '@/views/GameView.vue'
 
 const routes = [
-  { path: '/game/:id', component: GameView, props: true},
+  { path: '/', name: 'main', component: MainPage},
+  { path: '/game/:id', name: 'game', component: GameView, props: true},
 ]
 
 const router = createRouter({
