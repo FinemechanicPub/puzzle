@@ -29,10 +29,15 @@
         loading.value = true
         try{
             const data = await getHint(props.gameId, props.installedPices.map((item)=> ({piece_id: item.piece.id, rotation_id: item.rotation.id, position: item.index})))
-            if (!data){
+            // progress = 1
+            // complete = 2
+            // deadlock = 3
+            if (data.status == 3) {
                 error.value = "безвыходная ситуация"
+            } else if (data.status == 2) {
+                error.value = ""
             } else {
-                hint.value = Object.values(data)
+                hint.value = Object.values(data.hint)
             }
         } catch (err) {
             error.value = err.toString()

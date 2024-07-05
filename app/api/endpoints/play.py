@@ -5,14 +5,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.crud.game import game_crud
 from app.crud.piece import piece_crud
-from app.schemas.hint import HintRequest
+from app.schemas.hint import GameStatus, HintRequest, HintResponse
 from app.services.play import make_hint, merge_pieces
 
 
 play_router = APIRouter()
 
 
-@play_router.put('/hint')
+@play_router.put('/hint', response_model=HintResponse)
 async def hint(
     request: HintRequest,
     session: AsyncSession = Depends(get_async_session)
@@ -38,5 +38,10 @@ async def hint(
     board = merge_pieces(
         game, [(rotation, request_map[rotation.id]) for rotation in rotations]
     )
+    if board.is_full():
+        return HintResponse(status=GameStatus.complete, hint=None)
     piece_hint = make_hint(board, available_pieces)
-    return piece_hint
+    return HintResponse(
+        status=GameStatus.progress if piece_hint else GameStatus.deadlock,
+        hint=piece_hint
+    )

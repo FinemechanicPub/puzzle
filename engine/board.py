@@ -103,6 +103,9 @@ class Board:
         return (
             self.count_area(board_mask, position) % board_mask.bit_count() == 0
         )
+    
+    def is_full(self) -> bool:
+        return self.board_mask == self.full
 
     def piece_masks(self, points: tuple[Point, ...]) -> tuple[int, ...]:
         """Массив битовых масок для фигуры, установленной на доске."""
