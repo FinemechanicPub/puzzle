@@ -40,7 +40,11 @@
                 hint.value = Object.values(data.hint)
             }
         } catch (err) {
-            error.value = err.toString()
+            if (err instanceof TypeError){
+                error.value = "Нет связи с Центром"
+            } else {
+                error.value = err.toString()
+            }
         } finally{
             loading.value = false
         }
@@ -54,5 +58,6 @@
             {{ message }}
         </p>
         <button @click="emit('hint', hint)" class="hint-item" v-if="hint">Давай</button>
+        <button @click="fetchHint" class="hint-item" v-if="error">⟳</button>
     </div>
 </template>
