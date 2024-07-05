@@ -103,7 +103,7 @@ class Board:
         return (
             self.count_area(board_mask, position) % board_mask.bit_count() == 0
         )
-    
+
     def is_full(self) -> bool:
         return self.board_mask == self.full
 
