@@ -30,6 +30,7 @@ class Piece(Base):
 
 class Game(Base):
 
+    title: Mapped[str] = mapped_column(default="", server_default="")
     width: Mapped[int] = mapped_column(SmallInteger)
     height: Mapped[int] = mapped_column(SmallInteger)
     game_pieces: Mapped[list['GamePieces']] = relationship(

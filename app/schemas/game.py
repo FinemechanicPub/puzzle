@@ -16,6 +16,7 @@ class PieceColor(BaseModel):
 
 
 class CreateGameRequest(BaseModel):
+    title: str = Field("")
     width: int = Field(..., ge=1, le=60)
     height: int = Field(..., ge=1, le=60)
     pieces: list[PieceColor]
@@ -47,6 +48,7 @@ class GamePieceResponseLong(BaseModel):
 
 class GameResponseBase(BaseModel):
     id: int
+    title: str
     width: int
     height: int
 
