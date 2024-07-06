@@ -35,10 +35,16 @@
         loading.value = true
         
         try {
+            console.log("start fetch")
             const data = await getGame(parseInt(id))
             setupGame(data)
         } catch (err) {
-            error.value = err.toString()
+            console.log("fetch error")
+            if (err instanceof TypeError){
+                error.value = err.message
+            } else {
+                error.value = err.toString()
+            }
         } finally {
             loading.value = false
         }
@@ -134,8 +140,8 @@
         background: papayawhip;
         border: 2px solid peachpuff;
         padding: 20px;
-        width: 200px;
         margin: 1ch auto;
+        width: fit-content;
     }
     .card-green{
         border-radius: 10px;
@@ -163,8 +169,11 @@
 </style>
 
 <template>
-    <div v-if="loading" class="loading">Загружается...</div>
-    <div v-if="error" class="error">{{ error }}</div>
+    <h2 v-if="loading" class="loading">Загрузка данных...</h2>
+    <div v-if="error" class="error">
+        <h3>Ошибка подключения к серверу</h3>
+        <p>{{ error }}</p>
+    </div>
     <div v-if="game" class="content flex-center-content one-column">
         <h2>{{ game.title }}</h2>
         <div v-auto-animate>
