@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref, watch } from 'vue';
+    import { computed, ref, watchEffect } from 'vue';
 
     import getHint from '@/api/hint';
 
@@ -13,19 +13,21 @@
     const loading = ref(false)
     const error = ref(null)
     const hint = ref(null)
-    
+    const hintActive = ref(true)
+
     const message = computed(
         () => loading.value ? " ...запрашиваю Центр... " : (
             hint.value ? "могу подсказать ход" : error.value
         )
     )
 
-
-    watch(props.installedPices, fetchHint)
+    watchEffect(fetchHint)
 
     async function fetchHint(){
         hint.value = null
         error.value = null
+        if (!hintActive.value || props.installedPices.length == 0) return;
+
         loading.value = true
         try{
             const data = await getHint(props.gameId, props.installedPices.map((item)=> ({piece_id: item.piece.id, rotation_id: item.rotation.id, position: item.index})))
@@ -53,7 +55,7 @@
 
 <template>
     <div class="hint-box">
-        <p class="hint-item">🤖</p>
+        <p @click="hintActive = !hintActive" class="hint-item transparent-button">🤖</p>
         <p class="hint-item">
             {{ message }}
         </p>
