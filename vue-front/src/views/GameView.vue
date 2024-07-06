@@ -48,6 +48,7 @@
         gamePieces.value = game_data.pieces.map((item) => ({count: 1, piece: item}))
         game.value = {
             id: game_data.id,
+            title: game_data.title,
             width: game_data.width,
             height: game_data.height
         }
@@ -165,7 +166,7 @@
     <div v-if="loading" class="loading">Загружается...</div>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="game" class="content flex-center-content one-column">
-        <h2>Game #{{ id }}</h2>
+        <h2>{{ game.title }}</h2>
         <div v-auto-animate>
             <div :key=1 v-if="gameComplete" class="card-green">
                 <p class="big">🏅</p>
