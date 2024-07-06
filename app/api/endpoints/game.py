@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -19,6 +19,11 @@ async def game_full(
     game_id: int, session: AsyncSession = Depends(get_async_session)
 ):
     game = await game_crud.get(game_id, session, load_rotations=True)
+    if game is None:
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='404 - Not Found'
+            )
     return game
 
 

@@ -21,7 +21,7 @@ async def hint(
     if game is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='Игра не найдена'
+            detail='404 - Not Found'
         )
 
     request_map = {
