@@ -1,7 +1,8 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-import MainPage from '@/views/MainPage.vue'
-import GameView from '@/views/GameView.vue'
+// https://router.vuejs.org/guide/advanced/lazy-loading.html
+const MainPage = () => import('@/views/MainPage.vue')
+const GameView = () => import('@/views/GameView.vue')
 
 const routes = [
   { path: '/', name: 'main', component: MainPage},
