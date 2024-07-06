@@ -19,7 +19,9 @@ class Piece(Base):
     name: Mapped[str] = mapped_column(String(1))
     size: Mapped[int] = mapped_column(SmallInteger)
     points: Mapped[tuple[tuple[int, int], ...]] = mapped_column(JSON)
-    rotations: Mapped[list[PieceRotation]] = relationship(lazy='subquery')
+    rotations: Mapped[list[PieceRotation]] = relationship(
+        lazy='subquery', order_by='PieceRotation.order'
+    )
 
     def __repr__(self) -> str:
         return (
