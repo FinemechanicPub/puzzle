@@ -26,7 +26,7 @@
     async function fetchHint(){
         hint.value = null
         error.value = null
-        if (!hintActive.value || props.installedPices.length == 0) return;
+        if (!hintActive.value) return;
 
         loading.value = true
         try{
