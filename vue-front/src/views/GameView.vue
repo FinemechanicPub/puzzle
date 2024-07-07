@@ -141,12 +141,14 @@
         border: 2px solid peachpuff;
         padding: 20px;
         margin: 1ch auto;
+        width: -moz-fit-content;
         width: fit-content;
     }
     .card-green{
         border-radius: 10px;
         padding: 20px;
         margin: 1ch auto;
+        width: -moz-fit-content;
         width: fit-content;
         font-weight: bolder;
         color: slateblue;
@@ -156,6 +158,7 @@
     }
     .button{
         margin: 1ch auto;
+        width: -moz-fit-content;
         width: fit-content;
     }
     .hint-box{

@@ -68,6 +68,7 @@
   .grid {
     display: grid;
     grid-template-columns: repeat(v-bind(width), 1fr);
+    width: -moz-fit-content;
     width: fit-content;
   }
   .piece-cell {

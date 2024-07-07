@@ -62,13 +62,12 @@
     border: 1px solid gray;
   }
   .centered {
-    width: fit-content;
     margin: auto;
   }
 </style>
 
 <template>
-  <div class="board grid centered" >
+  <div class="board grid centered width-fit-content" >
     <div class="square" @click="onClick($event, index)"  @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
   </div>
 </template>

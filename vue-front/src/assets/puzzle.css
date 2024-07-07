@@ -10,6 +10,11 @@ header > h1 {
   padding-left: 1rem;  
 }
 
+.width-fit-content{
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .logo {
   color: rgb(44, 62, 80)
 }
