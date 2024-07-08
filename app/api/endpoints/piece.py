@@ -1,12 +1,23 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.exceptions import PieceNotFoundException
+from app.api.utility import OffsetLimit
 from app.core.db import get_async_session
-from app.crud.piece import piece_crud
+from app.repositories.piece_repository import piece_repository
 from app.schemas.piece import PieceBase, PieceGetResponse
+from app.services.piece import create_piece_with_rotations
 
 
 piece_router = APIRouter()
+
+
+@piece_router.get('/piece_id/', response_model=PieceGetResponse)
+async def get_piece(piece_id: int, session: AsyncSession = Depends(get_async_session)):
+    piece = await piece_repository.get(session, piece_id)
+    if not piece:
+        raise PieceNotFoundException
+    return piece
 
 
 @piece_router.get(
@@ -14,19 +25,27 @@ piece_router = APIRouter()
     response_model=list[PieceGetResponse],
     response_model_exclude_none=True,
 )
-async def list_pieces(session: AsyncSession = Depends(get_async_session)):
-    pieces = await piece_crud.get_many(session)
+async def list_pieces(session: AsyncSession = Depends(get_async_session), pagination: OffsetLimit = Depends()):
+    pieces = await piece_repository.list(session, offset=pagination.offset, limit=pagination.limit)
     return pieces
 
 
 @piece_router.post(
     '/',
     response_model=PieceGetResponse,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_piece(
     piece_data: PieceBase,
     session: AsyncSession = Depends(get_async_session)
 ):
-    piece = await piece_crud.create_piece(piece_data, session, commit=True)
-    return piece
+    return await create_piece_with_rotations(session, piece_data)
+
+
+@piece_router.delete('/piece_id/', status_code=status.HTTP_204_NO_CONTENT)
+async def remove_piece(piece_id: int, session: AsyncSession = Depends(get_async_session)):
+    piece = await piece_repository.get(session, piece_id)
+    if not piece:
+        raise PieceNotFoundException
+    await piece_repository.remove(session, piece)

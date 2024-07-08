@@ -1,6 +1,14 @@
 from fastapi import HTTPException, status
 
 
+class PieceNotFoundException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Piece not found'
+        )
+
+
 class GameNotFoundException(HTTPException):
     def __init__(self):
         super().__init__(
