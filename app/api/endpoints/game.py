@@ -6,7 +6,7 @@ from app.api.utility import OffsetLimit
 from app.core.db import get_async_session
 from app.repositories.game_repository import game_extended_repository, game_repository
 from app.schemas.game import (
-    CreateGameRequest, GameResponseBase, GameResponseLong
+    CreateGameRequest, GameResponseBase, GameLongResponse
 )
 
 
@@ -15,7 +15,7 @@ game_router = APIRouter()
 
 @game_router.get(
         '/{game_id}/',
-        response_model=GameResponseLong,
+        response_model=GameLongResponse,
 )
 async def get_game(
     game_id: int, session: AsyncSession = Depends(get_async_session)
