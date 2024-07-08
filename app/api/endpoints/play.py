@@ -1,7 +1,7 @@
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 
+from app.api.exceptions import GameNotFoundException
 from app.core.db import get_async_session
 from app.crud.game import game_crud
 from app.crud.piece import piece_crud
@@ -18,11 +18,8 @@ async def hint(
     session: AsyncSession = Depends(get_async_session)
 ):
     game = await game_crud.get(request.game_id, session, False)
-    if game is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='404 - Not Found'
-        )
+    if not game:
+        raise GameNotFoundException
 
     request_map = {
         piece.rotation_id: piece.position for piece in request.pieces
