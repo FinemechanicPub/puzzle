@@ -12,6 +12,8 @@ ModelType = TypeVar('ModelType', bound=Base)
 
 class RepositoryBase(Generic[ModelType]):
 
+    force_unique = False
+
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
@@ -38,7 +40,8 @@ class RepositoryBase(Generic[ModelType]):
         else:
             statement = self.selector()
         db_objs = await session.execute(statement.offset(offset).limit(limit))
-        return db_objs.scalars().all()
+        refined_objs = db_objs.unique() if self.force_unique else db_objs
+        return refined_objs.scalars().all()
 
     async def create(
         self, session: AsyncSession, data: BaseModel, commit: bool = True
