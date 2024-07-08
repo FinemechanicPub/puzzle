@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     app_title: str = 'Puzzle game'
     connection_string: str = 'sqlite+aiosqlite://'
     max_cells: int = 120
+    page_limit: int = 20
 
 
 settings = Settings()

@@ -3,7 +3,7 @@ from pydantic_core.core_schema import FieldValidationInfo
 
 
 class PieceColor(BaseModel):
-    id: int
+    piece_id: int
     color: int | str
 
     @field_validator('color')

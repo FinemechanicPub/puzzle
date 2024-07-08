@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.exceptions import GameNotFoundException
+from app.api.utility import OffsetLimit
 from app.core.db import get_async_session
-from app.crud.game import game_crud
+from app.repositories.game_repository import game_extended_repository, game_repository
 from app.schemas.game import (
-    CreateGameRequest, GameResponseBase, GameResponse, GameResponseLong
+    CreateGameRequest, GameResponseBase, GameResponseLong
 )
 
 
@@ -12,40 +14,25 @@ game_router = APIRouter()
 
 
 @game_router.get(
-        '/{game_id}/full/',
+        '/{game_id}/',
         response_model=GameResponseLong,
 )
-async def game_full(
+async def get_game(
     game_id: int, session: AsyncSession = Depends(get_async_session)
 ):
-    game = await game_crud.get(game_id, session, load_rotations=True)
-    if game is None:
-        raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='404 - Not Found'
-            )
-    return game
-
-
-@game_router.get(
-    '/{game_id}/',
-    response_model=GameResponse,
-    response_model_exclude_none=True,
-)
-async def game(
-    game_id: int, session: AsyncSession = Depends(get_async_session)
-):
-    game = await game_crud.get(game_id, session)
+    game = await game_extended_repository.get(session, game_id)
+    if not game:
+        raise GameNotFoundException
     return game
 
 
 @game_router.get(
     '/',
-    response_model=list[GameResponse],
+    response_model=list[GameResponseBase],
     response_model_exclude_none=True,
 )
-async def list_games(session: AsyncSession = Depends(get_async_session)):
-    games = await game_crud.get_many(session)
+async def list_games(session: AsyncSession = Depends(get_async_session), pagination: OffsetLimit = Depends()):
+    games = await game_repository.list(session, pagination.offset, pagination.limit)
     return games
 
 
@@ -53,12 +40,24 @@ async def list_games(session: AsyncSession = Depends(get_async_session)):
     '/',
     response_model=GameResponseBase,
     response_model_exclude_none=True,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_game(
-    game_data: CreateGameRequest,
+    data: CreateGameRequest,
     session: AsyncSession = Depends(get_async_session)
 ):
-    game = await game_crud.create_game(
-        game_data, session, commit=True
-    )
-    return game
+    return await game_repository.create(session, data)
+
+
+@game_router.delete(
+        '/{game_id}/',
+        status_code=status.HTTP_204_NO_CONTENT,
+)
+async def remove_game(
+    game_id: int, session: AsyncSession = Depends(get_async_session)
+):
+    game = await game_extended_repository.get(session, game_id)
+    if not game:
+        raise GameNotFoundException
+    await game_extended_repository.remove(session, game)
+    return
