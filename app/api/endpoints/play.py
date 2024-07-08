@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.exceptions import GameNotFoundException
 from app.core.db import get_async_session
@@ -12,7 +13,7 @@ from app.services.play import make_hint, merge_pieces
 play_router = APIRouter()
 
 
-@play_router.put('/hint', response_model=HintResponse)
+@play_router.put('/hint/', response_model=HintResponse)
 async def hint(
     request: HintRequest,
     session: AsyncSession = Depends(get_async_session)
