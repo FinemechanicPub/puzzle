@@ -39,7 +39,8 @@ class Game(Base):
         back_populates='game', cascade='all, delete-orphan'
     )
     pieces: AssociationProxy[list[Piece]] = association_proxy(
-        target_collection='game_pieces', attr='piece'
+        target_collection='game_pieces', attr='piece',
+        creator=lambda d: GamePieces(**d)
     )
 
     def __repr__(self) -> str:
