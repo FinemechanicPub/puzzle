@@ -1,8 +1,10 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
 from app.core.config import settings
+from app.core.init_db import create_first_superuser
 from app.api.routers import main_router
 
 
@@ -12,8 +14,15 @@ def custom_generate_unique_id(route: APIRoute):
 
 
 # Создание объекта приложения.
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_first_superuser()
+    yield
+
+
 app = FastAPI(
     title=settings.app_title,
+    lifespan=lifespan,
     generate_unique_id_function=custom_generate_unique_id,
 )
 
