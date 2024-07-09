@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.exceptions import GameNotFoundException
 from app.api.utility import OffsetLimit
 from app.core.db import get_async_session
+from app.core.user import current_superuser
 from app.repositories.game_repository import game_extended_repository, game_repository
 from app.schemas.game import (
     CreateGameRequest, GameResponseBase, GameLongResponse
@@ -41,6 +42,7 @@ async def list_games(session: AsyncSession = Depends(get_async_session), paginat
     response_model=GameResponseBase,
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(current_superuser)],
 )
 async def create_game(
     data: CreateGameRequest,
@@ -50,8 +52,9 @@ async def create_game(
 
 
 @game_router.delete(
-        '/{game_id}/',
-        status_code=status.HTTP_204_NO_CONTENT,
+    '/{game_id}/',
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(current_superuser)],
 )
 async def remove_game(
     game_id: int, session: AsyncSession = Depends(get_async_session)
