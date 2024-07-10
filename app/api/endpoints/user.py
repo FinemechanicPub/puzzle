@@ -32,7 +32,7 @@ async def login(
     )
     if user is None or not user.is_active:
         raise BadCredentialsException
-    if not settings.allow_unverified_users and not user.is_verified:
+    if not settings.unverified_user_can_login and not user.is_verified:
         raise UserNotVerifiedException
     response = await auth_backend.login(strategy, user)
     await user_manager.on_after_login(user, request, response)
