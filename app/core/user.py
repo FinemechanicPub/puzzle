@@ -66,5 +66,9 @@ auth_backend = AuthenticationBackend(
 
 fastapi_users = FastAPIUsers[User, int](get_user_manager, [auth_backend])
 
-current_user = fastapi_users.current_user(active=True, verified=True)
-current_superuser = fastapi_users.current_user(active=True, verified=True, superuser=True)
+user_token = fastapi_users.authenticator.current_user_token(
+        active=True, verified=False
+    )
+try_verified_user = fastapi_users.current_user(True, True, True)
+verified_user = fastapi_users.current_user(active=True, verified=True)
+superuser = fastapi_users.current_user(active=True, superuser=True)
