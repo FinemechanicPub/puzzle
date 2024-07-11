@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     secret: str = 'SECRET'
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None
-    unverified_user_can_login: bool = False
+    unverified_user_can_login: bool = True
     max_cells: int = 120
     page_limit: int = 20
     max_page: int = 100
