@@ -1,5 +1,7 @@
-from typing import Optional
-from fastapi import Depends, Request
+import logging
+from typing import Any, Dict, Optional
+
+from fastapi import Depends, Request, Response
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase, DatabaseStrategy
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin
 from fastapi_users.authentication import (
@@ -14,6 +16,8 @@ from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import User, AccessToken
 
+logger = logging.getLogger(__name__)
+
 
 # https://fastapi-users.github.io/fastapi-users/latest/configuration/user-manager/
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -21,17 +25,25 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = settings.secret
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
-        print(f"User {user.id} has registered.")
+        logger.info("User '%s' has registered under id %d", user.email, user.id)
+
+    async def on_after_update(self, user: User, update_dict: Dict[str, Any], request: Optional[Request] = None):
+        for field, value in update_dict.items():
+            logger.info("User #%d has updated field '%s' to '%s'", user.id, field, value)
+
+    async def on_after_login(self, user: User, request: Optional[Request] = None, response: Optional[Response] = None):
+        await self.user_db.update(user, dict())
+        logger.info("User #%d has logged in", user.id)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
+        logger.info("User #%d has forgot their password. Reset token: %s", user.id, token)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
+        logger.info("Verification requested for user #%d. Verification token: %s", user.id, token)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

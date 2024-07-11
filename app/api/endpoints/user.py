@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Request, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_users.authentication import Strategy
@@ -8,7 +10,7 @@ from app.core.user import UserManager, auth_backend, get_user_manager, user_toke
 from app.schemas.user import LoginRequest
 
 user_router = APIRouter()
-
+logger = logging.getLogger(__name__)
 
 # # https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/auth/
 # user_router.include_router(
@@ -25,6 +27,7 @@ async def login(
     user_manager: UserManager = Depends(get_user_manager),
     strategy: Strategy = Depends(auth_backend.get_strategy),
 ):
+    logger.info("login route")
     user = await user_manager.authenticate(
         OAuth2PasswordRequestForm(
             username=login_details.email, password=login_details.password
@@ -44,5 +47,6 @@ async def logout(
     user_token: tuple = Depends(user_token),
     strategy: Strategy = Depends(auth_backend.get_strategy),
 ):
+    logger.info("logout route")
     user, token = user_token
     return await auth_backend.logout(strategy, user, token)

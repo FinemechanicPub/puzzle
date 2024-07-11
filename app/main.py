@@ -1,4 +1,6 @@
+import logging
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
@@ -6,6 +8,16 @@ from fastapi.routing import APIRoute
 from app.core.config import settings
 from app.core.init_db import create_first_superuser
 from app.api.routers import main_router
+
+
+# Настройка протоколирования
+logging.basicConfig(
+    format="{levelname:10}{asctime} - {message}",
+    datefmt="%H:%M:%S",
+    style="{",
+    level=logging.INFO,
+)
+logger = logging.getLogger("puzzle")
 
 
 # Настройка идентификаторов для OpenAPI
@@ -16,6 +28,7 @@ def custom_generate_unique_id(route: APIRoute):
 # Создание объекта приложения.
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Starting application")
     await create_first_superuser()
     yield
 
