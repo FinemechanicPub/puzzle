@@ -29,6 +29,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def on_after_update(self, user: User, update_dict: Dict[str, Any], request: Optional[Request] = None):
         for field, value in update_dict.items():
+            if field == "password":
+                value = "****"
             logger.info("User #%d has updated field '%s' to '%s'", user.id, field, value)
 
     async def on_after_login(self, user: User, request: Optional[Request] = None, response: Optional[Response] = None):
@@ -38,12 +40,12 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        logger.info("User #%d has forgot their password. Reset token: %s", user.id, token)
+        logger.info("User #%d has forgot their password.", user.id)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        logger.info("Verification requested for user #%d. Verification token: %s", user.id, token)
+        logger.info("Verification requested for user #%d.", user.id)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
