@@ -8,16 +8,21 @@ from fastapi.routing import APIRoute
 from app.core.config import settings
 from app.core.init_db import create_first_superuser
 from app.api.routers import main_router
+from app.logging import ColorFormatter
 
 
 # Настройка протоколирования
-logging.basicConfig(
-    format="{levelname:10}{asctime} - {message}",
+handler = logging.StreamHandler()
+handler.setFormatter(ColorFormatter(
+    fmt="{levelname}{asctime} - {message}",
     datefmt="%H:%M:%S",
-    style="{",
+    style="{"
+))
+logging.basicConfig(
     level=logging.INFO,
+    handlers=[handler]
 )
-logger = logging.getLogger("puzzle")
+logger = logging.getLogger(__name__)
 
 
 # Настройка идентификаторов для OpenAPI
