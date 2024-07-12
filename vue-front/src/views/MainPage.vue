@@ -1,28 +1,24 @@
 <script setup>
     import { onMounted, ref } from 'vue';
-    import getGames from '@/api/cover.js'
     import GameCard from '@/components/GameCard.vue';
+    import { mainPageSuggestion } from '@/api/generated'
+    import { ApiError } from '@/api/generated/core/ApiError'
 
     const error = ref(null)
     const loading = ref(false)
     const games = ref([])
 
     onMounted(fetchData)
-    
 
     async function fetchData() {
         error.value = games.value = null
         loading.value = true
         
         try {
-            console.log("start fetch")
-            games.value = await getGames()
-            console.log("start fetch complete")
-            console.log(games.value)
+            games.value = await mainPageSuggestion()
         } catch (err) {
-            console.log("fetch error")
-            if (err instanceof TypeError){
-                error.value = err.message
+            if (err instanceof ApiError){
+                error.value = `${err.status} - ${err.statusText}`
             } else {
                 error.value = err.toString()
             }
@@ -53,5 +49,8 @@
                 <GameCard :game="game" />
             </RouterLink>
         </div>
+    </div>
+    <div v-if="error">
+        Произошла ошибка: {{ error }}
     </div>
 </template>

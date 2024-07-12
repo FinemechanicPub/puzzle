@@ -1,7 +1,7 @@
 <script setup>
     import { computed, ref, watchEffect } from 'vue';
 
-    import getHint from '@/api/hint';
+    import { ApiError, gamesHint } from '@/api/generated/'
 
     const props = defineProps({
         gameId: Number,
@@ -29,8 +29,20 @@
         if (!hintActive.value) return;
 
         loading.value = true
-        try{
-            const data = await getHint(props.gameId, props.installedPices.map((item)=> ({piece_id: item.piece.id, rotation_id: item.rotation.id, position: item.index})))
+
+        try {
+            const data = await gamesHint({
+                requestBody: {
+                    game_id: props.gameId,
+                    pieces: props.installedPices.map(
+                        (item)=> ({
+                            piece_id: item.piece.id,
+                            rotation_id: item.rotation.id,
+                            position: item.index
+                        })
+                    )
+                }
+            })
             // progress = 1
             // complete = 2
             // deadlock = 3
@@ -42,12 +54,13 @@
                 hint.value = Object.values(data.hint)
             }
         } catch (err) {
-            if (err instanceof TypeError){
+            console.log("fetching a hint caused the error: ", err.toString())
+            if (err instanceof ApiError){
                 error.value = "Нет связи с Центром"
             } else {
                 error.value = err.toString()
             }
-        } finally{
+        } finally {
             loading.value = false
         }
     }

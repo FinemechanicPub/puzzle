@@ -1,10 +1,11 @@
 <script setup>
     import { computed, ref, watch } from 'vue';
-    import getGame from '@/api/game';
     import divmod from '@/utils/divmod';
     import Board from '@/components/Board.vue';
     import PiecePalette from '@/components/PiecePalette.vue'
     import HintBox from '@/components/HintBox.vue'
+    import { gamesGetGame } from '@/api/generated'
+    import { ApiError } from '@/api/generated';
 
     const props = defineProps({
         id: String
@@ -35,13 +36,13 @@
         loading.value = true
         
         try {
-            console.log("start fetch")
-            const data = await getGame(parseInt(id))
+            const data = await gamesGetGame({
+                gameId: parseInt(id)
+            })
             setupGame(data)
         } catch (err) {
-            console.log("fetch error")
-            if (err instanceof TypeError){
-                error.value = err.message
+            if (err instanceof ApiError){
+                error.value = `${err.status} - ${err.statusText}`
             } else {
                 error.value = err.toString()
             }
