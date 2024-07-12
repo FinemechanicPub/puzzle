@@ -34,11 +34,13 @@ def produce_rotations(
         rotate=True, flip=True
 ) -> tuple[tuple[Point, ...], ...]:
     """Создание версий фигуры на основе вращения и отражения."""
-    sides = [points] + ([flip_vertically(points)] if flip else [])
     rotations = list[tuple[Point, ...]]()  # список для стабильности порядка
-    for side in sides:
+    for side in range(2 if flip else 1):
         for quarter in range(4 if rotate else 1):
-            rotation = normalize(rotate_left(side, quarter))
+            upright = rotate_left(points, quarter)
+            rotation = normalize(
+                flip_vertically(upright) if side else upright
+            )
             if rotation not in rotations:
                 rotations.append(rotation)
     return tuple(rotations)
