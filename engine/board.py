@@ -60,7 +60,7 @@ class Board:
     width: int = 0
     size: int = 0
 
-    def __init__(self, height, width) -> None:
+    def __init__(self, height: int, width: int) -> None:
         self.height = height
         self.width = width
         self.size = height * width
