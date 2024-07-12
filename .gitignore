@@ -232,6 +232,7 @@ coverage
 *.db
 
 # Experimental
+experiment/*
 /example.py
 /test.py
 

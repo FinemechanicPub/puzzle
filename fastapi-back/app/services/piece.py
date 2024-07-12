@@ -1,9 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.base import Piece, PieceRotation
-from engine.piece import produce_rotations
-
 from app.repositories.piece_repository import piece_repository
+from engine.piece import produce_rotations
 
 
 async def create_piece_with_rotations(session: AsyncSession, piece_data):
