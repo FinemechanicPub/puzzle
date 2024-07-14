@@ -226,7 +226,7 @@ export type UsersUsersDeleteUserData = {
 export type UsersUsersDeleteUserResponse = void;
 
 export type $OpenApiTs = {
-    '/cover/suggestion/': {
+    '/api/v1/cover/suggestion/': {
         get: {
             res: {
                 /**
@@ -236,7 +236,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/games/{game_id}/': {
+    '/api/v1/games/{game_id}/': {
         get: {
             req: GamesGetGameData;
             res: {
@@ -264,7 +264,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/games/': {
+    '/api/v1/games/': {
         get: {
             req: GamesListGamesData;
             res: {
@@ -292,7 +292,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/pieces/piece_id/': {
+    '/api/v1/pieces/piece_id/': {
         get: {
             req: PiecesGetPieceData;
             res: {
@@ -320,7 +320,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/pieces/': {
+    '/api/v1/pieces/': {
         get: {
             req: PiecesListPiecesData;
             res: {
@@ -348,7 +348,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/play/hint/': {
+    '/api/v1/play/hint/': {
         put: {
             req: GamesHintData;
             res: {
@@ -363,7 +363,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/auth/login': {
+    '/api/v1/auth/login': {
         post: {
             req: AuthenticationLoginData;
             res: {
@@ -378,7 +378,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/auth/logout': {
+    '/api/v1/auth/logout': {
         post: {
             res: {
                 /**
@@ -388,7 +388,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/users/me': {
+    '/api/v1/users/me': {
         get: {
             res: {
                 /**
@@ -423,7 +423,7 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/users/{id}': {
+    '/api/v1/users/{id}': {
         get: {
             req: UsersUsersUserData;
             res: {

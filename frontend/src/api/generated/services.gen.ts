@@ -12,7 +12,7 @@ import type { MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse
  */
 export const mainPageSuggestion = (): CancelablePromise<MainPageSuggestionResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/cover/suggestion/'
+    url: '/api/v1/cover/suggestion/'
 }); };
 
 /**
@@ -24,7 +24,7 @@ export const mainPageSuggestion = (): CancelablePromise<MainPageSuggestionRespon
  */
 export const gamesGetGame = (data: GamesGetGameData): CancelablePromise<GamesGetGameResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/games/{game_id}/',
+    url: '/api/v1/games/{game_id}/',
     path: {
         game_id: data.gameId
     },
@@ -42,7 +42,7 @@ export const gamesGetGame = (data: GamesGetGameData): CancelablePromise<GamesGet
  */
 export const gamesRemoveGame = (data: GamesRemoveGameData): CancelablePromise<GamesRemoveGameResponse> => { return __request(OpenAPI, {
     method: 'DELETE',
-    url: '/games/{game_id}/',
+    url: '/api/v1/games/{game_id}/',
     path: {
         game_id: data.gameId
     },
@@ -61,7 +61,7 @@ export const gamesRemoveGame = (data: GamesRemoveGameData): CancelablePromise<Ga
  */
 export const gamesListGames = (data: GamesListGamesData = {}): CancelablePromise<GamesListGamesResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/games/',
+    url: '/api/v1/games/',
     query: {
         offset: data.offset,
         limit: data.limit
@@ -80,7 +80,7 @@ export const gamesListGames = (data: GamesListGamesData = {}): CancelablePromise
  */
 export const gamesCreateGame = (data: GamesCreateGameData): CancelablePromise<GamesCreateGameResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/games/',
+    url: '/api/v1/games/',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -97,7 +97,7 @@ export const gamesCreateGame = (data: GamesCreateGameData): CancelablePromise<Ga
  */
 export const piecesGetPiece = (data: PiecesGetPieceData): CancelablePromise<PiecesGetPieceResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/pieces/piece_id/',
+    url: '/api/v1/pieces/piece_id/',
     query: {
         piece_id: data.pieceId
     },
@@ -115,7 +115,7 @@ export const piecesGetPiece = (data: PiecesGetPieceData): CancelablePromise<Piec
  */
 export const piecesRemovePiece = (data: PiecesRemovePieceData): CancelablePromise<PiecesRemovePieceResponse> => { return __request(OpenAPI, {
     method: 'DELETE',
-    url: '/pieces/piece_id/',
+    url: '/api/v1/pieces/piece_id/',
     query: {
         piece_id: data.pieceId
     },
@@ -134,7 +134,7 @@ export const piecesRemovePiece = (data: PiecesRemovePieceData): CancelablePromis
  */
 export const piecesListPieces = (data: PiecesListPiecesData = {}): CancelablePromise<PiecesListPiecesResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/pieces/',
+    url: '/api/v1/pieces/',
     query: {
         offset: data.offset,
         limit: data.limit
@@ -153,7 +153,7 @@ export const piecesListPieces = (data: PiecesListPiecesData = {}): CancelablePro
  */
 export const piecesCreatePiece = (data: PiecesCreatePieceData): CancelablePromise<PiecesCreatePieceResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/pieces/',
+    url: '/api/v1/pieces/',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -170,7 +170,7 @@ export const piecesCreatePiece = (data: PiecesCreatePieceData): CancelablePromis
  */
 export const gamesHint = (data: GamesHintData): CancelablePromise<GamesHintResponse> => { return __request(OpenAPI, {
     method: 'PUT',
-    url: '/play/hint/',
+    url: '/api/v1/play/hint/',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -187,7 +187,7 @@ export const gamesHint = (data: GamesHintData): CancelablePromise<GamesHintRespo
  */
 export const authenticationLogin = (data: AuthenticationLoginData): CancelablePromise<AuthenticationLoginResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/auth/login',
+    url: '/api/v1/auth/login',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -202,7 +202,7 @@ export const authenticationLogin = (data: AuthenticationLoginData): CancelablePr
  */
 export const authenticationLogout = (): CancelablePromise<AuthenticationLogoutResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/auth/logout'
+    url: '/api/v1/auth/logout'
 }); };
 
 /**
@@ -212,7 +212,7 @@ export const authenticationLogout = (): CancelablePromise<AuthenticationLogoutRe
  */
 export const usersUsersCurrentUser = (): CancelablePromise<UsersUsersCurrentUserResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/users/me',
+    url: '/api/v1/users/me',
     errors: {
         401: 'Missing token or inactive user.'
     }
@@ -227,7 +227,7 @@ export const usersUsersCurrentUser = (): CancelablePromise<UsersUsersCurrentUser
  */
 export const usersUsersPatchCurrentUser = (data: UsersUsersPatchCurrentUserData): CancelablePromise<UsersUsersPatchCurrentUserResponse> => { return __request(OpenAPI, {
     method: 'PATCH',
-    url: '/users/me',
+    url: '/api/v1/users/me',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -246,7 +246,7 @@ export const usersUsersPatchCurrentUser = (data: UsersUsersPatchCurrentUserData)
  */
 export const usersUsersUser = (data: UsersUsersUserData): CancelablePromise<UsersUsersUserResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/users/{id}',
+    url: '/api/v1/users/{id}',
     path: {
         id: data.id
     },
@@ -268,7 +268,7 @@ export const usersUsersUser = (data: UsersUsersUserData): CancelablePromise<User
  */
 export const usersUsersPatchUser = (data: UsersUsersPatchUserData): CancelablePromise<UsersUsersPatchUserResponse> => { return __request(OpenAPI, {
     method: 'PATCH',
-    url: '/users/{id}',
+    url: '/api/v1/users/{id}',
     path: {
         id: data.id
     },
@@ -292,7 +292,7 @@ export const usersUsersPatchUser = (data: UsersUsersPatchUserData): CancelablePr
  */
 export const usersUsersDeleteUser = (data: UsersUsersDeleteUserData): CancelablePromise<UsersUsersDeleteUserResponse> => { return __request(OpenAPI, {
     method: 'DELETE',
-    url: '/users/{id}',
+    url: '/api/v1/users/{id}',
     path: {
         id: data.id
     },
