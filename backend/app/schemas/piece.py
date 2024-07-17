@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 from app.core.config import settings
 
@@ -6,6 +6,11 @@ from app.core.config import settings
 class PieceBase(BaseModel):
     name: str = Field(..., max_length=1)
     points: tuple[tuple[int, int], ...]
+
+    @computed_field
+    @property
+    def size(self) -> int:
+        return len(self.points)
 
 
 class PieceGetResponse(PieceBase):
