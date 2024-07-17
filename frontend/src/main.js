@@ -7,5 +7,8 @@ import { OpenAPI } from  './api/generated/core/OpenAPI';
 import App from './App.vue'
 import router from './routers/router'
 
-OpenAPI.BASE = `${import.meta.env.VITE_API_BASE_URI}`
+if (import.meta.env.DEV){
+    console.log(`base api url: ${import.meta.env.VITE_API_BASE_URI}`)
+    OpenAPI.BASE = `${import.meta.env.VITE_API_BASE_URI}`
+}
 createApp(App).use(autoAnimatePlugin).use(router).mount('#app')
