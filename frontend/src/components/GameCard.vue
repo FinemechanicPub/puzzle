@@ -1,7 +1,11 @@
 <script setup>
+    import { computed} from 'vue'
+
     const props = defineProps({
         game: Object
     })
+
+    const thumbnailUrl = computed(() => `${import.meta.env.VITE_API_BASE_URI}/api/v1/games/${props.game.id}/thumbnail`)
 </script>
 
 <style scoped>
@@ -23,6 +27,10 @@
 
 <template>
     <div class="rounded-box">
-        {{ props.game.title }}
+        <p>
+            {{ props.game.title }}
+        </p>
+        <img :src="thumbnailUrl" alt="game thumbnail">
     </div>
+
 </template>
