@@ -4,13 +4,15 @@ from app.models.game import Game, GamePieces, Piece
 from .repository import RepositoryBase
 
 
-class GameExtendedRepository(RepositoryBase):
+class GameExtendedRepository(RepositoryBase[Game]):
 
     force_unique = True
 
     def selector(self):
         return super().selector().options(
-            joinedload(Game.game_pieces).joinedload(GamePieces.piece).joinedload(Piece.rotations)
+            joinedload(Game.game_pieces)
+            .joinedload(GamePieces.piece)
+            .joinedload(Piece.rotations)
         )
 
 
