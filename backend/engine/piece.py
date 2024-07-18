@@ -1,8 +1,14 @@
 
-from typing import TypeAlias
+from typing import Iterable, TypeAlias
 
 
 Point: TypeAlias = tuple[int, int]
+
+
+class Piece:
+    def __init__(self, points: Iterable[Point], color: int):
+        self.points = tuple(points)
+        self.color = color
 
 
 def transpose(points: tuple[Point, ...]) -> tuple[Point, ...]:
