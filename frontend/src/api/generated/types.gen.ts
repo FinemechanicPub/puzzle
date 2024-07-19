@@ -21,16 +21,6 @@ export type GameLongResponse = {
     pieces: Array<GamePieceRotationsResponse>;
 };
 
-export type GamePiecePointsResponse = {
-    id: number;
-    name: string;
-    color: number;
-    points: Array<[
-        number,
-        number
-    ]>;
-};
-
 export type GamePieceRotationsResponse = {
     id: number;
     name: string;
@@ -43,14 +33,6 @@ export type GameResponseBase = {
     title: string;
     width: number;
     height: number;
-};
-
-export type GameShortResponse = {
-    id: number;
-    title: string;
-    width: number;
-    height: number;
-    pieces: Array<GamePiecePointsResponse>;
 };
 
 export type GameStatus = 1 | 2 | 3;
@@ -94,6 +76,7 @@ export type PieceGetResponse = {
         number
     ]>;
     id: number;
+    readonly size: number;
 };
 
 export type PiecePlacement = {
@@ -132,7 +115,7 @@ export type ValidationError = {
     type: string;
 };
 
-export type MainPageSuggestionResponse = Array<GameShortResponse>;
+export type MainPageSuggestionResponse = Array<GameResponseBase>;
 
 export type GamesGetGameData = {
     gameId: number;
@@ -158,6 +141,12 @@ export type GamesCreateGameData = {
 };
 
 export type GamesCreateGameResponse = GameResponseBase;
+
+export type GamesGameThumbnailData = {
+    gameId: number;
+};
+
+export type GamesGameThumbnailResponse = unknown;
 
 export type PiecesGetPieceData = {
     pieceId: number;
@@ -232,7 +221,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: Array<GameShortResponse>;
+                200: Array<GameResponseBase>;
             };
         };
     };
@@ -285,6 +274,25 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 201: GameResponseBase;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/games/{game_id}/thumbnail/': {
+        get: {
+            req: GamesGameThumbnailData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Game not found
+                 */
+                404: unknown;
                 /**
                  * Validation Error
                  */

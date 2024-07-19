@@ -85,43 +85,6 @@ export const $GameLongResponse = {
     title: 'GameLongResponse'
 } as const;
 
-export const $GamePiecePointsResponse = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        color: {
-            type: 'integer',
-            title: 'Color'
-        },
-        points: {
-            items: {
-                prefixItems: [
-                    {
-                        type: 'integer'
-                    },
-                    {
-                        type: 'integer'
-                    }
-                ],
-                type: 'array',
-                maxItems: 2,
-                minItems: 2
-            },
-            type: 'array',
-            title: 'Points'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'color', 'points'],
-    title: 'GamePiecePointsResponse'
-} as const;
-
 export const $GamePieceRotationsResponse = {
     properties: {
         id: {
@@ -171,37 +134,6 @@ export const $GameResponseBase = {
     type: 'object',
     required: ['id', 'title', 'width', 'height'],
     title: 'GameResponseBase'
-} as const;
-
-export const $GameShortResponse = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        title: {
-            type: 'string',
-            title: 'Title'
-        },
-        width: {
-            type: 'integer',
-            title: 'Width'
-        },
-        height: {
-            type: 'integer',
-            title: 'Height'
-        },
-        pieces: {
-            items: {
-                '$ref': '#/components/schemas/GamePiecePointsResponse'
-            },
-            type: 'array',
-            title: 'Pieces'
-        }
-    },
-    type: 'object',
-    required: ['id', 'title', 'width', 'height', 'pieces'],
-    title: 'GameShortResponse'
 } as const;
 
 export const $GameStatus = {
@@ -362,10 +294,15 @@ export const $PieceGetResponse = {
         id: {
             type: 'integer',
             title: 'Id'
+        },
+        size: {
+            type: 'integer',
+            title: 'Size',
+            readOnly: true
         }
     },
     type: 'object',
-    required: ['name', 'points', 'id'],
+    required: ['name', 'points', 'id', 'size'],
     title: 'PieceGetResponse'
 } as const;
 

@@ -3,11 +3,11 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
+import type { MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, GamesGameThumbnailData, GamesGameThumbnailResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
 
 /**
  * Suggestion
- * @returns GameShortResponse Successful Response
+ * @returns GameResponseBase Successful Response
  * @throws ApiError
  */
 export const mainPageSuggestion = (): CancelablePromise<MainPageSuggestionResponse> => { return __request(OpenAPI, {
@@ -84,6 +84,25 @@ export const gamesCreateGame = (data: GamesCreateGameData): CancelablePromise<Ga
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Game Thumbnail
+ * @param data The data for the request.
+ * @param data.gameId
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const gamesGameThumbnail = (data: GamesGameThumbnailData): CancelablePromise<GamesGameThumbnailResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/games/{game_id}/thumbnail/',
+    path: {
+        game_id: data.gameId
+    },
+    errors: {
+        404: 'Game not found',
         422: 'Validation Error'
     }
 }); };
