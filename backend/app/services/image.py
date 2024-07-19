@@ -21,8 +21,7 @@ def stack_horizontally(
     padding=5
 ) -> Image.Image:
     height = max(image.height for image in images)
-    width = sum(image.width for image in images)
-    width += padding * (len(images) + 1)
+    width = padding + sum(image.width + padding for image in images)
     im = Image.new("RGB", (width, height), BACKGROUND)
     left = padding
     for image in images:
@@ -36,8 +35,7 @@ def stack_vertically(
     padding=5
 ) -> Image.Image:
     width = max(image.width for image in images)
-    height = sum(image.height for image in images)
-    height += padding * (len(images) + 1)
+    height = padding + sum(image.height + padding for image in images)
     im = Image.new("RGB", (width, height), BACKGROUND)
     top = padding
     for image in images:
@@ -46,17 +44,23 @@ def stack_vertically(
     return im
 
 
-def wrap(images: Sequence[Image.Image]) -> Image.Image:
-    line_width = sum(image.width for image in images) // 2
-    lines = [[]]
+def stack_rows(rows: Sequence[Sequence[Image.Image]]) -> Image.Image:
+    return stack_vertically(tuple(map(stack_horizontally, rows)))
+
+
+def wrap(
+        images: Sequence[Image.Image], row_count=2
+) -> Sequence[Sequence[Image.Image]]:
+    row_width = sum(image.width for image in images) // row_count
+    rows = [[]]
     current_width = 0
     for image in images:
-        if current_width > line_width:
-            lines.append([])
+        if current_width > row_width:
+            rows.append([])
             current_width = 0
-        lines[-1].append(image)
+        rows[-1].append(image)
         current_width += image.width
-    return stack_vertically(tuple(map(stack_horizontally, lines)))
+    return rows
 
 
 def draw_board(board: Board, cell_width=10):
@@ -100,5 +104,7 @@ def draw_piece(points: tuple[Point, ...], color: int, cell_width=10):
 def thumbnail(board: Board, pieces: Iterable[Piece]) -> Image.Image:
     return stack_vertically([
         draw_board(board),
-        wrap(tuple(draw_piece(piece.points, piece.color) for piece in pieces)),
+        stack_rows(wrap(tuple(
+            draw_piece(piece.points, piece.color) for piece in pieces
+        ))),
     ])
