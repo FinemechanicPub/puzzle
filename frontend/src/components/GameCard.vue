@@ -1,11 +1,14 @@
 <script setup>
     import { computed} from 'vue'
 
+    import { OpenAPI } from  '@/api/generated/core/OpenAPI'
+
     const props = defineProps({
         game: Object
     })
-
-    const thumbnailUrl = computed(() => `${import.meta.env.VITE_API_BASE_URI}/api/v1/games/${props.game.id}/thumbnail`)
+    const thumbnailUrl = computed(
+        () => `${OpenAPI.BASE}/api/v1/games/${props.game.id}/thumbnail`
+    )
 </script>
 
 <style scoped>
