@@ -1,4 +1,4 @@
-from typing import TypeAlias
+from typing import Sequence, TypeAlias
 
 from engine.piece import Point
 
@@ -108,7 +108,7 @@ class Board:
         return self.board_mask == self.full
 
     def piece_masks(self, points: tuple[Point, ...]) -> tuple[int, ...]:
-        """Массив битовых масок для фигуры, установленной на доске."""
+        """Битовые маски фигуры в каждой позиции"""
         piece = Projection(self, points)
         piece_mask = piece.mask
         masks = [0] * self.size
@@ -156,3 +156,8 @@ def rotation_indices(masks: tuple[tuple[int, ...], ...]):
         )
         for position_index in range(len(masks))
     )
+
+
+def piece_rotation_masks(board: Board, rotations: Sequence[tuple[Point, ...]]):
+    """Кортеж кортежей масок во всех позициях для всех поворотов фигуры"""
+    return tuple(board.piece_masks(rotation) for rotation in rotations)
