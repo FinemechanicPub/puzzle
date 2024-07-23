@@ -123,6 +123,7 @@
     .content {
         width: 90%;
         margin: auto;
+        padding: 2ch;
     }
     .center{
         display: flex;
