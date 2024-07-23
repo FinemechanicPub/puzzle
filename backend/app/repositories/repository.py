@@ -4,6 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.expression import ColumnExpressionArgument, func
 
 from app.models.base import Base
 
@@ -33,12 +34,18 @@ class RepositoryBase(Generic[ModelType]):
             session: AsyncSession,
             offset: int = 0,
             limit: Optional[int] = None,
-            ids: Optional[Sequence[int]] = None
+            ids: Optional[Sequence[int]] = None,
+            clause: Optional[ColumnExpressionArgument[bool]] = None,
+            random: bool = False,
     ):
         if ids:
             statement = self.selector().where(self.model.id.in_(ids))
         else:
             statement = self.selector()
+        if clause is not None:
+            statement = statement.where(clause)
+        if random:
+            statement = statement.order_by(func.random())
         db_objs = await session.execute(statement.offset(offset).limit(limit))
         refined_objs = db_objs.unique() if self.force_unique else db_objs
         return refined_objs.scalars().all()
