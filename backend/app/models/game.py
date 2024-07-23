@@ -37,12 +37,17 @@ class Game(Base):
     title: Mapped[str] = mapped_column(default="", server_default="")
     width: Mapped[int] = mapped_column(SmallInteger)
     height: Mapped[int] = mapped_column(SmallInteger)
+    note: Mapped[str] = mapped_column(default="", server_default="")
     game_pieces: Mapped[list['GamePieces']] = relationship(
         back_populates='game', cascade='all, delete-orphan'
     )
     pieces: AssociationProxy[list[Piece]] = association_proxy(
         target_collection='game_pieces', attr='piece',
-        creator=lambda d: GamePieces(**d)
+        creator=(
+            lambda obj:
+            GamePieces(**obj) if isinstance(obj, dict)
+            else GamePieces(piece_id=obj.id, color=obj.color)
+        )
     )
 
     def __repr__(self) -> str:
@@ -54,10 +59,10 @@ class Game(Base):
 
 class GamePieces(EmptyBase):
     game_id: Mapped[int] = mapped_column(
-        ForeignKey("game.id"), primary_key=True
+        ForeignKey("game.id", ondelete='CASCADE'), primary_key=True
     )
     piece_id: Mapped[int] = mapped_column(
-        ForeignKey("piece.id"), primary_key=True
+        ForeignKey("piece.id", ondelete='CASCADE'), primary_key=True
     )
     color: Mapped[int]
     game: Mapped[Game] = relationship('Game', back_populates='game_pieces')
