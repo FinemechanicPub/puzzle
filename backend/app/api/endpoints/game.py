@@ -7,7 +7,9 @@ from app.api.exceptions import GameNotFoundException
 from app.api.utility import OffsetLimit
 from app.core.db import get_async_session
 from app.core.user import superuser
-from app.repositories.game_repository import game_extended_repository, game_repository
+from app.repositories.game_repository import (
+    game_extended_repository, game_repository
+)
 from app.schemas.game import (
     CreateGameRequest, GameResponseBase, GameLongResponse
 )
@@ -37,7 +39,10 @@ async def get_game(
     response_model=list[GameResponseBase],
     response_model_exclude_none=True,
 )
-async def list_games(session: AsyncSession = Depends(get_async_session), pagination: OffsetLimit = Depends()):
+async def list_games(
+    session: AsyncSession = Depends(get_async_session),
+    pagination: OffsetLimit = Depends()
+):
     games = await game_repository.list(session, pagination.offset, pagination.limit)
     return games
 
@@ -89,7 +94,10 @@ async def game_thumbnail(
     image = thumbnail(
         Board(game.height, game.width),
         (
-            Piece(game_piece.points, game_piece.color or game_piece.default_color)
+            Piece(
+                game_piece.points,
+                game_piece.color or game_piece.default_color
+            )
             for game_piece in game.game_pieces
         )
     )
