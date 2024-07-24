@@ -37,11 +37,11 @@ class RepositoryBase(Generic[ModelType]):
             ids: Optional[Sequence[int]] = None,
             clause: Optional[ColumnExpressionArgument[bool]] = None,
             random: bool = False,
+            **kwargs,
     ):
-        if ids:
-            statement = self.selector().where(self.model.id.in_(ids))
-        else:
-            statement = self.selector()
+        statement = self.selector(**kwargs)
+        if ids is not None:
+            statement = statement.where(self.model.id.in_(ids))
         if clause is not None:
             statement = statement.where(clause)
         if random:
