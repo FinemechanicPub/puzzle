@@ -47,6 +47,7 @@ jobs:
 
   build-and-push-image:
     runs-on: ubuntu-latest
+    needs: build-frontend
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     # GITHUB_TOKEN автоматически создается GitHub перед началом выполнения скрипта
     # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
