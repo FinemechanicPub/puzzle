@@ -74,7 +74,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: dist
-        path: backend
+        path: backend/dist
     # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about)
     # to extract tags and labels that will be applied to the specified image.
     # The `id` "meta" allows the output of this step to be referenced in a subsequent step.
