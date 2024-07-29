@@ -32,6 +32,12 @@ export const $CreateGameRequest = {
     title: 'CreateGameRequest'
 } as const;
 
+export const $Difficulty = {
+    type: 'integer',
+    enum: [5, 8, 12],
+    title: 'Difficulty'
+} as const;
+
 export const $ErrorModel = {
     properties: {
         detail: {
@@ -99,6 +105,10 @@ export const $GamePieceRotationsResponse = {
             type: 'integer',
             title: 'Color'
         },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        },
         rotations: {
             items: {
                 '$ref': '#/components/schemas/Rotation'
@@ -108,7 +118,7 @@ export const $GamePieceRotationsResponse = {
         }
     },
     type: 'object',
-    required: ['id', 'name', 'color', 'rotations'],
+    required: ['id', 'name', 'color', 'count', 'rotations'],
     title: 'GamePieceRotationsResponse'
 } as const;
 

@@ -3,16 +3,24 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, GamesGameThumbnailData, GamesGameThumbnailResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
+import type { MainPageSuggestionData, MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, GamesGameThumbnailData, GamesGameThumbnailResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
 
 /**
  * Suggestion
+ * @param data The data for the request.
+ * @param data.difficulty
  * @returns GameResponseBase Successful Response
  * @throws ApiError
  */
-export const mainPageSuggestion = (): CancelablePromise<MainPageSuggestionResponse> => { return __request(OpenAPI, {
+export const mainPageSuggestion = (data: MainPageSuggestionData = {}): CancelablePromise<MainPageSuggestionResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/cover/suggestion/'
+    url: '/api/v1/cover/suggestion/',
+    query: {
+        difficulty: data.difficulty
+    },
+    errors: {
+        422: 'Validation Error'
+    }
 }); };
 
 /**

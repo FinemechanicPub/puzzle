@@ -7,6 +7,8 @@ export type CreateGameRequest = {
     pieces: Array<PieceColor>;
 };
 
+export type Difficulty = 5 | 8 | 12;
+
 export type ErrorModel = {
     detail: string | {
     [key: string]: (string);
@@ -25,6 +27,7 @@ export type GamePieceRotationsResponse = {
     id: number;
     name: string;
     color: number;
+    count: number;
     rotations: Array<Rotation>;
 };
 
@@ -113,6 +116,10 @@ export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
+};
+
+export type MainPageSuggestionData = {
+    difficulty?: Difficulty;
 };
 
 export type MainPageSuggestionResponse = Array<GameResponseBase>;
@@ -217,11 +224,16 @@ export type UsersUsersDeleteUserResponse = void;
 export type $OpenApiTs = {
     '/api/v1/cover/suggestion/': {
         get: {
+            req: MainPageSuggestionData;
             res: {
                 /**
                  * Successful Response
                  */
                 200: Array<GameResponseBase>;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
             };
         };
     };
