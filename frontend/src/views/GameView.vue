@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref, watch } from 'vue';
+    import { computed, ref, watch, watchEffect } from 'vue';
     import divmod from '@/utils/divmod';
     import counter from '@/utils/counter'
     import Board from '@/components/Board.vue';
@@ -15,6 +15,7 @@
     const loading = ref(false)
     const error = ref(null)
     const game = ref(null)
+    const storageKey = computed(() => `puzzle${game.value.id}`)
     const installedPieces = ref([])
     const installedCount = computed(() => counter(installedPieces.value.map((item) => item.piece)))
     const availablePieces = computed(
@@ -33,6 +34,27 @@
 
     // watch the params of the route to fetch the data again
     watch(() => props.id, fetchData, { immediate: true })
+    watchEffect(saveGame)
+
+    function saveGame(){
+        if (game.value){
+            console.log("save game")
+            localStorage.setItem(
+                storageKey.value,
+                JSON.stringify(installedPieces.value.map((item) => [item.piece.id, item.rotation.id, item.index]))
+            )
+        }
+    }
+
+    function loadGame(){
+        console.log("load game")
+        const savedGame = localStorage.getItem(storageKey.value)
+        if (savedGame){
+            for (const item of JSON.parse(savedGame)){
+                handleInstall(...item)
+            }
+        }
+    }
 
     async function fetchData(id) {
         error.value = game.value = null
@@ -42,6 +64,7 @@
             game.value = await gamesGetGame({
                 gameId: parseInt(id)
             })
+            loadGame()
         } catch (err) {
             if (err instanceof ApiError){
                 error.value = `${err.status} - ${err.statusText}`
