@@ -1,6 +1,7 @@
 <script setup>
     import { computed, ref, watch } from 'vue';
     import divmod from '@/utils/divmod';
+    import counter from '@/utils/counter'
     import Board from '@/components/Board.vue';
     import PiecePalette from '@/components/PiecePalette.vue'
     import HintBox from '@/components/HintBox.vue'
@@ -14,9 +15,11 @@
     const loading = ref(false)
     const error = ref(null)
     const game = ref(null)
-    const gamePieces = ref([])
-    const availablePieces = computed(() => gamePieces.value.filter((item) => item.count > 0).map((item) => item.piece))
     const installedPieces = ref([])
+    const installedCount = computed(() => counter(installedPieces.value.map((item) => item.piece)))
+    const availablePieces = computed(
+        () => game.value.pieces.filter((piece) => piece.count - (installedCount.value[piece.id] || 0) > 0)
+    )
 
     const occupiedCells = computed(
         () => installedPieces.value.reduce(
@@ -36,10 +39,9 @@
         loading.value = true
         
         try {
-            const data = await gamesGetGame({
+            game.value = await gamesGetGame({
                 gameId: parseInt(id)
             })
-            setupGame(data)
         } catch (err) {
             if (err instanceof ApiError){
                 error.value = `${err.status} - ${err.statusText}`
@@ -48,16 +50,6 @@
             }
         } finally {
             loading.value = false
-        }
-    }
-
-    function setupGame(game_data){
-        gamePieces.value = game_data.pieces.map((item) => ({count: 1, piece: item}))
-        game.value = {
-            id: game_data.id,
-            title: game_data.title,
-            width: game_data.width,
-            height: game_data.height
         }
     }
 
@@ -86,14 +78,12 @@
 
     function handleInstall(id, rotationId, index){
         console.log('handleInstall', id, rotationId)
-        const item = gamePieces.value.find((item) => item.piece.id == id)
-        const piece = item.piece
+        const piece = game.value.pieces.find((piece) => piece.id == id)
         const rotation = piece.rotations.find((rotation) => rotation.id == rotationId)
         console.log('rotation found: ', rotation.id)
         if (hasCollision(index, rotation.points)){
             return
         }
-        item.count--;
         installedPieces.value.push({
             piece: piece,
             rotation: rotation,
@@ -111,8 +101,6 @@
             const piece = cell_data[1]
             const index = installedPieces.value.findIndex((item) => item.piece == piece)
             installedPieces.value.splice(index, 1)
-            const gameItem = gamePieces.value.find((item) => item.piece == piece)
-            gameItem.count++
         }
     }
 
