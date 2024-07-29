@@ -31,11 +31,10 @@
 <style scoped>
 .game-roulette{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 5%;
     justify-content: center;
-    align-content: baseline;
     margin: 5ch 5%;
     min-width: 240px;
 }
