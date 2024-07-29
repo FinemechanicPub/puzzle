@@ -66,7 +66,7 @@ def do_run_migrations(connection: Connection) -> None:
         connection=connection,
         target_metadata=target_metadata,
         transaction_per_migration=True,
-        render_as_batch=True
+        # render_as_batch=True
     )
 
     with context.begin_transaction():

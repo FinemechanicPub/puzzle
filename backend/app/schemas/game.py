@@ -26,6 +26,7 @@ class GamePiecePointsResponse(BaseModel):
     id: int = Field(..., validation_alias='piece_id')
     name: str = Field(..., validation_alias='piece_name')
     color: int
+    count: int
     points: list[tuple[int, int]]
 
     model_config = ConfigDict(from_attributes=True)
@@ -40,6 +41,7 @@ class GamePieceRotationsResponse(BaseModel):
     id: int = Field(..., validation_alias='piece_id')
     name: str = Field(..., validation_alias='piece_name')
     color: int
+    count: int
 
     rotations: list[Rotation]
 

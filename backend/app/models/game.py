@@ -65,6 +65,7 @@ class GamePieces(EmptyBase):
         ForeignKey("piece.id", ondelete='CASCADE'), primary_key=True
     )
     color: Mapped[int]
+    count: Mapped[int] = mapped_column(SmallInteger, server_default="1")
     game: Mapped[Game] = relationship('Game', back_populates='game_pieces')
     piece: Mapped[Piece] = relationship('Piece')
     default_color: AssociationProxy[int] = association_proxy(
