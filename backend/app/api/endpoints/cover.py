@@ -1,3 +1,4 @@
+from enum import Enum
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 
@@ -8,12 +9,18 @@ from app.schemas.game import GameResponseBase
 cover_router = APIRouter()
 
 
+class Difficulty(int, Enum):
+    easy = 5
+    medium = 8
+    hard = 12
+
+
 @cover_router.get('/suggestion/', response_model=list[GameResponseBase])
 async def suggestion(
-    session: AsyncSession = Depends(get_async_session), difficulty: str = ""
+    session: AsyncSession = Depends(get_async_session),
+    difficulty: Difficulty = Difficulty.easy,
 ):
-    piece_count = 8 if difficulty == "hard" else 5
     games = await game_count_repository.list(
-        session, offset=10, limit=10, random=True, piece_count=piece_count
+        session, offset=10, limit=10, random=True, piece_count=difficulty.value
     )
     return games
