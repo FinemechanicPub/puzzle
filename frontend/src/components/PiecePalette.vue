@@ -8,7 +8,7 @@
 
 <template>
 	<div class="piece-palette" v-auto-animate>
-        <div class="piece-frame" :key="piece.id" v-for="piece in props.availablePieces">
+        <div class="palette-item" :key="piece.id" v-for="piece in props.availablePieces">
             <Piece :piece="piece"/>
         </div>
     </div>

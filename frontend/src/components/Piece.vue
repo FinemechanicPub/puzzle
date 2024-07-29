@@ -81,17 +81,16 @@
   .colored {
     background-color: v-bind(colorString);
   }
-  .placeholder{
+  .container-row{
     display: flex;
     flex-direction: row;
   }
-  .piece-area{
+  .piece-box{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100px;
     height: 100px;
-    /* background: gray; */
   }
   .invisible {
     visibility: hidden;
@@ -110,10 +109,10 @@
 </style>
 
 <template>
-  <div @mouseenter="hovering=true" @mouseleave="hovering=false">
-    <div class="placeholder" >
+  <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
+    <div class="container-row" >
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
-      <div class="piece-area">
+      <div class="piece-box">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
           <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
         </div>
