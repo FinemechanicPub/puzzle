@@ -7,12 +7,13 @@ import click
 from sqlalchemy import delete, select
 from sqlalchemy.sql.expression import func
 
-# from engine.board import Board
 from engine.board import Board, invert
 from engine.solver import solutions
 from app.core.db import get_async_session
 from app.models.game import Game, GamePieces, Piece
 from app.repositories.piece_repository import piece_repository
+from app.schemas.piece import PieceBase
+from app.services.piece import create_piece_with_rotations
 
 
 SIGNATURE = "manage"
@@ -30,6 +31,39 @@ GAMES_DELETED = (
 )
 GAMES_CREATED = "Создано {count} игр"
 
+PIECES_CREATED = "Создано {count} фигур"
+
+PIECES = {
+    5: {
+        "F": [(0, 0), (0, 1), (1, -1), (1, 0), (2, 0)],
+        "I": [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)],
+        "L": [(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)],
+        "N": [(0, 0), (1, 0), (2, -1), (2, 0), (3, -1)],
+        "P": [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0)],
+        "T": [(0, 0), (0, 1), (0, 2), (1, 1), (2, 1)],
+        "U": [(0, 0), (0, 2), (1, 0), (1, 1), (1, 2)],
+        "V": [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2)],
+        "W": [(0, 0), (1, 0), (1, 1), (2, 1), (2, 2)],
+        "X": [(0, 0), (1, -1), (1, 0), (1, 1), (2, 0)],
+        "Y": [(0, 0), (1, -1), (1, 0), (2, 0), (3, 0)],
+        "Z": [(0, 0), (0, 1), (1, 1), (2, 1), (2, 2)],
+    }
+}
+
+DEFAULT_COLORS = {
+    "F": 14531481,
+    "I": 15641258,
+    "L": 13421704,
+    "N": 11202218,
+    "P": 12311961,
+    "T": 10083771,
+    "U": 8965324,
+    "V": 10075101,
+    "W": 11184878,
+    "X": 12294621,
+    "Y": 13404364,
+    "Z": 14522811,
+}
 
 
 async def get_pieces(piece_size: int):
@@ -65,6 +99,13 @@ async def save_games(games: Iterable[Game]):
         session.begin()
         session.add_all(games)
         await session.commit()
+    return
+
+
+async def save_piece(piece: PieceBase):
+    session_context = contextlib.asynccontextmanager(get_async_session)
+    async with session_context() as session:
+        await create_piece_with_rotations(session, piece)
     return
 
 
@@ -120,6 +161,20 @@ def create_games(
     click.echo(GAMES_DELETED.format(count=deleted_count))
     asyncio.run(save_games(games))
     click.echo(GAMES_CREATED.format(count=len(games)))
+
+
+@create.command()
+@click.argument("size", type=click.Choice(list(map(str, PIECES))))
+def create_pieces(size: str):
+    """Создание набора фигур размера SIZE"""
+
+    count = 0
+    for name, points in PIECES[int(size)].items():
+        asyncio.run(save_piece(
+            PieceBase(name=name, points=points, color=DEFAULT_COLORS[name])
+        ))
+        count += 1
+    click.echo(PIECES_CREATED.format(count=count))
 
 
 if __name__ == '__main__':
