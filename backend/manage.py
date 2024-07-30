@@ -130,6 +130,7 @@ def create_games(
 
     Размер поля HEIGHTxWIDTH. В игре используются фигуры размера PIECE_SIZE.
     """
+    loop = asyncio.new_event_loop()
 
     board = Board(height, width)
     piece_count, excess = divmod(board.size, piece_size)
@@ -137,7 +138,7 @@ def create_games(
         raise click.ClickException(BAD_SIZE.format(
             size=piece_size, height=height, width=width
         ))
-    pieces = asyncio.run(get_pieces(piece_size))
+    pieces = loop.run_until_complete(get_pieces(piece_size))
     if piece_count > len(pieces):
         raise click.ClickException(NO_ENOUGH_PIECES.format(
             count=len(pieces), size=piece_size, height=height, width=width
@@ -158,9 +159,9 @@ def create_games(
             games.append(game)
             if len(games) >= limit:
                 break
-    deleted_count = asyncio.run(clean(height, width, piece_count))
+    deleted_count = loop.run_until_complete(clean(height, width, piece_count))
     click.echo(GAMES_DELETED.format(count=deleted_count))
-    asyncio.run(save_games(games))
+    loop.run_until_complete(save_games(games))
     click.echo(GAMES_CREATED.format(count=len(games)))
 
 
