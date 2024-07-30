@@ -102,10 +102,11 @@ async def save_games(games: Iterable[Game]):
     return
 
 
-async def save_piece(piece: PieceBase):
+async def save_pieces(pieces: Iterable[PieceBase]):
     session_context = contextlib.asynccontextmanager(get_async_session)
     async with session_context() as session:
-        await create_piece_with_rotations(session, piece)
+        for piece in pieces:
+            await create_piece_with_rotations(session, piece)
     return
 
 
@@ -168,13 +169,12 @@ def create_games(
 def create_pieces(size: str):
     """Создание набора фигур размера SIZE"""
 
-    count = 0
-    for name, points in PIECES[int(size)].items():
-        asyncio.run(save_piece(
-            PieceBase(name=name, points=points, color=DEFAULT_COLORS[name])
-        ))
-        count += 1
-    click.echo(PIECES_CREATED.format(count=count))
+    pieces = [
+        PieceBase(name=name, points=points, color=DEFAULT_COLORS[name])
+        for name, points in PIECES[int(size)].items()
+    ]
+    asyncio.run(save_pieces(pieces))
+    click.echo(PIECES_CREATED.format(count=len(pieces)))
 
 
 if __name__ == '__main__':
