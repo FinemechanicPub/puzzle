@@ -1,11 +1,18 @@
-from pydantic import BaseModel, ConfigDict, Field, computed_field
+from typing import Sequence
+from pydantic import (
+    BaseModel, ConfigDict, Field, computed_field, field_validator
+)
 
 from app.core.config import settings
+from .validators import validate_color
 
 
 class PieceBase(BaseModel):
     name: str = Field(..., max_length=1)
-    points: tuple[tuple[int, int], ...]
+    points: Sequence[tuple[int, int]]
+    color: int
+
+    field_validator('color')(validate_color)
 
     @computed_field
     @property
