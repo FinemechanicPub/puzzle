@@ -37,7 +37,7 @@
     watchEffect(saveGame)
 
     function saveGame(){
-        if (game.value){
+        if (installedPieces.value.length){
             console.log("save game")
             localStorage.setItem(
                 storageKey.value,
