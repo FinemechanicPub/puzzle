@@ -7,7 +7,7 @@
         game: Object
     })
     const thumbnailUrl = computed(
-        () => `${OpenAPI.BASE}/api/v1/games/${props.game.id}/thumbnail`
+        () => `${OpenAPI.BASE}/api/v1/games/${props.game.id}/thumbnail/`
     )
 </script>
 
