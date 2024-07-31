@@ -1,0 +1,55 @@
+services:
+  web:
+    image: ${BACKEND_IMAGE}
+    container_name: puzzle_backend
+    env_file:
+      - ./.env
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+    networks:
+      - puzzle
+  migrations:
+    image: ${BACKEND_IMAGE}
+    container_name: puzzle_migrations
+    env_file:
+      - ./.env
+    command: >
+      sh -c "
+        sleep 5;
+        alembic upgrade head
+      "
+    depends_on:
+      - db
+    networks:
+      - puzzle
+  db:
+    image: "postgres:16.3-alpine"
+    container_name: puzzle_database
+    env_file:
+      - ./.env
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    networks:
+      - puzzle
+  nginx:
+    image: ${FRONTEND_IMAGE}
+    container_name: puzzle_nginx
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./nginx_conf:/etc/nginx/conf.d
+    depends_on:
+      - web
+    networks:
+      - puzzle
+
+volumes:
+  db_volume:
+    name: db_volume
+  frontend_files:
+    name: frontend_files
+
+networks:
+  puzzle:
+    name: puzzle
+    external: true
