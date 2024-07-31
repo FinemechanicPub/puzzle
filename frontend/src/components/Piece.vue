@@ -16,6 +16,7 @@
   const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
   const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
   const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
+  const diameter = computed(() => (1 + Math.max(maxX.value - minX.value, maxY.value)))
   const grid = computed(make_grid)
   const width = computed(() => maxX.value - minX.value + 1)
   const canFlip = computed(() => props.piece.rotations.length > 4)
@@ -89,7 +90,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
+    width: v-bind(18*diameter + "px");
     height: 100px;
   }
   .invisible {
