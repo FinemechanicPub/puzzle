@@ -10,7 +10,7 @@ env:
     BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
 
 jobs:  
-  build-frontend:
+  build-backend:
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     # GITHUB_TOKEN автоматически создается GitHub перед началом выполнения скрипта

@@ -10,8 +10,6 @@ COPY ./engine ./engine
 COPY ./alembic ./alembic
 COPY ./alembic.ini ./alembic.ini
 COPY ./manage.py ./manage.py
-# Copy frontend files
-COPY ./dist ./dist
 # Swith user
 USER puzzle
 # Run server
