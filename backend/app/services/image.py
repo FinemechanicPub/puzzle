@@ -13,7 +13,7 @@ GRID_COLOR = BLACK
 
 
 def rgb(color: int) -> tuple[int, int, int]:
-    return (color & 0xFF, (color & 0xFF00) >> 8, (color & 0xFF0000) >> 16)
+    return ((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF)
 
 
 def stack_horizontally(
