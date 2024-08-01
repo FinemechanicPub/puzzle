@@ -26,9 +26,11 @@
   const mouse_index = ref(null)
 
   const touchStart = ref([])
-  const touchMove = ref([])
-  const touchShiftX = computed(() => (touchMove.value.length ? touchMove.value[0] - touchStart.value[0] : 0) + "px")
-  const touchShiftY = computed(() => (touchMove.value.length ? touchMove.value[1] - touchStart.value[1] : 0) + "px")
+  const touchCurrent = ref([])
+  const scrollShift = ref(0)
+  const touchShiftX = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[0] - touchStart.value[0] : 0) + "px")
+  const touchShiftY = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[1] - touchStart.value[1] - scrollShift.value : 0) + "px")
+
 
   function make_grid(){
     const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
@@ -73,14 +75,22 @@
 
 
   function onTouchStart(evt, index){
-    touchMove.value = []
+    touchCurrent.value = []
     touchStart.value = [evt.touches[0].clientX, evt.touches[0].clientY]
+    scrollShift.value = 0
     mouse_index.value = index
-    console.log("touch start", touchStart.value)
+    console.log("touch start", touchStart.value[0], touchStart.value[1])
   }
 
   function onTouchMove(evt){
-    touchMove.value = [evt.touches[0].clientX, evt.touches[0].clientY]
+    const [x, y] = [evt.touches[0].clientX, evt.touches[0].clientY]
+    const currentScroll = Math.round(window.scrollY)
+    if (y < 150 && currentScroll){
+      console.log("scroll")
+      window.scrollTo({top: 0, behavior: "instant"})
+      scrollShift.value += currentScroll
+    }
+    touchCurrent.value = [x, y]
   }
 
   function onTouchEnd(evt){
@@ -90,9 +100,9 @@
       dx: -dx - minX.value,
       pieceId: props.piece.id,
       rotationId: rotation.value.id,
-      touchXY: touchMove.value
+      touchXY: touchCurrent.value
     }
-    touchMove.value = []
+    touchCurrent.value = []
     console.log("touch end")
     emit("pieceTouch", piece_data)
   }
