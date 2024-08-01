@@ -6,6 +6,7 @@
   const props = defineProps({
     piece: Object
   })
+  const emit = defineEmits(['pieceTouch'])
 
   const hovering = ref(false)
 
@@ -21,6 +22,13 @@
   const width = computed(() => maxX.value - minX.value + 1)
   const canFlip = computed(() => props.piece.rotations.length > 4)
   const canRotate = computed(() => props.piece.rotations.length > 1)
+  
+  const mouse_index = ref(null)
+
+  const touchStart = ref([])
+  const touchMove = ref([])
+  const touchShiftX = computed(() => (touchMove.value.length ? touchMove.value[0] - touchStart.value[0] : 0) + "px")
+  const touchShiftY = computed(() => (touchMove.value.length ? touchMove.value[1] - touchStart.value[1] : 0) + "px")
 
   function make_grid(){
     const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
@@ -29,7 +37,6 @@
     }
     return grid
   }
-  const mouse_index = ref(null)
 
   function on_mouse_down(index){
     console.log(`mouse down in cell #${index}`)
@@ -63,6 +70,33 @@
     const cycleLength = props.piece.rotations.length > 2 ? Math.floor(props.piece.rotations.length / 2) : 0
     rotationIndex.value = (rotationIndex.value + cycleLength) % props.piece.rotations.length
   }
+
+
+  function onTouchStart(evt, index){
+    touchMove.value = []
+    touchStart.value = [evt.touches[0].clientX, evt.touches[0].clientY]
+    mouse_index.value = index
+    console.log("touch start", touchStart.value)
+  }
+
+  function onTouchMove(evt){
+    touchMove.value = [evt.touches[0].clientX, evt.touches[0].clientY]
+  }
+
+  function onTouchEnd(evt){
+    const [dy, dx] = divmod(mouse_index.value, width.value)
+    const piece_data = {
+      dy: -dy,
+      dx: -dx - minX.value,
+      pieceId: props.piece.id,
+      rotationId: rotation.value.id,
+      touchXY: touchMove.value
+    }
+    touchMove.value = []
+    console.log("touch end")
+    emit("pieceTouch", piece_data)
+  }
+
 </script>
 
 <style scoped>
@@ -107,15 +141,18 @@
     justify-content: center;
   }
 
+  .movable{
+    transform: translate(v-bind(touchShiftX), v-bind(touchShiftY));
+  }
 </style>
 
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
-      <div class="piece-box">
+      <div class="piece-box movable">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index"></div>
+          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index" @touchstart="onTouchStart($event, index)" @touchmove="onTouchMove($event)" @touchend="onTouchEnd($event)"></div>
         </div>
       </div>
       <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">⤸</button>

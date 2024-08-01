@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch } from 'vue';
+  import {computed, ref, watch } from 'vue';
 
   import divmod from '@/utils/divmod';
 
@@ -8,10 +8,13 @@
     height: Number,
     installed_pieces: Array
   })
-
   const emit = defineEmits(['install', 'remove'])
 
+  const board = ref(null)
+  const board_rect = computed(() => board.value.getBoundingClientRect())
   const grid = ref(Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff)))
+
+  defineExpose({ board_rect })
 
   watch(props.installed_pieces, render_board, { immediate: true, deep: true })
 
@@ -67,7 +70,7 @@
 </style>
 
 <template>
-  <div class="board grid centered width-fit-content" >
-    <div class="square" @click="onClick($event, index)"  @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
+  <div ref="board" class="board grid centered width-fit-content" >
+    <div class="square" @click="onClick($event, index)" @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent v-for="(cell, index) in grid.flat()" :key="index" v-bind:style="{'background-color': `#${cell.toString(16)}`}"></div>
   </div>
 </template>

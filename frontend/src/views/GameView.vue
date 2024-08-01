@@ -32,6 +32,8 @@
     const occupiedPositions = computed(() => occupiedCells.value.map((item) => item[0]))
     const gameComplete = computed(() => occupiedPositions.value.length == game.value.width * game.value.height)
 
+    const board = ref(null)
+
     // watch the params of the route to fetch the data again
     watch(() => props.id, fetchData, { immediate: true })
     watchEffect(saveGame)
@@ -127,7 +129,26 @@
         }
     }
 
-
+    function onPieceTouch(piece_data){
+        console.log("piece dropped by touch")
+        console.log(piece_data)
+        const [x, y] = piece_data.touchXY
+        const board_rect = board.value.board_rect
+        if (
+            x > board_rect.left
+            && x < board_rect.right
+            && y >  board_rect.top
+            && y < board_rect.bottom
+        ){
+            const cell_width = Math.floor((board_rect.right - board_rect.left) / game.value.width)
+            const row = Math.floor((y - board_rect.top) / cell_width)
+            const col = Math.floor((x - board_rect.left) / cell_width)
+            const drop_index = row * game.value.width + col
+            const corrected_index = drop_index + piece_data.dx + piece_data.dy*game.value.width
+            console.log("drop index, corrected_index", drop_index, corrected_index)
+            handleInstall(piece_data.pieceId, piece_data.rotationId, corrected_index)
+        }
+    }
 </script>
 
 <style scoped>
@@ -198,8 +219,8 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <Board @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />
+        <Board ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette :availablePieces="availablePieces" />            
+        <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" />            
     </div>
 </template>
