@@ -143,6 +143,7 @@
 
   .movable{
     transform: translate(v-bind(touchShiftX), v-bind(touchShiftY));
+    touch-action: none;
   }
 </style>
 

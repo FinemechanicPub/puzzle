@@ -11,10 +11,14 @@
   const emit = defineEmits(['install', 'remove'])
 
   const board = ref(null)
-  const board_rect = computed(() => board.value.getBoundingClientRect())
   const grid = ref(Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff)))
 
-  defineExpose({ board_rect })
+  function get_board_rect(){
+    return board.value.getBoundingClientRect()
+  }
+  
+  defineExpose({ get_board_rect })
+
 
   watch(props.installed_pieces, render_board, { immediate: true, deep: true })
 

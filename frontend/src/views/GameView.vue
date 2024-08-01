@@ -133,7 +133,7 @@
         console.log("piece dropped by touch")
         console.log(piece_data)
         const [x, y] = piece_data.touchXY
-        const board_rect = board.value.board_rect
+        const board_rect = board.value.get_board_rect()
         if (
             x > board_rect.left
             && x < board_rect.right
