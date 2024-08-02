@@ -46,8 +46,6 @@ services:
 volumes:
   db_volume:
     name: db_volume
-  frontend_files:
-    name: frontend_files
 
 networks:
   puzzle:
