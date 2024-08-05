@@ -13,9 +13,8 @@ from app.repositories.game_repository import (
 from app.schemas.game import (
     CreateGameRequest, GameResponseBase, GameLongResponse
 )
-from app.services.image import thumbnail
+from app.services.image import Piece, thumbnail
 from engine.board import Board
-from engine.piece import Piece
 
 
 game_router = APIRouter()
@@ -43,7 +42,9 @@ async def list_games(
     session: AsyncSession = Depends(get_async_session),
     pagination: OffsetLimit = Depends()
 ):
-    games = await game_repository.list(session, pagination.offset, pagination.limit)
+    games = await game_repository.list(
+        session, pagination.offset, pagination.limit
+    )
     return games
 
 

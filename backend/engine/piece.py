@@ -1,13 +1,4 @@
-
-from typing import Iterable
-
 from engine.types import Point
-
-
-class Piece:
-    def __init__(self, points: Iterable[Point], color: int):
-        self.points = tuple(points)
-        self.color = color
 
 
 def transpose(points: tuple[Point, ...]) -> tuple[Point, ...]:

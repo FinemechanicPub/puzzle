@@ -3,13 +3,19 @@ from typing import Iterable, Sequence
 from PIL import Image, ImageColor, ImageDraw
 
 from engine.board import Board
-from engine.piece import Piece, Point
+from engine.types import Point
 
 WHITE = ImageColor.colormap["white"]
 BLACK = ImageColor.colormap["black"]
 
 BACKGROUND = WHITE
 GRID_COLOR = BLACK
+
+
+class Piece:
+    def __init__(self, points: Iterable[Point], color: int):
+        self.points = tuple(points)
+        self.color = color
 
 
 def rgb(color: int) -> tuple[int, int, int]:
