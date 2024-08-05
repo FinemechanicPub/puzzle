@@ -1,14 +1,31 @@
-from typing import TypeAlias
+from typing import Sequence
 
 from engine.board import Board
+from engine.types import PieceData, PieceSet, PositionMasks
 
 
-Mask: TypeAlias = int
-Rotations: TypeAlias = tuple[tuple[Mask, int], ...]
-Placements: TypeAlias = tuple[Rotations, ...]
+def optimize(rotation_masks: Sequence[PositionMasks]) -> PieceData:
+    """Оптимизировать структуру данных по возможным установкам фигур.
+
+    Если маска равна нулю, значит фигура не может стоять в данной позиции.
+    Возвращается последовательность длиной в количество позиций на доске,
+    каждый элемент которой представляет собой последовательность кортежей
+    из индекса и маски ориентации фигуры для тех ориентаций, которые могут
+    быть установлены в данную позицию.
+    """
+    position_count = len(rotation_masks[0])
+    return tuple(
+        tuple(
+            (rotation_index, masks[position])
+            for rotation_index, masks in enumerate(rotation_masks)
+            if masks[position]
+        )
+        for position in range(position_count)
+    )
 
 
-def solutions(board: Board, piece_set: tuple[Placements, ...], board_mask=0):
+def solutions(board: Board, piece_set: PieceSet, board_mask=0):
+    """Генератор решений головоломки"""
 
     def advance_position(board: int, position: int) -> int:
         while board & empty_probes[position]:
@@ -34,7 +51,7 @@ def solutions(board: Board, piece_set: tuple[Placements, ...], board_mask=0):
                 continue
             rotations = piece_set[piece_index][position]
             for rotation_index in range(next_rotation, len(rotations)):
-                mask, original_index = rotations[rotation_index]
+                original_index, mask = rotations[rotation_index]
                 if board_mask & mask:
                     continue
                 new_board = board_mask | mask

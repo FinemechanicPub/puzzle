@@ -7,7 +7,8 @@ import click
 from sqlalchemy import delete, select
 from sqlalchemy.sql.expression import func
 
-from engine.board import Board, invert
+from app.services.play import make_piece_set
+from engine.board import Board
 from engine.solver import solutions
 from app.core.db import get_async_session
 from app.models.game import Game, GamePieces, Piece
@@ -146,13 +147,7 @@ def create_games(
 
     games: list[Game] = []
     for combination in combinations(pieces, piece_count):
-        piece_set = tuple(
-            invert(tuple(
-                board.piece_masks(rotation.points)
-                for rotation in piece.rotations
-            ))
-            for piece in combination
-        )
+        piece_set = make_piece_set(combination, height, width)
         if next(solutions(board, piece_set), None):
             game = Game(height=height, width=width, note=SIGNATURE)
             game.pieces.extend(combination)

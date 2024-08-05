@@ -1,10 +1,4 @@
-from typing import Sequence, TypeAlias
-
-from engine.piece import Point
-
-Mask: TypeAlias = int
-Orientations: TypeAlias = tuple[Mask, ...]
-Placements: TypeAlias = tuple[Orientations, ...]
+from engine.types import Mask, PositionMasks, RotationPoints
 
 
 class Projection:
@@ -20,7 +14,7 @@ class Projection:
     row_range: range = range(0)  # допустимые строки установки
     mask: int = 0
 
-    def __init__(self, board: 'Board', points: tuple[Point, ...]) -> None:
+    def __init__(self, board: 'Board', points: RotationPoints) -> None:
         self.board_width = board.width
         self.board_height = board.height
         self.board_size = board.size
@@ -46,11 +40,11 @@ class Projection:
             return True
         return False
 
-    def at_position(self, position: int) -> int:
+    def at_position(self, position: int) -> Mask:
         """Маска фигуры в заданной позиции на доске"""
         return self.mask << self.board_size - position - self.mask.bit_length()
 
-    def at_cell(self, row: int, col: int) -> int:
+    def at_cell(self, row: int, col: int) -> Mask:
         """Маска фигуры в заданной ячейке на доске"""
         return self.at_position(row * self.board_width + col)
 
@@ -101,13 +95,14 @@ class Board:
         while board_mask & self.probes[position]:
             position += 1
         return (
-            self.count_area(board_mask, position) % board_mask.bit_count() == 0
+            self.count_area(board_mask, position)
+            == self.size - board_mask.bit_count()
         )
 
     def is_full(self) -> bool:
         return self.board_mask == self.full
 
-    def piece_masks(self, points: tuple[Point, ...]) -> tuple[int, ...]:
+    def piece_masks(self, points: RotationPoints) -> PositionMasks:
         """Битовые маски фигуры в каждой позиции"""
         piece = Projection(self, points)
         piece_mask = piece.mask
@@ -124,40 +119,7 @@ class Board:
             piece_mask <<= piece.piece_width
         return tuple(masks)
 
-    def merge_piece(self, points: tuple[Point, ...], position: int):
+    def merge_piece(self, points: RotationPoints, position: int):
         projection = Projection(self, points)
         self.board_mask |= projection.at_position(position)
         return
-
-
-def invert(
-    masks: tuple[tuple[int, ...], ...]
-) -> tuple[tuple[tuple[int, int], ...], ...]:
-    """Создание массива масок фигуры:
-    - внешний массив по всем позициями доски
-    - внутренний массив по тем ориентациям фигуры,
-    которые могут быть установлены в заданную позицию"""
-    return tuple(
-        tuple(
-            (masks[rotation_index][position_index], rotation_index)
-            for rotation_index in range(len(masks))
-            if masks[rotation_index][position_index]
-        )
-        for position_index in range(len(masks[0]))
-    )
-
-
-def rotation_indices(masks: tuple[tuple[int, ...], ...]):
-    return tuple(
-        tuple(
-            rotation_index
-            for rotation_index in range(len(masks[0]))
-            if masks[rotation_index][position_index]
-        )
-        for position_index in range(len(masks))
-    )
-
-
-def piece_rotation_masks(board: Board, rotations: Sequence[tuple[Point, ...]]):
-    """Кортеж кортежей масок во всех позициях для всех поворотов фигуры"""
-    return tuple(board.piece_masks(rotation) for rotation in rotations)

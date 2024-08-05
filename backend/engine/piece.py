@@ -1,8 +1,7 @@
 
-from typing import Iterable, TypeAlias
+from typing import Iterable
 
-
-Point: TypeAlias = tuple[int, int]
+from engine.types import Point
 
 
 class Piece:
