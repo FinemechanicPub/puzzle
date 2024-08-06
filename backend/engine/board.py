@@ -1,3 +1,4 @@
+from functools import cache
 from engine.types import Mask, PositionMasks, RotationPoints
 
 

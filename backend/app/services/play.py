@@ -8,7 +8,7 @@ from typing import Sequence, TypeAlias
 from app.models.game import Game, Piece, PieceRotation
 from engine.board import Board
 from engine.solver import optimize, solutions
-from engine.types import PieceSet, PieceRotations, PositionMasks
+from engine.types import PieceSet, PieceRotations, Point, PositionMasks
 
 # Идентификаторы базы данных фигуры и ориентации и её позиция
 PiecePositionDb: TypeAlias = tuple[int, int, int]
@@ -16,6 +16,8 @@ PiecePositionDb: TypeAlias = tuple[int, int, int]
 PiecePositionEngine: TypeAlias = tuple[int, int, int]
 
 logger = logging.getLogger(__name__)
+
+mask_cache: dict[tuple[int, ...], PositionMasks] = dict()
 
 
 @dataclass
@@ -55,20 +57,20 @@ def from_db_model(piece: Piece) -> PieceRotations:
     return tuple(rotation.points for rotation in piece.rotations)
 
 
-def get_mask(
-        board: Board, rotations: PieceRotations
-) -> Sequence[PositionMasks]:
-    """Двоичные маски для каждой ориентации фигуры."""
-    return tuple(board.piece_masks(rotation) for rotation in rotations)
+def rotation_masks(height: int, width: int, points: Sequence[Point]):
+    """Возвращает маски для фигуры в определенной ориентации."""
+    cache_key = tuple(number for point in points for number in point)
+    if cache_key not in mask_cache:
+        mask_cache[cache_key] = Board(height, width).piece_masks(points)
+    return mask_cache[cache_key]
 
 
-def make_piece_set(pieces: Sequence[Piece], height: int, width: int):
+def make_piece_set(height: int, width: int, pieces: Sequence[Piece]):
     """Создает набор фигур в формате решателя."""
-
-    board = Board(height, width)
-    return tuple(
-        optimize(get_mask(board, from_db_model(piece))) for piece in pieces
-    )
+    return tuple(optimize(tuple(
+        rotation_masks(height, width, rotation)
+        for rotation in from_db_model(piece))
+    ) for piece in pieces)
 
 
 def solve(board: Board, piece_set: PieceSet) -> PiecePositionEngine | None:
@@ -102,7 +104,7 @@ def hint_move(
         return True, None
     available_pieces = get_available_pieces(game, pieces)
     hint = solve(
-        board, make_piece_set(available_pieces, game.height, game.width)
+        board, make_piece_set(game.height, game.width, available_pieces)
     )
     elapsed_time = int((default_timer() - start_time) * 1_000_000)
     logger.info(f"Move calculation took {elapsed_time} microseconds total")

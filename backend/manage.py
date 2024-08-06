@@ -147,7 +147,7 @@ def create_games(
 
     games: list[Game] = []
     for combination in combinations(pieces, piece_count):
-        piece_set = make_piece_set(combination, height, width)
+        piece_set = make_piece_set(height, width, combination)
         if next(solutions(board, piece_set), None):
             game = Game(height=height, width=width, note=SIGNATURE)
             game.pieces.extend(combination)
