@@ -1,14 +1,17 @@
+import logging
 from collections import Counter
 from dataclasses import dataclass
-import logging
 from random import choice
+from threading import Lock
 from timeit import default_timer
 from typing import Sequence, TypeAlias
+
+from cachetools import LRUCache, cached, keys
 
 from app.models.game import Game, Piece, PieceRotation
 from engine.board import Board
 from engine.solver import optimize, solutions
-from engine.types import PieceSet, PieceRotations, Point, PositionMasks
+from engine.types import PieceSet, PieceRotations, Point
 
 # Идентификаторы базы данных фигуры и ориентации и её позиция
 PiecePositionDb: TypeAlias = tuple[int, int, int]
@@ -17,7 +20,12 @@ PiecePositionEngine: TypeAlias = tuple[int, int, int]
 
 logger = logging.getLogger(__name__)
 
-mask_cache: dict[tuple[int, ...], PositionMasks] = dict()
+
+def cache_key(height: int, width: int, points: Sequence[Point]):
+    """Возвращает ключ кэша для функции rotation_masks"""
+    return keys.hashkey(
+        height, width, tuple(number for point in points for number in point)
+    )
 
 
 @dataclass
@@ -57,12 +65,10 @@ def from_db_model(piece: Piece) -> PieceRotations:
     return tuple(rotation.points for rotation in piece.rotations)
 
 
+@cached(cache=LRUCache(maxsize=512*1024), lock=Lock(), key=cache_key)
 def rotation_masks(height: int, width: int, points: Sequence[Point]):
     """Возвращает маски для фигуры в определенной ориентации."""
-    cache_key = tuple(number for point in points for number in point)
-    if cache_key not in mask_cache:
-        mask_cache[cache_key] = Board(height, width).piece_masks(points)
-    return mask_cache[cache_key]
+    return Board(height, width).piece_masks(points)
 
 
 def make_piece_set(height: int, width: int, pieces: Sequence[Piece]):
