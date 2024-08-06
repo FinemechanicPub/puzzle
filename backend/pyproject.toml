@@ -19,6 +19,7 @@ alembic = "^1.13.2"
 pillow = "^10.4.0"
 click = "^8.1.7"
 pydantic-settings = "^2.4.0"
+cachetools = "^5.4.0"
 
 [tool.poetry.group.dev.dependencies]
 aiosqlite = "^0.20.0"
