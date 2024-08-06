@@ -4,11 +4,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
+import uvicorn
 
+from app.color_logging import ColorFormatter
 from app.core.config import settings
 from app.core.init_db import create_first_superuser
 from app.api.routers import main_router
-from app.logging import ColorFormatter
 
 
 # Настройка протоколирования
@@ -63,3 +64,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
