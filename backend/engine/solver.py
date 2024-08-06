@@ -24,7 +24,7 @@ def optimize(rotation_masks: Sequence[PositionMasks]) -> PieceData:
     )
 
 
-def solutions(board: Board, piece_set: PieceSet, board_mask=0):
+def solutions(board: Board, piece_set: PieceSet):
     """Генератор решений головоломки"""
 
     def advance_position(board: int, position: int) -> int:
@@ -32,11 +32,12 @@ def solutions(board: Board, piece_set: PieceSet, board_mask=0):
             position += 1
         return position
 
-    if board_mask == board.full:
+    if board.is_full():
         return
 
     piece_count = len(piece_set)
     empty_probes = board.probes
+    board_mask = board.board_mask
     full_board = board.full
 
     history = dict[int, tuple[int, int, int, int]]()
