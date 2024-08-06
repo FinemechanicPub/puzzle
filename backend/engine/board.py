@@ -1,5 +1,4 @@
-from functools import cache
-from engine.types import Mask, PositionMasks, RotationPoints
+from engine.types import Mask, PositionMasks, Points
 
 
 class Projection:
@@ -15,7 +14,7 @@ class Projection:
     row_range: range = range(0)  # допустимые строки установки
     mask: int = 0
 
-    def __init__(self, board: 'Board', points: RotationPoints) -> None:
+    def __init__(self, board: 'Board', points: Points) -> None:
         self.board_width = board.width
         self.board_height = board.height
         self.board_size = board.size
@@ -103,7 +102,7 @@ class Board:
     def is_full(self) -> bool:
         return self.board_mask == self.full
 
-    def piece_masks(self, points: RotationPoints) -> PositionMasks:
+    def piece_masks(self, points: Points) -> PositionMasks:
         """Битовые маски фигуры в каждой позиции"""
         piece = Projection(self, points)
         piece_mask = piece.mask
@@ -120,7 +119,8 @@ class Board:
             piece_mask <<= piece.piece_width
         return tuple(masks)
 
-    def merge_piece(self, points: RotationPoints, position: int):
+    def merge_piece(self, points: Points, position: int):
+        """Дополнить маску доски маской фигуры."""
         projection = Projection(self, points)
         self.board_mask |= projection.at_position(position)
         return

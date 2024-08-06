@@ -5,10 +5,10 @@ from typing import Sequence, TypeAlias
 
 # Точка с координатами [строка, столбец]
 Point: TypeAlias = tuple[int, int]
-# Опроеделенная ориентация фигуры - последовательность точек
-RotationPoints: TypeAlias = Sequence[Point]
+# Определенная ориентация фигуры - последовательность точек
+Points: TypeAlias = Sequence[Point]
 # Набор ориентаций для фигуры
-PieceRotations: TypeAlias = Sequence[RotationPoints]
+PieceRotations: TypeAlias = Sequence[Points]
 
 # Двоичная маска фигуры
 Mask: TypeAlias = int

@@ -40,10 +40,10 @@ def get_rotation(
     return rotation
 
 
-def get_available_pieces(
-        game: Game, installed_pieces: Sequence[PositionedPiece]
+def get_free_pieces(
+        game: Game, fixed_pieces: Sequence[PositionedPiece]
 ) -> Sequence[Piece]:
-    counts = Counter(piece.rotation.piece_id for piece in installed_pieces)    
+    counts = Counter(piece.rotation.piece_id for piece in fixed_pieces)
     # TODO: Возвращать количества оставшихся фигур
     return tuple(
         game_piece.piece
@@ -87,7 +87,7 @@ def solve(board: Board, piece_set: PieceSet) -> PiecePositionEngine | None:
 
 
 def hint_move(
-        game: Game, pieces: Sequence[PositionedPiece]
+        game: Game, fixed_pieces: Sequence[PositionedPiece]
         ) -> tuple[bool, PiecePositionDb | None]:
     """Возвращает параметры следующего возможного хода.
 
@@ -98,13 +98,13 @@ def hint_move(
 
     start_time = default_timer()
     board = Board(game.height, game.width)
-    for piece in pieces:
+    for piece in fixed_pieces:
         board.merge_piece(piece.rotation.points, piece.position)
     if board.is_full():
         return True, None
-    available_pieces = get_available_pieces(game, pieces)
+    free_pieces = get_free_pieces(game, fixed_pieces)
     hint = solve(
-        board, make_piece_set(game.height, game.width, available_pieces)
+        board, make_piece_set(game.height, game.width, free_pieces)
     )
     elapsed_time = int((default_timer() - start_time) * 1_000_000)
     logger.info(f"Move calculation took {elapsed_time} microseconds total")
@@ -112,7 +112,7 @@ def hint_move(
         return False, None
     piece_index, rotation_index, position = hint
     return False, (
-        available_pieces[piece_index].id,
-        available_pieces[piece_index].rotations[rotation_index].id,
+        free_pieces[piece_index].id,
+        free_pieces[piece_index].rotations[rotation_index].id,
         position
     )
