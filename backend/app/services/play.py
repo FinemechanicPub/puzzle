@@ -109,6 +109,10 @@ def hint_move(
     if board.is_full():
         return True, None
     free_pieces = get_free_pieces(game, fixed_pieces)
+    sizes = set(piece.size for piece in free_pieces)
+    for area_size in board.areas():
+        if not any(not (area_size % size) for size in sizes):
+            return False, None
     hint = solve(
         board, make_piece_set(game.height, game.width, free_pieces)
     )
