@@ -117,7 +117,7 @@ class Board:
                     self.probes[position] | self.probes[position - self.width]
                 ) == 0:
                     _areas.union(position - self.width, position)
-        return tuple(size for size in _areas.sets() if size > 1)
+        return tuple(size for size in _areas.set_sizes() if size > 1)
 
     def is_full(self) -> bool:
         return self.board_mask == self.full

@@ -24,6 +24,12 @@ class DisjointSet:
             self.rank[first] += 1
 
     def sets(self):
+        _sets: dict[int, list[int]] = defaultdict(list)
+        for item in range(len(self.parent)):
+            _sets[self.find(item)].append(item)
+        return list(_sets.values())
+
+    def set_sizes(self):
         _sets: dict[int, int] = defaultdict(int)
         for item in range(len(self.parent)):
             _sets[self.find(item)] += 1
