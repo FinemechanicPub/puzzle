@@ -103,15 +103,15 @@ class Board:
         if board_mask is None:
             board_mask = self.board_mask
         _areas = DisjointSet(self.size)
-        for position in range(self.size):
-            if board_mask & self.probes[position]:
-                continue
-            left_neighbour = position % self.width and not board_mask & self.probes[position - 1]
-            top_neighbour = position >= self.width and not board_mask & self.probes[position - self.width]
-            if left_neighbour:
-                _areas.union(position - 1, position)
-            if top_neighbour:
-                _areas.union(position - self.width, position)
+        for row in range(self.height):
+            row_start = row * self.width
+            for position in range(row_start + 1, row_start + self.width):
+                if board_mask & (self.probes[position] | self.probes[position - 1]) == 0:
+                    _areas.union(position - 1, position)
+        for col in range(self.width):
+            for position in range(self.width + col, self.size, self.width):
+                if board_mask & (self.probes[position] | self.probes[position - self.width]) == 0:
+                    _areas.union(position - self.width, position)
         return tuple(size for size in _areas.sets() if size > 1)
 
     def is_full(self) -> bool:
@@ -128,7 +128,10 @@ class Board:
                 masks[row*self.width + col] = (
                     piece_mask
                     if not piece.on_edge(row, col)
-                    # or max(area_size % n for area_size in self.areas(piece_mask)) == 0
+                    # or max(
+                    #     area_size % n for area_size
+                    #     in self.areas(piece_mask)
+                    # ) == 0
                     or self.has_even_space(piece_mask, n)
                     else 0
                 )
