@@ -100,17 +100,22 @@ class Board:
         )
 
     def areas(self, board_mask: int | None = None):
+        """Найти связанные незаполненные области."""
         if board_mask is None:
             board_mask = self.board_mask
         _areas = DisjointSet(self.size)
         for row in range(self.height):
             row_start = row * self.width
             for position in range(row_start + 1, row_start + self.width):
-                if board_mask & (self.probes[position] | self.probes[position - 1]) == 0:
+                if board_mask & (
+                    self.probes[position] | self.probes[position - 1]
+                ) == 0:
                     _areas.union(position - 1, position)
         for col in range(self.width):
             for position in range(self.width + col, self.size, self.width):
-                if board_mask & (self.probes[position] | self.probes[position - self.width]) == 0:
+                if board_mask & (
+                    self.probes[position] | self.probes[position - self.width]
+                ) == 0:
                     _areas.union(position - self.width, position)
         return tuple(size for size in _areas.sets() if size > 1)
 
