@@ -1,3 +1,4 @@
+from engine.disjointset import DisjointSet
 from engine.types import Mask, PositionMasks, Points
 
 
@@ -89,21 +90,36 @@ class Board:
                     edge.append(new_point)
         return count
 
-    def is_connected(self, board_mask: int) -> bool:
-        """Проверка связности пустого пространства на доске"""
+    def has_even_space(self, board_mask: int, piece_size: int) -> bool:
+        """Проверка кратности размера свободного пространства на доске."""
         position = 0
         while board_mask & self.probes[position]:
             position += 1
         return (
-            self.count_area(board_mask, position)
-            == self.size - board_mask.bit_count()
+            self.count_area(board_mask, position) % piece_size == 0
         )
+
+    def areas(self, board_mask: int | None = None):
+        if board_mask is None:
+            board_mask = self.board_mask
+        _areas = DisjointSet(self.size)
+        for position in range(self.size):
+            if board_mask & self.probes[position]:
+                continue
+            left_neighbour = position % self.width and not board_mask & self.probes[position - 1]
+            top_neighbour = position >= self.width and not board_mask & self.probes[position - self.width]
+            if left_neighbour:
+                _areas.union(position - 1, position)
+            if top_neighbour:
+                _areas.union(position - self.width, position)
+        return tuple(size for size in _areas.sets() if size > 1)
 
     def is_full(self) -> bool:
         return self.board_mask == self.full
 
     def piece_masks(self, points: Points) -> PositionMasks:
         """Битовые маски фигуры в каждой позиции"""
+        n = len(points)
         piece = Projection(self, points)
         piece_mask = piece.mask
         masks = [0] * self.size
@@ -112,7 +128,8 @@ class Board:
                 masks[row*self.width + col] = (
                     piece_mask
                     if not piece.on_edge(row, col)
-                    or self.is_connected(piece_mask)
+                    # or max(area_size % n for area_size in self.areas()) == 0
+                    or self.has_even_space(piece_mask, n)
                     else 0
                 )
                 piece_mask <<= 1
