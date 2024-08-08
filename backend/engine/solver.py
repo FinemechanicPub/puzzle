@@ -27,8 +27,8 @@ def optimize(rotation_masks: Sequence[PositionMasks]) -> PieceData:
 def solutions(board: Board, piece_set: PieceSet):
     """Генератор решений головоломки"""
 
-    def advance_position(board: int, position: int) -> int:
-        while board & empty_probes[position]:
+    def advance_position(board_mask: int, position: int) -> int:
+        while board_mask & empty_probes[position]:
             position += 1
         return position
 
