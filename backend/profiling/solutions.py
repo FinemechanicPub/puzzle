@@ -1,21 +1,9 @@
 from timeit import default_timer
-from typing import Iterable
 
-from engine.types import Points
 from engine.piece import produce_rotations
 from engine.board import Board
 from engine.samples import PENTAMINO_PIECES
-from engine.solver import solutions, optimize
-
-
-def make_piece_set(board: Board, pieces: Iterable[Iterable[Points]]):
-    return tuple(
-        optimize([
-            board.piece_masks(rotation)
-            for rotation in rotations
-        ])
-        for rotations in pieces
-    )
+from engine.solver import solutions, make_piece_set
 
 
 def find_all_solutions():

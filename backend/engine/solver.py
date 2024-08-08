@@ -1,11 +1,39 @@
-from typing import Sequence
+from threading import Lock
+from typing import Iterable, Sequence
+
+from cachetools import LRUCache, cached, keys
 
 from engine.board import Board
-from engine.types import PieceData, PieceSet, PositionMasks
+from engine.types import PieceData, PieceSet, Points, PositionMasks
+
+
+def cache_key(board: Board, points: Points):
+    """Возвращает ключ кэша для функции rotation_masks"""
+    return keys.hashkey(
+        board.height, board.width,
+        tuple(number for point in points for number in point)
+    )
+
+
+@cached(cache=LRUCache(maxsize=512*1024), lock=Lock(), key=cache_key)
+def rotation_masks(board: Board, points: Points):
+    """Возвращает маски для фигуры в определенной ориентации."""
+    return board.piece_masks(points)
+
+
+def make_piece_set(board: Board, pieces: Iterable[Iterable[Points]]):
+    """Создает набор фигур в формате решателя."""
+    return tuple(
+        optimize([
+            rotation_masks(board, rotation)
+            for rotation in rotations
+        ])
+        for rotations in pieces
+    )
 
 
 def optimize(rotation_masks: Sequence[PositionMasks]) -> PieceData:
-    """Оптимизировать структуру данных по возможным установкам фигур.
+    """Оптимизирует структуру данных по возможным установкам фигур.
 
     Если маска равна нулю, значит фигура не может стоять в данной позиции.
     Возвращается последовательность длиной в количество позиций на доске,

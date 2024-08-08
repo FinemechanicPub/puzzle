@@ -2,16 +2,14 @@ import logging
 from collections import Counter
 from dataclasses import dataclass
 from random import choice
-from threading import Lock
 from timeit import default_timer
 from typing import Sequence, TypeAlias
 
-from cachetools import LRUCache, cached, keys
 
 from app.models.game import Game, Piece, PieceRotation
 from engine.board import Board
-from engine.solver import optimize, solutions
-from engine.types import PieceSet, PieceRotations, Point
+from engine.solver import make_piece_set, solutions
+from engine.types import PieceSet, PieceRotations
 
 # Идентификаторы базы данных фигуры и ориентации и её позиция
 PiecePositionDb: TypeAlias = tuple[int, int, int]
@@ -19,13 +17,6 @@ PiecePositionDb: TypeAlias = tuple[int, int, int]
 PiecePositionEngine: TypeAlias = tuple[int, int, int]
 
 logger = logging.getLogger(__name__)
-
-
-def cache_key(height: int, width: int, points: Sequence[Point]):
-    """Возвращает ключ кэша для функции rotation_masks"""
-    return keys.hashkey(
-        height, width, tuple(number for point in points for number in point)
-    )
 
 
 @dataclass
@@ -51,6 +42,7 @@ def get_rotation(
 def get_free_pieces(
         game: Game, fixed_pieces: Sequence[PositionedPiece]
 ) -> Sequence[Piece]:
+    """Возвращает последовательность фигур, не находящихся на доске."""
     counts = Counter(piece.rotation.piece_id for piece in fixed_pieces)
     # TODO: Возвращать количества оставшихся фигур
     return tuple(
@@ -65,23 +57,8 @@ def from_db_model(piece: Piece) -> PieceRotations:
     return tuple(rotation.points for rotation in piece.rotations)
 
 
-@cached(cache=LRUCache(maxsize=512*1024), lock=Lock(), key=cache_key)
-def rotation_masks(height: int, width: int, points: Sequence[Point]):
-    """Возвращает маски для фигуры в определенной ориентации."""
-    return Board(height, width).piece_masks(points)
-
-
-def make_piece_set(height: int, width: int, pieces: Sequence[Piece]):
-    """Создает набор фигур в формате решателя."""
-    return tuple(optimize(tuple(
-        rotation_masks(height, width, rotation)
-        for rotation in from_db_model(piece))
-    ) for piece in pieces)
-
-
 def solve(board: Board, piece_set: PieceSet) -> PiecePositionEngine | None:
     """Вызывает решатель для поиска хода для заданной позиции на доске"""
-
     start_time = default_timer()
     moves = next(solutions(board, piece_set), None)
     elapsed_time = int((default_timer() - start_time) * 1_000_000)
@@ -113,9 +90,10 @@ def hint_move(
     for area_size in board.areas():
         if not any(not (area_size % size) for size in sizes):
             return False, None
-    hint = solve(
-        board, make_piece_set(game.height, game.width, free_pieces)
+    piece_set = make_piece_set(
+        board, tuple(from_db_model(piece) for piece in free_pieces)
     )
+    hint = solve(board, piece_set)
     elapsed_time = int((default_timer() - start_time) * 1_000_000)
     logger.info(f"Move calculation took {elapsed_time} microseconds total")
     if not hint:
