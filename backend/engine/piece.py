@@ -15,7 +15,7 @@ def rotate_left(points: Points, times=1) -> tuple[Point, ...]:
     """Поворот фигуры против часовой стрелки."""
     for _ in range(times):
         points = flip_vertically(transpose(points))
-    return points
+    return tuple(points)
 
 
 def normalize(points: Points) -> tuple[Point, ...]:
