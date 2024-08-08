@@ -128,7 +128,7 @@ class Board:
                 masks[row*self.width + col] = (
                     piece_mask
                     if not piece.on_edge(row, col)
-                    # or max(area_size % n for area_size in self.areas()) == 0
+                    # or max(area_size % n for area_size in self.areas(piece_mask)) == 0
                     or self.has_even_space(piece_mask, n)
                     else 0
                 )
