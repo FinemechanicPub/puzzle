@@ -4,13 +4,12 @@ from itertools import combinations
 from typing import Iterable
 
 import click
-from sqlalchemy import delete, select
-from sqlalchemy.sql.expression import func
+from sqlalchemy import delete
 
 from engine.board import Board
 from engine.solver import make_piece_set, solutions
 from app.core.db import get_async_session
-from app.models.game import Game, GamePieces, Piece
+from app.models.game import Game, Piece
 from app.repositories.piece_repository import piece_repository
 from app.schemas.piece import PieceBase
 from app.services.piece import create_piece_with_rotations
