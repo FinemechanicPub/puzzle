@@ -9,7 +9,7 @@
     const router = useRouter()
     const currentIndex = ref(0)
     const thumbnailUrl = (game) => `${OpenAPI.BASE}/api/v1/games/${game.id}/thumbnail/`
-    
+
     let startX, moveX;
 
     function touchStart(evt) {
@@ -33,6 +33,14 @@
     }
     function prevCard(){
         currentIndex.value--;
+    }
+
+    function gameWon(game_id){
+      const savedGame = localStorage.getItem(`puzzleWin${game_id}`)
+      if (savedGame) {
+        return true
+      }
+      return false
     }
 </script>
 
@@ -85,7 +93,7 @@
   }
   .card img {
     width: 100%;
-    height: 300px;
+    height: 280px;
     object-fit: contain;
     border-radius: 5px;
     margin-bottom: 10px;    
@@ -111,6 +119,11 @@
   .carousel-button.next {
     right: 10px;
   }
+  .medal {
+    position: absolute;
+    top: 10%;
+    font-size: larger;
+  }
 </style>
 <template>
     <div class="carousel-container">
@@ -119,9 +132,9 @@
           @touchmove="touchMove($event)"
           @touchend="touchEnd"
           :style="{ transform: `translateX(${-currentIndex * 290}px)` }"
-          >
+          >          
             <div v-for="game in games" :key="game.id" class="card">
-                <h2>{{ game.title }}</h2>
+                <h2>{{ game.title }}</h2><p class="medal" v-if="gameWon(game.id)">🏅</p>
                 <p></p>
                 <div>
                     <img :src="thumbnailUrl(game)" alt="game thumbnail">

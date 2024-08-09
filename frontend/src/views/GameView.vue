@@ -15,7 +15,8 @@
     const loading = ref(false)
     const error = ref(null)
     const game = ref(null)
-    const storageKey = computed(() => `puzzle${game.value.id}`)
+    const storageGameKey = computed(() => `puzzle${game.value.id}`)
+    const storageWinKey = computed(() => `puzzleWin${game.value.id}`)
     const installedPieces = ref([])
     const installedCount = computed(() => counter(installedPieces.value.map((item) => item.piece)))
     const availablePieces = computed(
@@ -42,15 +43,20 @@
         if (installedPieces.value.length){
             console.log("save game")
             localStorage.setItem(
-                storageKey.value,
+                storageGameKey.value,
                 JSON.stringify(installedPieces.value.map((item) => [item.piece.id, item.rotation.id, item.index]))
             )
+            if (gameComplete.value){
+                localStorage.setItem(storageWinKey.value, "true")
+            } else {
+                localStorage.removeItem(storageWinKey.value)
+            }
         }
     }
 
     function loadGame(){
         console.log("load game")
-        const savedGame = localStorage.getItem(storageKey.value)
+        const savedGame = localStorage.getItem(storageGameKey.value)
         if (savedGame){
             for (const item of JSON.parse(savedGame)){
                 handleInstall(...item)
