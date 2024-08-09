@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.exceptions import GameNotFoundException, PieceNotFoundException
+from app.api.exceptions import GameNotFoundException, InvalidPieceException
 from app.core.db import get_async_session
 from app.schemas.hint import GameStatus, HintRequest, HintResponse
 from app.schemas.piece import PiecePlacement
@@ -23,7 +23,7 @@ async def hint(
         get_rotation(game, piece.piece_id, piece.rotation_id) for piece in request.pieces
     )
     if not all(rotations):
-        raise PieceNotFoundException
+        raise InvalidPieceException
     board_is_full, move = hint_move(
         game,
         tuple(
