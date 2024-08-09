@@ -11,7 +11,7 @@
     const props = defineProps({
         id: String
     })
-
+    const cellSize = 30
     const loading = ref(false)
     const error = ref(null)
     const game = ref(null)
@@ -219,8 +219,8 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <Board ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />
+        <Board ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" />            
+        <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
     </div>
 </template>

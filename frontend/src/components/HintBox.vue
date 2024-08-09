@@ -66,6 +66,12 @@
     }
 </script>
 
+<style scoped>
+.hint-box{
+    padding: 1rem;
+}
+</style>
+
 <template>
     <div class="hint-box">
         <p @click="hintActive = !hintActive" class="hint-item transparent-button">🤖</p>

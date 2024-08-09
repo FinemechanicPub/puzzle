@@ -1,15 +1,17 @@
 <script setup>
-  import {computed, ref, watch } from 'vue';
+  import {ref, watch } from 'vue';
 
   import divmod from '@/utils/divmod';
 
   const props = defineProps({
     width: Number,
     height: Number,
+    cellSize: Number,
     installed_pieces: Array
   })
   const emit = defineEmits(['install', 'remove'])
 
+  const cell_width = `${props.cellSize}px`
   const board = ref(null)
   const grid = ref(Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff)))
 
@@ -65,7 +67,7 @@
   }
   .square {
     aspect-ratio: 1/ 1;
-    width: 20px;
+    width: v-bind(cell_width);
     border: 1px solid gray;
   }
   .centered {

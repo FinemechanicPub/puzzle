@@ -2,7 +2,8 @@
     import Piece from '@/components/Piece.vue';
 
     const props = defineProps({
-        availablePieces: Array
+        availablePieces: Array,
+        cellSize: Number
     })
 
     const emit = defineEmits(["pieceTouch"])
@@ -15,7 +16,7 @@
 <template>
 	<div class="piece-palette" v-auto-animate>
         <div class="palette-item" :key="piece.id" v-for="piece in props.availablePieces">
-            <Piece @piece-touch="onPieceTouch" :piece="piece"/>
+            <Piece @piece-touch="onPieceTouch" :piece="piece" :cell-size="cellSize"/>
         </div>
     </div>
 </template>
