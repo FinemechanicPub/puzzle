@@ -32,7 +32,7 @@
     padding: 20px 0; /* Added padding to prevent shadow cutoff */
   }
   .card {
-    flex: 0 0 300px;
+    flex: 0 0 270px;
     height: 400px;
     background-color: white;
     border-radius: 10px;
@@ -96,7 +96,7 @@
 </style>
 <template>
     <div class="carousel-container">
-        <div class="carousel" :style="{ transform: `translateX(${-currentIndex * 320}px)` }">
+        <div class="carousel" :style="{ transform: `translateX(${-currentIndex * 290}px)` }">
             <div v-for="game in games" :key="game.id" class="card">
                 <h2>{{ game.title }}</h2>
                 <p></p>
