@@ -3,13 +3,31 @@
     import { OpenAPI } from  '@/api/generated/core/OpenAPI';
     import { useRouter } from 'vue-router'
 
-    defineProps({
+    const props = defineProps({
         games: Array
     })
     const router = useRouter()
     const currentIndex = ref(0)
     const thumbnailUrl = (game) => `${OpenAPI.BASE}/api/v1/games/${game.id}/thumbnail/`
     
+    let startX, moveX;
+
+    function touchStart(evt) {
+      startX = evt.touches[0].pageX;
+    }
+
+    function touchMove(evt) {
+      moveX = evt.touches[0].pageX;
+    }
+
+    function touchEnd() {
+      if (startX - moveX > 50 && currentIndex.value < props.games.length - 1) {
+            nextCard();
+          } else if (moveX - startX > 50 && currentIndex.value > 0) {
+            prevCard();
+          }
+    }
+
     function nextCard(){
         currentIndex.value++;
     }
@@ -96,7 +114,12 @@
 </style>
 <template>
     <div class="carousel-container">
-        <div class="carousel" :style="{ transform: `translateX(${-currentIndex * 290}px)` }">
+        <div class="carousel"
+          @touchstart="touchStart($event)"
+          @touchmove="touchMove($event)"
+          @touchend="touchEnd"
+          :style="{ transform: `translateX(${-currentIndex * 290}px)` }"
+          >
             <div v-for="game in games" :key="game.id" class="card">
                 <h2>{{ game.title }}</h2>
                 <p></p>
