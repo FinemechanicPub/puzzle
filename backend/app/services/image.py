@@ -1,3 +1,4 @@
+from math import ceil
 from typing import Iterable, Sequence
 
 from PIL import Image, ImageColor, ImageDraw
@@ -108,9 +109,10 @@ def draw_piece(points: tuple[Point, ...], color: int, cell_width=10):
 
 
 def thumbnail(board: Board, pieces: Iterable[Piece]) -> Image.Image:
+    piece_list = list(pieces)
     return stack_vertically([
         draw_board(board),
         stack_rows(wrap(tuple(
-            draw_piece(piece.points, piece.color) for piece in pieces
-        ))),
+            draw_piece(piece.points, piece.color) for piece in piece_list
+        ), row_count=ceil(len(piece_list) / 4))),
     ])
