@@ -1,0 +1,114 @@
+<script setup>
+    import { ref } from 'vue';
+    import { OpenAPI } from  '@/api/generated/core/OpenAPI';
+    import { useRouter } from 'vue-router'
+
+    defineProps({
+        games: Array
+    })
+    const router = useRouter()
+    const currentIndex = ref(0)
+    const thumbnailUrl = (game) => `${OpenAPI.BASE}/api/v1/games/${game.id}/thumbnail/`
+    
+    function nextCard(){
+        currentIndex.value++;
+    }
+    function prevCard(){
+        currentIndex.value--;
+    }
+</script>
+
+<style scoped>
+  .carousel-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 2rem auto;
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel {
+    display: flex;
+    transition: transform 0.5s ease;
+    padding: 20px 0; /* Added padding to prevent shadow cutoff */
+  }
+  .card {
+    flex: 0 0 300px;
+    height: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0px rgba(0,0,0,0.2);
+    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card h2 {
+    color: #333;
+    margin-top: 0;
+  }
+  .card p {
+    color: #666;
+    line-height: 1.6;
+  }
+  .card .cta-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .card .cta-button:hover {
+    background-color: #555;
+  }
+  .card img {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 10px;    
+  }
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+  }
+  .carousel-button:hover {
+    background-color: rgba(0,0,0,0.8);
+  }
+  .carousel-button.prev {
+    left: 10px;
+  }
+  .carousel-button.next {
+    right: 10px;
+  }
+</style>
+<template>
+    <div class="carousel-container">
+        <div class="carousel" :style="{ transform: `translateX(${-currentIndex * 320}px)` }">
+            <div v-for="game in games" :key="game.id" class="card">
+                <h2>{{ game.title }}</h2>
+                <p></p>
+                <div>
+                    <img :src="thumbnailUrl(game)" alt="game thumbnail">
+                </div>
+                <button @click="router.push({name: 'game', params: {id: game.id}})" class="cta-button">
+                  Играть
+                </button>
+            </div>
+        </div>
+        <button class="carousel-button prev" @click="prevCard" :disabled="currentIndex === 0">&lt;</button>
+        <button class="carousel-button next" @click="nextCard" :disabled="currentIndex === games.length - 1">&gt;</button>
+    </div>
+</template>

@@ -1,6 +1,6 @@
 <script setup>
     import { onMounted, ref } from 'vue';
-    import GameCard from '@/components/GameCard.vue';
+    import GameCarousel from '@/components/GameCarousel.vue'
     import { mainPageSuggestion } from '@/api/generated'
     import { ApiError } from '@/api/generated/core/ApiError'
 
@@ -42,13 +42,7 @@
 </style>
 
 <template>
-    <div v-if="games" class="game-roulette">
-        <div :key="game.id" v-for="game in games">
-            <RouterLink :to="{name: 'game', params: {id: game.id}}">
-                <GameCard :game="game" />
-            </RouterLink>
-        </div>
-    </div>
+    <GameCarousel v-if="games" :games="games"/>
     <div v-if="error">
         Произошла ошибка: {{ error }}
     </div>
