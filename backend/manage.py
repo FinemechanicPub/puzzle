@@ -7,14 +7,14 @@ import click
 from sqlalchemy import delete, select
 from sqlalchemy.sql.expression import func
 
-from app.services.play import make_piece_set
 from engine.board import Board
-from engine.solver import solutions
+from engine.solver import make_piece_set, solutions
 from app.core.db import get_async_session
 from app.models.game import Game, GamePieces, Piece
 from app.repositories.piece_repository import piece_repository
 from app.schemas.piece import PieceBase
 from app.services.piece import create_piece_with_rotations
+from app.services.play import from_db_model
 
 
 SIGNATURE = "manage"
@@ -147,7 +147,10 @@ def create_games(
 
     games: list[Game] = []
     for combination in combinations(pieces, piece_count):
-        piece_set = make_piece_set(height, width, combination)
+        piece_set = make_piece_set(
+            board,
+            tuple(from_db_model(piece) for piece in combination)
+        )
         if next(solutions(board, piece_set), None):
             game = Game(height=height, width=width, note=SIGNATURE)
             game.pieces.extend(combination)
