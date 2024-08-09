@@ -17,7 +17,7 @@ from app.services.piece import create_piece_with_rotations
 from app.services.play import from_db_model
 
 
-SIGNATURE = "manage"
+SIGNATURE = "manage{height}.{width}.{size}"
 
 NO_ENOUGH_PIECES = (
     "Фигур заданного размера {size} найдено всего {count}, "
@@ -76,31 +76,15 @@ async def get_pieces(piece_size: int):
     return pieces
 
 
-async def clean(height: int, width: int, piece_count: int):
-    session_context = contextlib.asynccontextmanager(get_async_session)
-    async with session_context() as session:
-        select_statement = (
-            select(Game.id).join(GamePieces)
-            .where(Game.height == height)
-            .where(Game.width == width)
-            .where(Game.note == SIGNATURE)
-            .group_by(Game.id)
-            .having(func.count(GamePieces.game_id) == piece_count)
-        )
-        game_ids = await session.scalars(select_statement)
-        delete_statement = delete(Game).where(Game.id.in_(game_ids))
-        result = await session.execute(delete_statement)
-        await session.commit()
-        return result.rowcount
-
-
-async def save_games(games: Iterable[Game]):
+async def save_games(games: Iterable[Game], signature: str):
+    delete_statement = delete(Game).where(Game.note == signature)
     session_context = contextlib.asynccontextmanager(get_async_session)
     async with session_context() as session:
         session.begin()
+        delete_result = await session.execute(delete_statement)
         session.add_all(games)
         await session.commit()
-    return
+    return delete_result.rowcount
 
 
 async def save_pieces(pieces: Iterable[PieceBase]):
@@ -145,6 +129,7 @@ def create_games(
             count=len(pieces), size=piece_size, height=height, width=width
         ))
 
+    signature = SIGNATURE.format(height=height, width=width, size=piece_size)
     games: list[Game] = []
     for combination in combinations(pieces, piece_count):
         piece_set = make_piece_set(
@@ -152,14 +137,14 @@ def create_games(
             tuple(from_db_model(piece) for piece in combination)
         )
         if next(solutions(board, piece_set), None):
-            game = Game(height=height, width=width, note=SIGNATURE)
+            game = Game(height=height, width=width, note=signature)
             game.pieces.extend(combination)
             games.append(game)
             if len(games) >= limit:
                 break
-    deleted_count = loop.run_until_complete(clean(height, width, piece_count))
+
+    deleted_count = loop.run_until_complete(save_games(games, signature))
     click.echo(GAMES_DELETED.format(count=deleted_count))
-    loop.run_until_complete(save_games(games))
     click.echo(GAMES_CREATED.format(count=len(games)))
 
 
