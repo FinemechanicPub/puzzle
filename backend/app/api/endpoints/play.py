@@ -20,7 +20,8 @@ async def hint(
     if not game:
         raise GameNotFoundException
     rotations = tuple(
-        get_rotation(game, piece.piece_id, piece.rotation_id) for piece in request.pieces
+        get_rotation(game, piece.piece_id, piece.rotation_id)
+        for piece in request.pieces
     )
     if not all(rotations):
         raise InvalidPieceException
