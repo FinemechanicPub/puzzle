@@ -114,10 +114,10 @@
     background-color: rgba(0,0,0,0.8);
   }
   .carousel-button.prev {
-    left: 10px;
+    left: 12px;
   }
   .carousel-button.next {
-    right: 10px;
+    right: 0px;
   }
   .medal {
     position: absolute;
