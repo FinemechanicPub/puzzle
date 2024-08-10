@@ -1,5 +1,5 @@
 <script setup>
-    import Piece from '@/components/Piece.vue';
+    import PieceItem from '@/components/PieceItem.vue';
 
     const props = defineProps({
         availablePieces: Array,
@@ -22,7 +22,7 @@
 <template>
 	<div class="piece-palette" v-auto-animate>
         <div class="palette-item" :key="piece.id" v-for="piece in props.availablePieces">
-            <Piece @piece-touch="onPieceTouch" :piece="piece" :cell-size="cellSize"/>
+            <PieceItem @piece-touch="onPieceTouch" :piece="piece" :cell-size="cellSize"/>
         </div>
     </div>
 </template>
