@@ -66,11 +66,17 @@
   }
 
   function rotate(direction){
-    if (props.piece.rotations.length > 4){
-      const [half, index] = divmod(rotationIndex.value, 4)
-      rotationIndex.value = 4 * half + (index + 4 + direction) % 4
-    } else {
-      rotationIndex.value = (props.piece.rotations.length + rotationIndex.value + direction) % props.piece.rotations.length
+    const length = props.piece.rotations.length
+    const index = rotationIndex.value
+    if (length > 4){
+      const half_length = length / 2
+      if (index < half_length){
+        rotationIndex.value = (half_length + index + direction) % half_length
+      } else {
+        rotationIndex.value = half_length + (index - direction) % half_length
+      }
+    } else { // no flips for this piece
+      rotationIndex.value = (length + index + direction) % length
     }
   }
 
