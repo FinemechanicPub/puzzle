@@ -9,6 +9,8 @@
   })
   const emit = defineEmits(['pieceTouch'])
 
+  const cells = ref([])
+
   const cell_width = `${props.cellSize - 2}px`
 
   const hovering = ref(false)
@@ -80,7 +82,21 @@
 
   function onTouchStart(evt, index){
     touchCurrent.value = []
-    touchStart.value = [evt.touches[0].clientX, evt.touches[0].clientY]
+    const [clientX, clientY] = [evt.touches[0].clientX, evt.touches[0].clientY]
+    // Find touched cell
+    // "It should be noted that the ref array does not guarantee the same order as the source array."
+    // https://vuejs.org/guide/essentials/template-refs.html#refs-inside-v-for
+    for (const cell of cells.value){
+      const cellRect = cell.getBoundingClientRect()
+      if (
+        clientX > cellRect.left && clientX < cellRect.right
+        && clientY > cellRect.top && clientY < cellRect.bottom
+      ) {
+        touchStart.value = [(cellRect.left + cellRect.right) / 2, (cellRect.top + cellRect.bottom) / 2]
+        break
+      }
+
+    }
     scrollShift.value = 0
     mouse_index.value = index
     console.log("touch start", touchStart.value[0], touchStart.value[1])
@@ -169,7 +185,7 @@
       </button>
       <div class="piece-box movable">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="piece-cell" :class="{ colored: cell }"
+          <div class="piece-cell" :class="{ colored: cell }" ref="cells"
             v-for="(cell, index) in grid.flat()"
             :key="index"
             @mousedown="on_mouse_down(index)"
