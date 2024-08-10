@@ -164,16 +164,30 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">↪️</button>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">
+        ↪️
+      </button>
       <div class="piece-box movable">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index" @touchstart="onTouchStart($event, index)" @touchmove="onTouchMove($event)" @touchend="onTouchEnd()"></div>
+          <div class="piece-cell" :class="{ colored: cell }"
+            v-for="(cell, index) in grid.flat()"
+            :key="index"
+            @mousedown="on_mouse_down(index)"
+            @touchstart="onTouchStart($event, index)"
+            @touchmove="onTouchMove($event)"
+            @touchend="onTouchEnd()"
+            >
+          </div>
         </div>
       </div>
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">↩️</button>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">
+        ↩️
+      </button>
     </div>
     <div class="flex-center-content">
-      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">🔄</button>
+      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">
+        🔄
+      </button>
     </div>
   </div>
 </template>
