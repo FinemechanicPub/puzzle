@@ -2,7 +2,7 @@
     import { computed, ref, watch, watchEffect } from 'vue';
     import divmod from '@/utils/divmod';
     import counter from '@/utils/counter'
-    import Board from '@/components/Board.vue';
+    import BoardGrid from '@/components/BoardGrid.vue';
     import PiecePalette from '@/components/PiecePalette.vue'
     import HintBox from '@/components/HintBox.vue'
     import { gamesGetGame } from '@/api/generated'
@@ -225,7 +225,7 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <Board ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
+        <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
         <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
     </div>
