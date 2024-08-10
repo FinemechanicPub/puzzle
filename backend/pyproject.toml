@@ -26,6 +26,10 @@ aiosqlite = "^0.20.0"
 flake8 = "^7.1.0"
 black = "^24.8.0"
 
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
