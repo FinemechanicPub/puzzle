@@ -13,6 +13,12 @@
     }
 </script>
 
+<style scoped>
+    .palette-item{
+        align-content: center;
+    }
+</style>
+
 <template>
 	<div class="piece-palette" v-auto-animate>
         <div class="palette-item" :key="piece.id" v-for="piece in props.availablePieces">

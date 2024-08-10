@@ -97,7 +97,7 @@
     touchCurrent.value = [x, y]
   }
 
-  function onTouchEnd(evt){
+  function onTouchEnd(){
     const [dy, dx] = divmod(mouse_index.value, width.value)
     const piece_data = {
       dy: -dy,
@@ -164,16 +164,16 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">⤹</button>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">↪️</button>
       <div class="piece-box movable">
         <div class="piece grid cursor-pointer" draggable="true" @dragstart="startDrag($event)">
-          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index" @touchstart="onTouchStart($event, index)" @touchmove="onTouchMove($event)" @touchend="onTouchEnd($event)"></div>
+          <div class="piece-cell" :class="{ colored: cell }" @mousedown="on_mouse_down(index)" v-for="(cell, index) in grid.flat()" :key="index" @touchstart="onTouchStart($event, index)" @touchmove="onTouchMove($event)" @touchend="onTouchEnd()"></div>
         </div>
       </div>
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">⤸</button>
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">↩️</button>
     </div>
     <div class="flex-center-content">
-      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">⮍</button>
+      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">🔄</button>
     </div>
   </div>
 </template>
