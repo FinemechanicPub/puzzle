@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.base import Piece, PieceRotation
 from app.repositories.piece_repository import piece_repository
 from app.schemas.piece import PieceBase
-from engine.piece import flipped_rotated, make_versions
+from engine.piece import flipped_rotated
 
 
 async def create_piece_with_rotations(
