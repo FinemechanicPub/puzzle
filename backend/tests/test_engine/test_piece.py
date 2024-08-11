@@ -2,9 +2,9 @@ from typing import Sequence
 
 import pytest
 
-from engine.piece import Points, produce_rotations
+from engine.piece import Points, produce_rotations, flip_index
 
-CASES: list[tuple[Points, Sequence[Points]]] = [
+ROTATION_CASES: list[tuple[Points, Sequence[Points]]] = [
     (
         [(0, 0), (0, 1), (1, -1), (1, 0), (2, 0)],
         (
@@ -29,7 +29,28 @@ CASES: list[tuple[Points, Sequence[Points]]] = [
     ),
 ]
 
+FLIP_INDEX_CASES = [
+    ([(0, 0), (0, 1), (1, -1), (1, 0), (2, 0)], 4),  # F
+    ([(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)], 2),  # I
+    ([(0, 0), (1, 0), (2, 0), (3, 0), (3, 1)], 4),  # L
+    ([(0, 0), (1, 0), (2, -1), (2, 0), (3, -1)], 4),  # N
+    ([(0, 0), (0, 1), (1, 0), (1, 1), (2, 0)], 4),  # P
+    ([(0, 0), (0, 1), (0, 2), (1, 1), (2, 1)], 4),  # T
+    ([(0, 0), (0, 2), (1, 0), (1, 1), (1, 2)], 4),  # U
+    ([(0, 0), (1, 0), (2, 0), (2, 1), (2, 2)], 4),  # V
+    ([(0, 0), (1, 0), (1, 1), (2, 1), (2, 2)], 4),  # W
+    ([(0, 0), (1, -1), (1, 0), (1, 1), (2, 0)], 1),  # X
+    ([(0, 0), (1, -1), (1, 0), (2, 0), (3, 0)], 4),  # Y
+    ([(0, 0), (0, 1), (1, 1), (2, 1), (2, 2)], 2),  # Z
+]
 
-@pytest.mark.parametrize(["points", "rotations"], CASES)
+
+@pytest.mark.parametrize(["points", "rotations"], ROTATION_CASES)
 def test_rotations(points: Points, rotations: Sequence[Points]):
     assert produce_rotations(points) == rotations
+
+
+@pytest.mark.parametrize(["points", "index"], FLIP_INDEX_CASES)
+def test_flip_index(points, index):
+    versions = produce_rotations(points)
+    assert flip_index(versions) == index

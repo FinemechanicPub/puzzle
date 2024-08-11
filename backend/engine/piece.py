@@ -1,4 +1,4 @@
-from engine.types import Point, Points
+from engine.types import PieceRotations, Point, Points
 
 
 def _transpose(points: Points) -> tuple[Point, ...]:
@@ -37,7 +37,7 @@ def flip_vertically(points: Points) -> tuple[Point, ...]:
 
 def rotate_left(points: Points, times=1) -> tuple[Point, ...]:
     """Поворот фигуры против часовой стрелки с нормализацией."""
-    return normalize(_rotate_left(points))
+    return normalize(_rotate_left(points, times))
 
 
 def produce_rotations(
@@ -48,7 +48,26 @@ def produce_rotations(
     for side in range(2 if flip else 1):
         for quarter in range(4 if rotate else 1):
             upright = _rotate_left(points, quarter)
-            rotation = normalize(_flip_vertically(upright) if side else upright)
+            rotation = normalize(
+                _flip_vertically(upright) if side else upright
+            )
             if rotation not in rotations:
                 rotations.append(rotation)
     return tuple(rotations)
+
+
+def flip_index(versions: PieceRotations) -> int:
+    """Возвращает количество вариантов фигуры без учета отражений."""
+    n = len(versions)
+    if n < 2:
+        return n
+    vertical_reflection = flip_vertically(versions[0])
+    if (
+        rotate_left(versions[0], 2) == vertical_reflection
+        or rotate_left(versions[0], 3) == vertical_reflection
+    ):
+        return n
+    for index in range(1, n):
+        if vertical_reflection == versions[index]:
+            return index
+    return n
