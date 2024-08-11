@@ -1,3 +1,7 @@
+[tool.black]
+extend-exclude = "alembic"
+line-length = 79
+
 [tool.poetry]
 package-mode = false
 name = "puzzle"
