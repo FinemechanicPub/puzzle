@@ -1,6 +1,6 @@
 from timeit import default_timer
 
-from engine.piece import produce_rotations
+from engine.piece import make_versions
 from engine.board import Board
 from engine.samples import PENTAMINO_PIECES
 from engine.solver import solutions, make_piece_set
@@ -11,7 +11,7 @@ def find_all_solutions():
     start = default_timer()
     piece_set = make_piece_set(
         board,
-        (produce_rotations(piece) for piece in PENTAMINO_PIECES.values()),
+        (make_versions(piece) for piece in PENTAMINO_PIECES.values()),
     )
     print(f"Piece generation time: {(default_timer() - start)*1000:.0f} ms")
     start = default_timer()

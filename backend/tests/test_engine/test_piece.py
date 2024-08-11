@@ -2,7 +2,7 @@ from typing import Sequence
 
 import pytest
 
-from engine.piece import Points, produce_rotations, flip_index
+from engine.piece import Points, make_versions, flip_index
 
 ROTATION_CASES: list[tuple[Points, Sequence[Points]]] = [
     (
@@ -47,10 +47,10 @@ FLIP_INDEX_CASES = [
 
 @pytest.mark.parametrize(["points", "rotations"], ROTATION_CASES)
 def test_rotations(points: Points, rotations: Sequence[Points]):
-    assert produce_rotations(points) == rotations
+    assert make_versions(points) == rotations
 
 
 @pytest.mark.parametrize(["points", "index"], FLIP_INDEX_CASES)
 def test_flip_index(points, index):
-    versions = produce_rotations(points)
+    versions = make_versions(points)
     assert flip_index(versions) == index

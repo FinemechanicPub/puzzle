@@ -1,5 +1,5 @@
 from engine.board import Board
-from engine.piece import produce_rotations
+from engine.piece import make_versions
 from engine.solver import make_piece_set, solutions
 
 
@@ -27,7 +27,7 @@ SOLUTIONS = set(
 
 def test_solutions():
     board = Board(5, 5)
-    rotations = [produce_rotations(piece) for piece in PIECES]
+    rotations = [make_versions(piece) for piece in PIECES]
     piece_set = make_piece_set(board, rotations)
     solution_list = list(solutions(board, piece_set))
     assert len(solution_list) == 8

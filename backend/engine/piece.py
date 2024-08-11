@@ -1,3 +1,4 @@
+from typing import Sequence
 from engine.types import PieceRotations, Point, Points
 
 
@@ -40,21 +41,39 @@ def rotate_left(points: Points, times=1) -> tuple[Point, ...]:
     return normalize(_rotate_left(points, times))
 
 
-def produce_rotations(
-    points: Points, rotate=True, flip=True
-) -> tuple[Points, ...]:
-    """Создание версий фигуры на основе вращения и отражения."""
+def rotated(points: Points) -> Sequence[Points]:
+    """Создание версий фигуры на основе вращения."""
     rotations = list[tuple[Point, ...]]()  # список для стабильности порядка
-    for quarter in range(4 if rotate else 1):
+    for quarter in range(4):
         rotation = rotate_left(points, quarter)
         if rotation not in rotations:
             rotations.append(rotation)
-    if flip:
-        for index in range(len(rotations)):
-            rotation = flip_vertically(rotations[index])
-            if rotation not in rotations:
-                rotations.append(rotation)
-    return tuple(rotations)
+    return rotations
+
+
+def flipped(rotations: Sequence[Points]) -> Sequence[Points]:
+    """Создание версий фигуры на основе отражения."""
+    reflections: list[Points] = []
+    for rotation in rotations:
+        reflection = flip_vertically(rotation)
+        if reflection not in rotations:
+            reflections.append(reflection)
+    return reflections
+
+
+def flipped_rotated(points: Points, rotate=True, flip=True):
+    """Создание версий фигуры на основе вращения и отражения."""
+    rotations = list(rotated(points)) if rotate else [points]
+    reflections = list(flipped(rotations)) if flip else []
+    return (rotations, reflections)
+
+
+def make_versions(
+    points: Points, rotate=True, flip=True
+) -> tuple[Points, ...]:
+    """Создание версий фигуры на основе вращения и отражения."""
+    rotations, reflections = flipped_rotated(points, rotate, flip)
+    return tuple(rotations + reflections)
 
 
 def flip_index(versions: PieceRotations) -> int:
