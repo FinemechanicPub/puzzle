@@ -65,6 +65,7 @@ export type PieceBase = {
         number,
         number
     ]>;
+    color: number;
 };
 
 export type PieceColor = {
@@ -78,6 +79,7 @@ export type PieceGetResponse = {
         number,
         number
     ]>;
+    color: number;
     id: number;
     readonly size: number;
 };
@@ -94,6 +96,7 @@ export type Rotation = {
         number,
         number
     ]>;
+    flipped: number;
 };
 
 export type UserRead = {

@@ -247,10 +247,14 @@ export const $PieceBase = {
             },
             type: 'array',
             title: 'Points'
+        },
+        color: {
+            type: 'integer',
+            title: 'Color'
         }
     },
     type: 'object',
-    required: ['name', 'points'],
+    required: ['name', 'points', 'color'],
     title: 'PieceBase'
 } as const;
 
@@ -301,6 +305,10 @@ export const $PieceGetResponse = {
             type: 'array',
             title: 'Points'
         },
+        color: {
+            type: 'integer',
+            title: 'Color'
+        },
         id: {
             type: 'integer',
             title: 'Id'
@@ -312,7 +320,7 @@ export const $PieceGetResponse = {
         }
     },
     type: 'object',
-    required: ['name', 'points', 'id', 'size'],
+    required: ['name', 'points', 'color', 'id', 'size'],
     title: 'PieceGetResponse'
 } as const;
 
@@ -362,10 +370,14 @@ export const $Rotation = {
             },
             type: 'array',
             title: 'Points'
+        },
+        flipped: {
+            type: 'integer',
+            title: 'Flipped'
         }
     },
     type: 'object',
-    required: ['id', 'points'],
+    required: ['id', 'points', 'flipped'],
     title: 'Rotation'
 } as const;
 
