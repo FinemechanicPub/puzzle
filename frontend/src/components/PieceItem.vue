@@ -26,9 +26,10 @@
   const box_width = computed(() => `${diameter.value*(props.cellSize)}px`)
   const grid = computed(make_grid)
   const width = computed(() => maxX.value - minX.value + 1)
-  const canFlip = computed(() => props.piece.rotations.length > 4)
   const canRotate = computed(() => props.piece.rotations.length > 1)
-  
+  const flipIndex = computed(() => 1 + props.piece.rotations.findLastIndex((item) => item.flipped === 0))
+  const canFlip = computed(() => flipIndex.value < props.piece.rotations.length)
+
   const mouse_index = ref(null)
 
   const touchStart = ref([])
@@ -68,7 +69,7 @@
   function rotate(direction){
     const length = props.piece.rotations.length
     const index = rotationIndex.value
-    if (length > 4){
+    if (canFlip.value){
       const half_length = length / 2
       if (index < half_length){
         rotationIndex.value = (half_length + index + direction) % half_length
