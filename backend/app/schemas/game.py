@@ -35,6 +35,7 @@ class GamePiecePointsResponse(BaseModel):
 class Rotation(BaseModel):
     id: int
     points: list[tuple[int, int]]
+    flipped: int
 
 
 class GamePieceRotationsResponse(BaseModel):

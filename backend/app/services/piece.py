@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.base import Piece, PieceRotation
 from app.repositories.piece_repository import piece_repository
 from app.schemas.piece import PieceBase
-from engine.piece import make_versions
+from engine.piece import flipped_rotated, make_versions
 
 
 async def create_piece_with_rotations(
@@ -17,9 +17,15 @@ async def create_piece_with_rotations(
 
 
 def add_rotations(piece: Piece) -> Piece:
-    rotations = make_versions(piece.points)
+    rotations, reflections = flipped_rotated(piece.points)
     for order, rotation in enumerate(rotations, 1):
         piece.rotations.append(
-            PieceRotation(piece=piece, order=order, points=rotation)
+            PieceRotation(piece=piece, order=order, points=rotation, flipped=0)
+        )
+    for order, reflection in enumerate(reflections, len(rotations)):
+        piece.rotations.append(
+            PieceRotation(
+                piece=piece, order=order, points=reflection, flipped=1
+            )
         )
     return piece

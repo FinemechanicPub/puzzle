@@ -13,6 +13,7 @@ class PieceRotation(Base):
     )
     points: Mapped[tuple[tuple[int, int], ...]] = mapped_column(JSON)
     order: Mapped[int] = mapped_column(SmallInteger)
+    flipped: Mapped[int] = mapped_column(SmallInteger)
     piece: Mapped["Piece"] = relationship("Piece", back_populates="rotations")
 
 
