@@ -14,11 +14,13 @@ piece_router = APIRouter()
 
 
 @piece_router.get(
-    '/piece_id/',
+    "/piece_id/",
     response_model=PieceGetResponse,
     dependencies=[Depends(verified_user)],
 )
-async def get_piece(piece_id: int, session: AsyncSession = Depends(get_async_session)):
+async def get_piece(
+    piece_id: int, session: AsyncSession = Depends(get_async_session)
+):
     piece = await piece_repository.get(session, piece_id)
     if not piece:
         raise PieceNotFoundException
@@ -26,18 +28,23 @@ async def get_piece(piece_id: int, session: AsyncSession = Depends(get_async_ses
 
 
 @piece_router.get(
-    '/',
+    "/",
     response_model=list[PieceGetResponse],
     response_model_exclude_none=True,
     dependencies=[Depends(verified_user)],
 )
-async def list_pieces(session: AsyncSession = Depends(get_async_session), pagination: OffsetLimit = Depends()):
-    pieces = await piece_repository.list(session, offset=pagination.offset, limit=pagination.limit)
+async def list_pieces(
+    session: AsyncSession = Depends(get_async_session),
+    pagination: OffsetLimit = Depends(),
+):
+    pieces = await piece_repository.list(
+        session, offset=pagination.offset, limit=pagination.limit
+    )
     return pieces
 
 
 @piece_router.post(
-    '/',
+    "/",
     response_model=PieceGetResponse,
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
@@ -50,8 +57,14 @@ async def create_piece(
     return await create_piece_with_rotations(session, piece_data)
 
 
-@piece_router.delete('/piece_id/', status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(superuser)])
-async def remove_piece(piece_id: int, session: AsyncSession = Depends(get_async_session)):
+@piece_router.delete(
+    "/piece_id/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(superuser)],
+)
+async def remove_piece(
+    piece_id: int, session: AsyncSession = Depends(get_async_session)
+):
     piece = await piece_repository.get(session, piece_id)
     if not piece:
         raise PieceNotFoundException

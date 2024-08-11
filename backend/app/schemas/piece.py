@@ -1,6 +1,10 @@
 from typing import Sequence
 from pydantic import (
-    BaseModel, ConfigDict, Field, computed_field, field_validator
+    BaseModel,
+    ConfigDict,
+    Field,
+    computed_field,
+    field_validator,
 )
 
 from app.core.config import settings
@@ -12,7 +16,7 @@ class PieceBase(BaseModel):
     points: Sequence[tuple[int, int]]
     color: int
 
-    field_validator('color')(validate_color)
+    field_validator("color")(validate_color)
 
     @computed_field
     @property

@@ -15,7 +15,7 @@ class Difficulty(int, Enum):
     hard = 12
 
 
-@cover_router.get('/suggestion/', response_model=list[GameResponseBase])
+@cover_router.get("/suggestion/", response_model=list[GameResponseBase])
 async def suggestion(
     session: AsyncSession = Depends(get_async_session),
     difficulty: Difficulty = Difficulty.easy,

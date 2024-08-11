@@ -26,9 +26,7 @@ BAD_SIZE = (
     "Поле {height}x{width} невозможно без промежутков замостить "
     "фигурами размера {size}"
 )
-GAMES_DELETED = (
-    "Удалено {count} ранее созданных с помощью этой команды игр"
-)
+GAMES_DELETED = "Удалено {count} ранее созданных с помощью этой команды игр"
 GAMES_CREATED = "Создано {count} игр"
 
 PIECES_CREATED = "Создано {count} фигур"
@@ -119,21 +117,22 @@ def create_games(
     board = Board(height, width)
     piece_count, excess = divmod(board.size, piece_size)
     if excess:
-        raise click.ClickException(BAD_SIZE.format(
-            size=piece_size, height=height, width=width
-        ))
+        raise click.ClickException(
+            BAD_SIZE.format(size=piece_size, height=height, width=width)
+        )
     pieces = loop.run_until_complete(get_pieces(piece_size))
     if piece_count > len(pieces):
-        raise click.ClickException(NO_ENOUGH_PIECES.format(
-            count=len(pieces), size=piece_size, height=height, width=width
-        ))
+        raise click.ClickException(
+            NO_ENOUGH_PIECES.format(
+                count=len(pieces), size=piece_size, height=height, width=width
+            )
+        )
 
     signature = SIGNATURE.format(height=height, width=width, size=piece_size)
     games: list[Game] = []
     for combination in combinations(pieces, piece_count):
         piece_set = make_piece_set(
-            board,
-            tuple(from_db_model(piece) for piece in combination)
+            board, tuple(from_db_model(piece) for piece in combination)
         )
         if next(solutions(board, piece_set), None):
             game = Game(height=height, width=width, note=signature)
@@ -160,5 +159,5 @@ def create_pieces(size: str):
     click.echo(PIECES_CREATED.format(count=len(pieces)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create()

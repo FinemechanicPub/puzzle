@@ -26,21 +26,21 @@ class PositionedPiece:
 
 
 def get_rotation(
-        game: Game, piece_id: int, rotation_id: int
-        ) -> PieceRotation | None:
+    game: Game, piece_id: int, rotation_id: int
+) -> PieceRotation | None:
     """Возвращает ориентацию фигуры или None, если в игре её нет."""
 
     piece = next(filter(lambda item: item.id == piece_id, game.pieces), None)
     if not piece:
         return None
-    rotation = next(filter(
-        lambda item: item.id == rotation_id, piece.rotations
-    ), None)
+    rotation = next(
+        filter(lambda item: item.id == rotation_id, piece.rotations), None
+    )
     return rotation
 
 
 def get_free_pieces(
-        game: Game, fixed_pieces: Sequence[PositionedPiece]
+    game: Game, fixed_pieces: Sequence[PositionedPiece]
 ) -> Sequence[Piece]:
     """Возвращает последовательность фигур, не находящихся на доске."""
     counts = Counter(piece.rotation.piece_id for piece in fixed_pieces)
@@ -70,8 +70,8 @@ def solve(board: Board, piece_set: PieceSet) -> PiecePositionEngine | None:
 
 
 def hint_move(
-        game: Game, fixed_pieces: Sequence[PositionedPiece]
-        ) -> tuple[bool, PiecePositionDb | None]:
+    game: Game, fixed_pieces: Sequence[PositionedPiece]
+) -> tuple[bool, PiecePositionDb | None]:
     """Возвращает параметры следующего возможного хода.
 
     Первый элемент кортежа показывает заполнена ли доска полностью.
@@ -102,5 +102,5 @@ def hint_move(
     return False, (
         free_pieces[piece_index].id,
         free_pieces[piece_index].rotations[rotation_index].id,
-        position
+        position,
     )

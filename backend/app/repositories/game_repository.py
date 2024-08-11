@@ -11,7 +11,9 @@ class GameCountRepository(RepositoryBase[Game]):
 
     def selector(self, piece_count):
         return (
-            super().selector().join(GamePieces)
+            super()
+            .selector()
+            .join(GamePieces)
             .group_by(self.model.id)
             .having(func.count(GamePieces.game_id) == piece_count)
         )
@@ -22,10 +24,14 @@ class GameExtendedRepository(RepositoryBase[Game]):
     force_unique = True
 
     def selector(self):
-        return super().selector().options(
-            joinedload(Game.game_pieces)
-            .joinedload(GamePieces.piece)
-            .joinedload(Piece.rotations)
+        return (
+            super()
+            .selector()
+            .options(
+                joinedload(Game.game_pieces)
+                .joinedload(GamePieces.piece)
+                .joinedload(Piece.rotations)
+            )
         )
 
 

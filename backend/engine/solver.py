@@ -10,12 +10,13 @@ from engine.types import PieceData, PieceSet, Points, PositionMasks
 def cache_key(board: Board, points: Points):
     """Возвращает ключ кэша для функции rotation_masks"""
     return keys.hashkey(
-        board.height, board.width,
-        tuple(number for point in points for number in point)
+        board.height,
+        board.width,
+        tuple(number for point in points for number in point),
     )
 
 
-@cached(cache=LRUCache(maxsize=512*1024), lock=Lock(), key=cache_key)
+@cached(cache=LRUCache(maxsize=512 * 1024), lock=Lock(), key=cache_key)
 def rotation_masks(board: Board, points: Points):
     """Возвращает маски для фигуры в определенной ориентации."""
     return board.piece_masks(points)
@@ -24,10 +25,7 @@ def rotation_masks(board: Board, points: Points):
 def make_piece_set(board: Board, pieces: Iterable[Iterable[Points]]):
     """Создает набор фигур в формате решателя."""
     return tuple(
-        optimize([
-            rotation_masks(board, rotation)
-            for rotation in rotations
-        ])
+        optimize([rotation_masks(board, rotation) for rotation in rotations])
         for rotations in pieces
     )
 
@@ -87,12 +85,19 @@ def solutions(board: Board, piece_set: PieceSet):
                 if new_board == full_board:
                     yield [
                         (piece_index, original_index, position)
-                        for piece_index, (_, position, _, original_index)
-                        in history.items()
+                        for piece_index, (
+                            _,
+                            position,
+                            _,
+                            original_index,
+                        ) in history.items()
                     ] + [(piece_index, original_index, position)]
                 else:
                     history[piece_index] = (
-                        rotation_index, position, board_mask, original_index
+                        rotation_index,
+                        position,
+                        board_mask,
+                        original_index,
                     )
                     board_mask = new_board
                     position = advance_position(board_mask, position + 1)
@@ -108,5 +113,7 @@ def solutions(board: Board, piece_set: PieceSet):
         if not history:
             break
 
-        next_piece, (next_rotation, position, board_mask, _) = history.popitem()
+        next_piece, (next_rotation, position, board_mask, _) = (
+            history.popitem()
+        )
         next_rotation += 1

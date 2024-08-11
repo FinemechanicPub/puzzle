@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import ColumnExpressionArgument, func
 
 from app.models.base import Base
 
-ModelType = TypeVar('ModelType', bound=Base)
+ModelType = TypeVar("ModelType", bound=Base)
 
 
 class RepositoryBase(Generic[ModelType]):
@@ -23,21 +23,19 @@ class RepositoryBase(Generic[ModelType]):
 
     async def get(self, session: AsyncSession, id: int) -> Optional[ModelType]:
         db_obj = await session.execute(
-            self.selector().where(
-                self.model.id == id
-            )
+            self.selector().where(self.model.id == id)
         )
         return db_obj.scalars().first()
 
     async def list(
-            self,
-            session: AsyncSession,
-            offset: int = 0,
-            limit: Optional[int] = None,
-            ids: Optional[Sequence[int]] = None,
-            clause: Optional[ColumnExpressionArgument[bool]] = None,
-            random: bool = False,
-            **kwargs,
+        self,
+        session: AsyncSession,
+        offset: int = 0,
+        limit: Optional[int] = None,
+        ids: Optional[Sequence[int]] = None,
+        clause: Optional[ColumnExpressionArgument[bool]] = None,
+        random: bool = False,
+        **kwargs,
     ):
         statement = self.selector(**kwargs)
         if ids is not None:
@@ -61,11 +59,11 @@ class RepositoryBase(Generic[ModelType]):
         return instance
 
     async def update(
-            self,
-            session: AsyncSession,
-            instance: ModelType,
-            data: BaseModel,
-            commit: bool = True
+        self,
+        session: AsyncSession,
+        instance: ModelType,
+        data: BaseModel,
+        commit: bool = True,
     ):
         instance_data = jsonable_encoder(instance)
         updates_dict = data.model_dump(exclude_unset=True)

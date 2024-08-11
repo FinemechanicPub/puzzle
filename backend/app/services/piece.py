@@ -7,7 +7,7 @@ from engine.piece import produce_rotations
 
 
 async def create_piece_with_rotations(
-        session: AsyncSession, piece_data: PieceBase
+    session: AsyncSession, piece_data: PieceBase
 ):
     piece = await piece_repository.create(session, piece_data, commit=False)
     add_rotations(piece)

@@ -1,4 +1,3 @@
-
 def validate_color(value):
     if isinstance(value, str):
         return int(value, 16)

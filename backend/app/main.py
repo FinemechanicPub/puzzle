@@ -14,15 +14,12 @@ from app.api.routers import main_router
 
 # Настройка протоколирования
 handler = logging.StreamHandler()
-handler.setFormatter(ColorFormatter(
-    fmt="{levelname}{asctime} - {message}",
-    datefmt="%H:%M:%S",
-    style="{"
-))
-logging.basicConfig(
-    level=logging.INFO,
-    handlers=[handler]
+handler.setFormatter(
+    ColorFormatter(
+        fmt="{levelname}{asctime} - {message}", datefmt="%H:%M:%S", style="{"
+    )
 )
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 logger = logging.getLogger(__name__)
 
 

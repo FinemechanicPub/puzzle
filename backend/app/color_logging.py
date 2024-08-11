@@ -28,6 +28,7 @@ class ColorFormatter(logging.Formatter):
             LEVEL_COLOR[record.levelno]
             + record.levelname
             + ColorCodes.reset
-            + ":" + f"{' ':<{9-len(record.levelname)}}"
+            + ":"
+            + f"{' ':<{9-len(record.levelname)}}"
         )
         return super().formatMessage(record)

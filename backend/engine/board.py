@@ -4,6 +4,7 @@ from engine.types import Mask, PositionMasks, Points
 
 class Projection:
     """Проекция фигуры на доску"""
+
     board_width: int = 0
     board_height: int = 0
     board_size: int = 0
@@ -15,7 +16,7 @@ class Projection:
     row_range: range = range(0)  # допустимые строки установки
     mask: int = 0
 
-    def __init__(self, board: 'Board', points: Points) -> None:
+    def __init__(self, board: "Board", points: Points) -> None:
         self.board_width = board.width
         self.board_height = board.height
         self.board_size = board.size
@@ -95,9 +96,7 @@ class Board:
         position = 0
         while board_mask & self.probes[position]:
             position += 1
-        return (
-            self.count_area(board_mask, position) % piece_size == 0
-        )
+        return self.count_area(board_mask, position) % piece_size == 0
 
     def areas(self, board_mask: int | None = None):
         """Найти связанные незаполненные области."""
@@ -107,15 +106,22 @@ class Board:
         for row in range(self.height):
             row_start = row * self.width
             for position in range(row_start + 1, row_start + self.width):
-                if board_mask & (
-                    self.probes[position] | self.probes[position - 1]
-                ) == 0:
+                if (
+                    board_mask
+                    & (self.probes[position] | self.probes[position - 1])
+                    == 0
+                ):
                     _areas.union(position - 1, position)
         for col in range(self.width):
             for position in range(self.width + col, self.size, self.width):
-                if board_mask & (
-                    self.probes[position] | self.probes[position - self.width]
-                ) == 0:
+                if (
+                    board_mask
+                    & (
+                        self.probes[position]
+                        | self.probes[position - self.width]
+                    )
+                    == 0
+                ):
                     _areas.union(position - self.width, position)
         return tuple(size for size in _areas.set_sizes() if size > 1)
 
@@ -130,7 +136,7 @@ class Board:
         masks = [0] * self.size
         for row in reversed(piece.row_range):
             for col in reversed(piece.column_range):
-                masks[row*self.width + col] = (
+                masks[row * self.width + col] = (
                     piece_mask
                     if not piece.on_edge(row, col)
                     # or max(

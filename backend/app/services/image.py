@@ -24,8 +24,7 @@ def rgb(color: int) -> tuple[int, int, int]:
 
 
 def stack_horizontally(
-    images: Sequence[Image.Image],
-    padding=5
+    images: Sequence[Image.Image], padding=5
 ) -> Image.Image:
     height = max(image.height for image in images)
     width = padding + sum(image.width + padding for image in images)
@@ -37,10 +36,7 @@ def stack_horizontally(
     return im
 
 
-def stack_vertically(
-    images: Sequence[Image.Image],
-    padding=5
-) -> Image.Image:
+def stack_vertically(images: Sequence[Image.Image], padding=5) -> Image.Image:
     width = max(image.width for image in images)
     height = padding + sum(image.height + padding for image in images)
     im = Image.new("RGB", (width, height), BACKGROUND)
@@ -56,7 +52,7 @@ def stack_rows(rows: Sequence[Sequence[Image.Image]]) -> Image.Image:
 
 
 def wrap(
-        images: Sequence[Image.Image], row_count=2
+    images: Sequence[Image.Image], row_count=2
 ) -> Sequence[Sequence[Image.Image]]:
     row_width = sum(image.width for image in images) // row_count
     rows = [[]]
@@ -79,10 +75,12 @@ def draw_board(board: Board, cell_width=10):
         for col in range(board.width):
             canvas.rectangle(
                 [
-                    col * cell_width, row * cell_width,
-                    (col + 1) * cell_width, (row + 1) * cell_width
+                    col * cell_width,
+                    row * cell_width,
+                    (col + 1) * cell_width,
+                    (row + 1) * cell_width,
                 ],
-                outline=GRID_COLOR
+                outline=GRID_COLOR,
             )
     return im
 
@@ -99,20 +97,30 @@ def draw_piece(points: tuple[Point, ...], color: int, cell_width=10):
         col += -min_x
         canvas.rectangle(
             [
-                col * cell_width, row * cell_width,
-                (col + 1) * cell_width, (row + 1) * cell_width
+                col * cell_width,
+                row * cell_width,
+                (col + 1) * cell_width,
+                (row + 1) * cell_width,
             ],
             fill=rgb(color),
-            outline=BACKGROUND
+            outline=BACKGROUND,
         )
     return im
 
 
 def thumbnail(board: Board, pieces: Iterable[Piece]) -> Image.Image:
     piece_list = list(pieces)
-    return stack_vertically([
-        draw_board(board),
-        stack_rows(wrap(tuple(
-            draw_piece(piece.points, piece.color) for piece in piece_list
-        ), row_count=ceil(len(piece_list) / 4))),
-    ])
+    return stack_vertically(
+        [
+            draw_board(board),
+            stack_rows(
+                wrap(
+                    tuple(
+                        draw_piece(piece.points, piece.color)
+                        for piece in piece_list
+                    ),
+                    row_count=ceil(len(piece_list) / 4),
+                )
+            ),
+        ]
+    )

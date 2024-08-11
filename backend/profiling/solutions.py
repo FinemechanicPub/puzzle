@@ -11,10 +11,7 @@ def find_all_solutions():
     start = default_timer()
     piece_set = make_piece_set(
         board,
-        (
-            produce_rotations(piece)
-            for piece in PENTAMINO_PIECES.values()
-        )
+        (produce_rotations(piece) for piece in PENTAMINO_PIECES.values()),
     )
     print(f"Piece generation time: {(default_timer() - start)*1000:.0f} ms")
     start = default_timer()

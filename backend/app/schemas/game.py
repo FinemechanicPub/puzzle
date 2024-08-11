@@ -6,7 +6,7 @@ class PieceColor(BaseModel):
     piece_id: int
     color: int | str
 
-    @field_validator('color')
+    @field_validator("color")
     def validate_color(cls, value, info: FieldValidationInfo):
         if isinstance(value, str):
             return int(value, 16)
@@ -23,8 +23,8 @@ class CreateGameRequest(BaseModel):
 
 
 class GamePiecePointsResponse(BaseModel):
-    id: int = Field(..., validation_alias='piece_id')
-    name: str = Field(..., validation_alias='piece_name')
+    id: int = Field(..., validation_alias="piece_id")
+    name: str = Field(..., validation_alias="piece_name")
     color: int
     count: int
     points: list[tuple[int, int]]
@@ -38,8 +38,8 @@ class Rotation(BaseModel):
 
 
 class GamePieceRotationsResponse(BaseModel):
-    id: int = Field(..., validation_alias='piece_id')
-    name: str = Field(..., validation_alias='piece_name')
+    id: int = Field(..., validation_alias="piece_id")
+    name: str = Field(..., validation_alias="piece_name")
     color: int
     count: int
 
@@ -60,7 +60,7 @@ class GameResponseBase(BaseModel):
 class GameShortResponse(GameResponseBase):
 
     pieces: list[GamePiecePointsResponse] = Field(
-        ..., validation_alias='game_pieces'
+        ..., validation_alias="game_pieces"
     )
 
     model_config = ConfigDict(from_attributes=True)
@@ -69,7 +69,7 @@ class GameShortResponse(GameResponseBase):
 class GameLongResponse(GameResponseBase):
 
     pieces: list[GamePieceRotationsResponse] = Field(
-        ..., validation_alias='game_pieces'
+        ..., validation_alias="game_pieces"
     )
 
     model_config = ConfigDict(from_attributes=True)
