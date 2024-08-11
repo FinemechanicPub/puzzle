@@ -1,17 +1,17 @@
 from engine.types import Point, Points
 
 
-def transpose(points: Points) -> tuple[Point, ...]:
+def _transpose(points: Points) -> tuple[Point, ...]:
     """Транспонирование точек фигуры."""
     return tuple((x, y) for y, x in points)
 
 
-def flip_vertically(points: Points) -> tuple[Point, ...]:
+def _flip_vertically(points: Points) -> tuple[Point, ...]:
     """Отражение фигуры относительно горизонтальной оси."""
     return tuple((-y, x) for y, x in points)
 
 
-def rotate_left(points: Points, times=1) -> tuple[Point, ...]:
+def _rotate_left(points: Points, times=1) -> tuple[Point, ...]:
     """Поворот фигуры против часовой стрелки."""
     for _ in range(times):
         points = flip_vertically(transpose(points))
@@ -25,6 +25,21 @@ def normalize(points: Points) -> tuple[Point, ...]:
     return tuple(sorted((y - base_y, x - base_x) for y, x in points))
 
 
+def transpose(points: Points) -> tuple[Point, ...]:
+    """Транспонирование точек фигуры с нормализацией."""
+    return normalize(_transpose(points))
+
+
+def flip_vertically(points: Points) -> tuple[Point, ...]:
+    """Отражение фигуры относительно горизонтальной оси с нормализацией."""
+    return normalize(_flip_vertically(points))
+
+
+def rotate_left(points: Points, times=1) -> tuple[Point, ...]:
+    """Поворот фигуры против часовой стрелки с нормализацией."""
+    return normalize(_rotate_left(points))
+
+
 def produce_rotations(
     points: Points, rotate=True, flip=True
 ) -> tuple[Points, ...]:
@@ -32,8 +47,8 @@ def produce_rotations(
     rotations = list[tuple[Point, ...]]()  # список для стабильности порядка
     for side in range(2 if flip else 1):
         for quarter in range(4 if rotate else 1):
-            upright = rotate_left(points, quarter)
-            rotation = normalize(flip_vertically(upright) if side else upright)
+            upright = _rotate_left(points, quarter)
+            rotation = normalize(_flip_vertically(upright) if side else upright)
             if rotation not in rotations:
                 rotations.append(rotation)
     return tuple(rotations)
