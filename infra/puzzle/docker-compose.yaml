@@ -7,6 +7,7 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
+    restart: unless-stopped     
     networks:
       - puzzle
   migrations:
@@ -28,6 +29,7 @@ services:
       - ./.env
     volumes:
       - db_volume:/var/lib/postgresql/data
+    restart: unless-stopped
     networks:
       - puzzle
     healthcheck:
@@ -43,6 +45,7 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
     depends_on:
       - web
+    restart: unless-stopped
     networks:
       - puzzle
 
