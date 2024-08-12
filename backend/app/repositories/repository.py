@@ -33,7 +33,7 @@ class RepositoryBase(Generic[ModelType]):
         offset: int = 0,
         limit: Optional[int] = None,
         ids: Optional[Sequence[int]] = None,
-        clause: Optional[ColumnExpressionArgument[bool]] = None,
+        clause: Optional[Sequence[ColumnExpressionArgument[bool]]] = None,
         random: bool = False,
         **kwargs,
     ):
@@ -41,7 +41,7 @@ class RepositoryBase(Generic[ModelType]):
         if ids is not None:
             statement = statement.where(self.model.id.in_(ids))
         if clause is not None:
-            statement = statement.where(clause)
+            statement = statement.where(*clause)
         if random:
             statement = statement.order_by(func.random())
         db_objs = await session.execute(statement.offset(offset).limit(limit))

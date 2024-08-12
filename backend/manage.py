@@ -68,7 +68,7 @@ async def get_pieces(piece_size: int):
     session_context = contextlib.asynccontextmanager(get_async_session)
     async with session_context() as session:
         pieces = await piece_repository.list(
-            session, clause=(Piece.size == piece_size)
+            session, clause=(Piece.size == piece_size,)
         )
     return pieces
 
