@@ -22,7 +22,7 @@ def add_rotations(piece: Piece) -> Piece:
         piece.rotations.append(
             PieceRotation(piece=piece, order=order, points=rotation, flipped=0)
         )
-    for order, reflection in enumerate(reflections, len(rotations)):
+    for order, reflection in enumerate(reflections, len(rotations) + 1):
         piece.rotations.append(
             PieceRotation(
                 piece=piece, order=order, points=reflection, flipped=1
