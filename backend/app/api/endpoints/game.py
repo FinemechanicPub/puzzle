@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.exceptions import GameNotFoundException
-from app.api.utility import OffsetLimit
+from app.api.utility import GameParameters, OffsetLimit
 from app.core.db import get_async_session
 from app.core.user import superuser
 from app.repositories.game_repository import (
@@ -17,6 +17,7 @@ from app.schemas.game import (
     GameLongResponse,
 )
 from app.services.image import Piece, thumbnail
+from app.models.game import Game
 from engine.board import Board
 
 
@@ -44,9 +45,18 @@ async def get_game(
 async def list_games(
     session: AsyncSession = Depends(get_async_session),
     pagination: OffsetLimit = Depends(),
+    game_parameters: GameParameters = Depends(),
+    shuffle: bool = False,
 ):
     games = await game_repository.list(
-        session, pagination.offset, pagination.limit
+        session,
+        pagination.offset,
+        pagination.limit,
+        clause=(
+            Game.height == game_parameters.height,
+            Game.width == game_parameters.width,
+        ),
+        random=shuffle,
     )
     return games
 
