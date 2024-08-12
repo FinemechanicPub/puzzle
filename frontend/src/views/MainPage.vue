@@ -1,21 +1,29 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
+    import { ref, watchEffect } from 'vue';
+    import { useRoute } from 'vue-router';
     import GameCarousel from '@/components/GameCarousel.vue'
-    import { mainPageSuggestion } from '@/api/generated'
+    import { gamesListGames } from '@/api/generated'
     import { ApiError } from '@/api/generated/core/ApiError'
+
+    const route = useRoute()
 
     const error = ref(null)
     const loading = ref(false)
     const games = ref([])
 
-    onMounted(fetchData)
+    watchEffect(fetchData)
 
     async function fetchData() {
         error.value = games.value = null
         loading.value = true
         
         try {
-            games.value = await mainPageSuggestion()
+            games.value = await gamesListGames({
+                limit: 10,
+                height: route.query.height ?? 5,
+                width: route.query.width ?? 5,
+                shuffle: true
+            })
         } catch (err) {
             if (err instanceof ApiError){
                 error.value = `${err.status} - ${err.statusText}`
