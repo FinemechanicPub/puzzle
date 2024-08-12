@@ -20,8 +20,8 @@
         try {
             games.value = await gamesListGames({
                 limit: 10,
-                height: route.query.height ?? 5,
-                width: route.query.width ?? 5,
+                height: route.query.height,
+                width: route.query.width,
                 shuffle: true
             })
         } catch (err) {
