@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal
 from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,9 +8,9 @@ class Settings(BaseSettings):
 
     app_title: str = "Puzzle game"
     connection_string: str = "sqlite+aiosqlite://"
-    secret: str = "SECRET"
-    first_superuser_email: Optional[EmailStr] = None
-    first_superuser_password: Optional[str] = None
+    secret: str = "SECRET2"
+    first_superuser_email: EmailStr | Literal[""] = ""
+    first_superuser_password: str = ""
     unverified_user_can_login: bool = True
     max_cells: int = 120
     page_limit: int = 20
