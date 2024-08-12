@@ -140,8 +140,11 @@ export type GamesRemoveGameData = {
 export type GamesRemoveGameResponse = void;
 
 export type GamesListGamesData = {
+    height?: number;
     limit?: number;
     offset?: number;
+    shuffle?: boolean;
+    width?: number;
 };
 
 export type GamesListGamesResponse = Array<GameResponseBase>;

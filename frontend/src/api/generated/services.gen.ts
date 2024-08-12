@@ -62,8 +62,11 @@ export const gamesRemoveGame = (data: GamesRemoveGameData): CancelablePromise<Ga
 /**
  * List Games
  * @param data The data for the request.
+ * @param data.shuffle
  * @param data.offset
  * @param data.limit
+ * @param data.height
+ * @param data.width
  * @returns GameResponseBase Successful Response
  * @throws ApiError
  */
@@ -71,8 +74,11 @@ export const gamesListGames = (data: GamesListGamesData = {}): CancelablePromise
     method: 'GET',
     url: '/api/v1/games/',
     query: {
+        shuffle: data.shuffle,
         offset: data.offset,
-        limit: data.limit
+        limit: data.limit,
+        height: data.height,
+        width: data.width
     },
     errors: {
         422: 'Validation Error'
