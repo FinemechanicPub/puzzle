@@ -58,6 +58,14 @@ def solutions(board: Board, piece_set: PieceSet):
             position += 1
         return position
 
+    def build_result(last_piece: tuple[int, int, int]):
+        result = [
+            (piece_index, original_index, position)
+            for piece_index, _, position, _, original_index in context
+        ]
+        result.append(last_piece)
+        return result
+
     if board.is_full():
         return
 
@@ -66,15 +74,16 @@ def solutions(board: Board, piece_set: PieceSet):
     board_mask = board.board_mask
     full_board = board.full
 
-    history = dict[int, tuple[int, int, int, int]]()
+    context: list[tuple[int, int, int, int, int]] = []
 
+    free_pieces = [1] * piece_count
     next_piece: int = 0
     next_rotation: int = 0
     position = advance_position(board_mask, 0)
     while True:
         placed = False
         for piece_index in range(next_piece, piece_count):
-            if piece_index in history:
+            if not free_pieces[piece_index]:
                 continue
             rotations = piece_set[piece_index][position]
             for rotation_index in range(next_rotation, len(rotations)):
@@ -83,22 +92,18 @@ def solutions(board: Board, piece_set: PieceSet):
                     continue
                 new_board = board_mask | mask
                 if new_board == full_board:
-                    yield [
-                        (piece_index, original_index, position)
-                        for piece_index, (
-                            _,
-                            position,
-                            _,
-                            original_index,
-                        ) in history.items()
-                    ] + [(piece_index, original_index, position)]
+                    yield build_result((piece_index, original_index, position))
                 else:
-                    history[piece_index] = (
-                        rotation_index,
-                        position,
-                        board_mask,
-                        original_index,
+                    context.append(
+                        (
+                            piece_index,
+                            rotation_index,
+                            position,
+                            board_mask,
+                            original_index,
+                        )
                     )
+                    free_pieces[piece_index] -= 1
                     board_mask = new_board
                     position = advance_position(board_mask, position + 1)
                     placed = True
@@ -110,10 +115,9 @@ def solutions(board: Board, piece_set: PieceSet):
 
         if placed:
             continue
-        if not history:
+        if not context:
             break
 
-        next_piece, (next_rotation, position, board_mask, _) = (
-            history.popitem()
-        )
+        next_piece, next_rotation, position, board_mask, *_ = context.pop()
+        free_pieces[next_piece] += 1
         next_rotation += 1
