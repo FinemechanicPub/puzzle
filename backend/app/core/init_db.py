@@ -36,10 +36,7 @@ async def create_user(
 
 
 async def create_first_superuser():
-    if (
-        settings.first_superuser_email
-        and settings.first_superuser_password
-    ):
+    if settings.first_superuser_email and settings.first_superuser_password:
         await create_user(
             email=settings.first_superuser_email,
             password=settings.first_superuser_password,
