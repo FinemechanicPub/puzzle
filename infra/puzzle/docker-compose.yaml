@@ -15,12 +15,10 @@ services:
     env_file:
       - ./.env
     command: >
-      sh -c "
-        sleep 5;
-        alembic upgrade head
-      "
+      sh -c "alembic upgrade head"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - puzzle
   db:
@@ -32,12 +30,17 @@ services:
       - db_volume:/var/lib/postgresql/data
     networks:
       - puzzle
+    healthcheck:
+      test: "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"
+      interval: 3s
+      timeout: 5s
+      retries: 5
   nginx:
     image: ${FRONTEND_IMAGE}
     container_name: puzzle_nginx
     volumes:
       - ./log/nginx:/var/log/nginx
-      - ./nginx_conf:/etc/nginx/conf.d
+      - ./nginx-conf:/etc/nginx/conf.d
     depends_on:
       - web
     networks:
