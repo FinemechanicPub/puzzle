@@ -13,6 +13,8 @@ COPY ./manage.py ./manage.py
 # Swith user
 USER puzzle
 # Set variables
+ARG GITHUB_REF
+ARG GITHUB_SHA
 ENV BRANCH=${GITHUB_REF}
 ENV COMMIT=${GITHUB_SHA}
 # Run server

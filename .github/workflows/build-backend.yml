@@ -83,6 +83,9 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          "GITHUB_REF=${{ github.ref }}"
+          "GITHUB_SHA=${{ github.sha }}"
     
     # This step generates an artifact attestation for the image,
     # which is an unforgeable statement about where and how it was built.
