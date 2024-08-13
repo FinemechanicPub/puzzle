@@ -84,7 +84,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          "GITHUB_REF=${{ github.ref }}"
+          "GITHUB_REF=${{ github.ref_name }}"
           "GITHUB_SHA=${{ github.sha }}"
     
     # This step generates an artifact attestation for the image,
