@@ -1,5 +1,3 @@
-[![Build frontend](https://github.com/FinemechanicPub/puzzle/actions/workflows/build-frontend.yml/badge.svg)](https://github.com/FinemechanicPub/puzzle/actions/workflows/build-frontend.yml)
-
 # Игра полимино
 
 В этой игре нужно укладывать фигуры в прямоугольник заданной формы. На демонстрационном сайте реализована игра пентамино с 5, 8 и 12 фигурами из числа фигур пентамино.
