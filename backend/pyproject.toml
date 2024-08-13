@@ -8,7 +8,7 @@ name = "puzzle"
 version = "0.1.0"
 description = "Puzzle game"
 authors = ["FinemechanicPub <93194456+FinemechanicPub@users.noreply.github.com>"]
-license = "MIT"
+license = "GPL"
 readme = "README.md"
 
 [tool.poetry.dependencies]
