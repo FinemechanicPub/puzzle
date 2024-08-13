@@ -8,10 +8,10 @@ from app.schemas.piece import PiecePlacement
 from app.services.play import PositionedPiece, get_rotation, hint_move
 from app.repositories.game_repository import game_extended_repository
 
-play_router = APIRouter()
+router = APIRouter(prefix="/play", tags=["Games"])
 
 
-@play_router.put("/hint/", response_model=HintResponse)
+@router.put("/hint/", response_model=HintResponse)
 async def hint(
     request: HintRequest, session: AsyncSession = Depends(get_async_session)
 ):

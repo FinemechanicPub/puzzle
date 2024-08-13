@@ -21,10 +21,10 @@ from app.models.game import Game
 from engine.board import Board
 
 
-game_router = APIRouter()
+router = APIRouter(prefix="/games", tags=["Games"])
 
 
-@game_router.get(
+@router.get(
     "/{game_id}/",
     response_model=GameLongResponse,
 )
@@ -37,7 +37,7 @@ async def get_game(
     return game
 
 
-@game_router.get(
+@router.get(
     "/",
     response_model=list[GameResponseBase],
     response_model_exclude_none=True,
@@ -61,7 +61,7 @@ async def list_games(
     return games
 
 
-@game_router.post(
+@router.post(
     "/",
     response_model=GameResponseBase,
     response_model_exclude_none=True,
@@ -74,7 +74,7 @@ async def create_game(
     return await game_repository.create(session, data)
 
 
-@game_router.delete(
+@router.delete(
     "/{game_id}/",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(superuser)],
@@ -89,7 +89,7 @@ async def remove_game(
     return
 
 
-@game_router.get(
+@router.get(
     "/{game_id}/thumbnail/",
     responses={
         200: {"content": {"image/png": {}}},

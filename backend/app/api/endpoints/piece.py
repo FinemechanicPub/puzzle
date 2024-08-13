@@ -10,10 +10,10 @@ from app.schemas.piece import PieceBase, PieceGetResponse
 from app.services.piece import create_piece_with_rotations
 
 
-piece_router = APIRouter()
+router = APIRouter(prefix="/pieces", tags=["Pieces"])
 
 
-@piece_router.get(
+@router.get(
     "/piece_id/",
     response_model=PieceGetResponse,
     dependencies=[Depends(verified_user)],
@@ -27,7 +27,7 @@ async def get_piece(
     return piece
 
 
-@piece_router.get(
+@router.get(
     "/",
     response_model=list[PieceGetResponse],
     response_model_exclude_none=True,
@@ -43,7 +43,7 @@ async def list_pieces(
     return pieces
 
 
-@piece_router.post(
+@router.post(
     "/",
     response_model=PieceGetResponse,
     response_model_exclude_none=True,
@@ -57,7 +57,7 @@ async def create_piece(
     return await create_piece_with_rotations(session, piece_data)
 
 
-@piece_router.delete(
+@router.delete(
     "/piece_id/",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(superuser)],

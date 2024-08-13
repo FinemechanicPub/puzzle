@@ -6,7 +6,7 @@ from app.core.db import get_async_session
 from app.repositories.game_repository import game_count_repository
 from app.schemas.game import GameResponseBase
 
-cover_router = APIRouter()
+router = APIRouter(prefix="/cover", tags=["Main Page"])
 
 
 class Difficulty(int, Enum):
@@ -15,7 +15,7 @@ class Difficulty(int, Enum):
     hard = 12
 
 
-@cover_router.get("/suggestion/", response_model=list[GameResponseBase])
+@router.get("/suggestion/", response_model=list[GameResponseBase])
 async def suggestion(
     session: AsyncSession = Depends(get_async_session),
     difficulty: Difficulty = Difficulty.easy,

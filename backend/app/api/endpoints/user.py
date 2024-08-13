@@ -15,7 +15,7 @@ from app.core.user import (
 )
 from app.schemas.user import LoginRequest
 
-user_router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 # # https://fastapi-users.github.io/fastapi-users/latest/configuration/routers/auth/ # noqa: E501
 # user_router.include_router(
@@ -25,7 +25,7 @@ user_router = APIRouter()
 # )
 
 
-@user_router.post("/login")
+@router.post("/login")
 async def login(
     login_details: LoginRequest,
     request: Request,
@@ -46,7 +46,7 @@ async def login(
     return response
 
 
-@user_router.post(
+@router.post(
     "/logout",
 )
 async def logout(
