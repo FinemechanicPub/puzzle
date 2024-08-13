@@ -89,7 +89,7 @@
     transition: background-color 0.3s ease;
   }
   .card .cta-button:hover {
-    background-color: #555;
+    color: #ffd700;
   }
   .card img {
     width: 100%;
@@ -112,6 +112,7 @@
   }
   .carousel-button:hover {
     background-color: rgba(0,0,0,0.8);
+    color: #ffd700;
   }
   .carousel-button.prev {
     left: 12px;
