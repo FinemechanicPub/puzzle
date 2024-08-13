@@ -132,7 +132,10 @@
           @touchmove="touchMove($event)"
           @touchend="touchEnd"
           :style="{ transform: `translateX(${-currentIndex * 290}px)` }"
-          >          
+          > 
+            <div v-if="games.length===0" class="card">
+              <h2>Не удалось найти ничего подходящего</h2>
+            </div>         
             <div v-for="game in games" :key="game.id" class="card">
                 <h2>{{ game.title }}</h2><p class="medal" v-if="gameWon(game.id)">🏅</p>
                 <p></p>

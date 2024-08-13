@@ -26,7 +26,11 @@
             })
         } catch (err) {
             if (err instanceof ApiError){
-                error.value = `${err.status} - ${err.statusText}`
+                if (err.status === 422){
+                    games.value = []
+                } else {
+                    error.value = `${err.status} - ${err.statusText}`
+                }
             } else {
                 error.value = err.toString()
             }
