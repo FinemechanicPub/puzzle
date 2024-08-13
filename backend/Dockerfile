@@ -12,5 +12,8 @@ COPY ./alembic.ini ./alembic.ini
 COPY ./manage.py ./manage.py
 # Swith user
 USER puzzle
+# Set variables
+ENV BRANCH=${GITHUB_REF}
+ENV COMMIT=${GITHUB_SHA}
 # Run server
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000" ]
