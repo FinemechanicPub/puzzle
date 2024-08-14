@@ -115,10 +115,15 @@ export const $GamePieceRotationsResponse = {
             },
             type: 'array',
             title: 'Rotations'
+        },
+        base_version: {
+            type: 'integer',
+            title: 'Base Version',
+            readOnly: true
         }
     },
     type: 'object',
-    required: ['id', 'name', 'color', 'count', 'rotations'],
+    required: ['id', 'name', 'color', 'count', 'rotations', 'base_version'],
     title: 'GamePieceRotationsResponse'
 } as const;
 

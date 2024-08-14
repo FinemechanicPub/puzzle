@@ -29,6 +29,7 @@ export type GamePieceRotationsResponse = {
     color: number;
     count: number;
     rotations: Array<Rotation>;
+    readonly base_version: number;
 };
 
 export type GameResponseBase = {

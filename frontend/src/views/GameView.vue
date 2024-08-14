@@ -157,6 +157,10 @@
             handleInstall(piece_data.pieceId, piece_data.rotationId, corrected_index)
         }
     }
+
+    function onChangeVersion(versionIndex, pieceIndex){
+        availablePieces.value[pieceIndex].base_version = versionIndex
+    }
 </script>
 
 <style scoped>
@@ -173,6 +177,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        row-gap: 10px;
     }
     .piece-frame{
         margin: 5px;
@@ -229,6 +234,6 @@
         </div>
         <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
+        <PiecePalette @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
     </div>
 </template>

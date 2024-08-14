@@ -7,7 +7,7 @@
     piece: Object,
     cellSize: Number
   })
-  const emit = defineEmits(['pieceTouch'])
+  const emit = defineEmits(['pieceTouch', 'changeVersion'])
 
   const cells = ref([])
 
@@ -15,8 +15,7 @@
 
   const hovering = ref(false)
 
-  const rotationIndex = ref(0)
-  const rotation = computed(() => props.piece.rotations[rotationIndex.value]) 
+  const rotation = computed(() => props.piece.rotations[props.piece.base_version]) 
   const points = computed(() => rotation.value.points)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
   const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
@@ -72,26 +71,6 @@
       evt.dataTransfer.setData('piece_data', JSON.stringify(piece_data))
   }
 
-  function rotate(direction){
-    const length = props.piece.rotations.length
-    const index = rotationIndex.value
-    if (canFlip.value){
-      const half_length = length / 2
-      if (index < half_length){
-        rotationIndex.value = (half_length + index + direction) % half_length
-      } else {
-        rotationIndex.value = half_length + (index - direction) % half_length
-      }
-    } else { // no flips for this piece
-      rotationIndex.value = (length + index + direction) % length
-    }
-  }
-
-  function flip(){
-    const cycleLength = props.piece.rotations.length > 2 ? Math.floor(props.piece.rotations.length / 2) : 0
-    rotationIndex.value = (rotationIndex.value + cycleLength) % props.piece.rotations.length
-  }
-
 
   function onTouchStart(evt, index){
     touchCurrent.value = []
@@ -140,6 +119,32 @@
     emit("pieceTouch", piece_data)
   }
 
+
+  function rotate(index, turns) {
+        const piece = props.piece
+        const length = piece.rotations.length
+        if (canFlip.value){
+        const half_length = length / 2
+        if (index < half_length){
+            return (half_length + index + turns) % half_length
+        } else {
+           return half_length + (index - turns) % half_length
+        }
+        } else { // no flips for this piece
+            return (length + index + turns) % length
+        }
+    }
+
+    function flip(index, horizontal){
+        const piece = props.piece
+        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
+        const new_index = (index + cycleLength) % piece.rotations.length
+        if (horizontal && flipIndex.value > 2){
+            return rotate(new_index, 2)
+        }
+        return new_index
+    }
+
 </script>
 
 <style scoped>
@@ -153,7 +158,6 @@
     aspect-ratio: 1/ 1;
     width: v-bind(cell_width);
     display: flex;
-    /* justify-content: center; */
     margin: 1px;
   }
   .colored {
@@ -188,12 +192,16 @@
     transform: translate(v-bind(touchShiftX), v-bind(touchShiftY));
     touch-action: none;
   }
+  .padded{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 </style>
 
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(1)">
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
         ↪️
       </button>
       <div class="piece-box movable">
@@ -209,13 +217,16 @@
           </div>
         </div>
       </div>
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="rotate(-1)">
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
         ↩️
       </button>
     </div>
     <div class="flex-center-content">
-      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="flip">
-        🔄
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
+        🔃
+      </button>
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
+        🔁
       </button>
     </div>
   </div>
