@@ -43,7 +43,7 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
     docs_url="/api/v1/docs",
     redoc_url="/api/v1/redoc",
-    description=f"Github commit {settings.branch}:{settings.commit[:7]}"
+    description=f"Github commit {settings.branch}:{settings.commit[:7]}",
 )
 
 # Подключение роутера
