@@ -158,14 +158,8 @@
         }
     }
 
-    function onRotate(to_index, piece_index) {
-        const piece = availablePieces.value[piece_index]
-        piece.base_version = to_index
-    }
-
-    function onFlip(to_index, piece_index){
-        const piece = availablePieces.value[piece_index]
-        piece.base_version = to_index
+    function onChangeVersion(versionIndex, pieceIndex){
+        availablePieces.value[pieceIndex].base_version = versionIndex
     }
 </script>
 
@@ -240,6 +234,6 @@
         </div>
         <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @rotate="onRotate" @flip="onFlip" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
+        <PiecePalette @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
     </div>
 </template>
