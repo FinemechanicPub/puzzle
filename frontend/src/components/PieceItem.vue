@@ -201,7 +201,7 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
+      <button type="button" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
         ↪️
       </button>
       <div class="piece-box movable">
@@ -217,15 +217,15 @@
           </div>
         </div>
       </div>
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
+      <button type="button" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
         ↩️
       </button>
     </div>
     <div class="flex-center-content">
-      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
+      <button type="button" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
         🔃
       </button>
-      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
+      <button type="button" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
         🔁
       </button>
     </div>

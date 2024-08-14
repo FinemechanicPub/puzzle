@@ -148,7 +148,7 @@
                 </button>
             </div>
         </div>
-        <button v-if="games.length > 1" class="carousel-button prev" @click="prevCard" :disabled="currentIndex === 0">&lt;</button>
-        <button v-if="games.length > 1" class="carousel-button next" @click="nextCard" :disabled="currentIndex === games.length - 1">&gt;</button>
+        <button type="button" v-if="games.length > 1" class="carousel-button prev" @click="prevCard" :disabled="currentIndex === 0">&lt;</button>
+        <button type="button" v-if="games.length > 1" class="carousel-button next" @click="nextCard" :disabled="currentIndex === games.length - 1">&gt;</button>
     </div>
 </template>
