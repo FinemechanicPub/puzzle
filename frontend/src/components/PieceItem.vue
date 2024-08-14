@@ -55,11 +55,17 @@
   function startDrag(evt){
       console.log('dragging piece')
       const [dy, dx] = divmod(mouse_index.value, width.value)
+      const pieceRect = evt.target.getBoundingClientRect()
+      const halfSize = props.cellSize / 2
+      const offsetX = Math.round(evt.clientX - pieceRect.left) % props.cellSize - halfSize
+      const offsetY = Math.round(evt.clientY - pieceRect.top) % props.cellSize - halfSize
       const piece_data = {
         dy: -dy,
         dx: -dx - minX.value,
         pieceId: props.piece.id,
-        rotationId: rotation.value.id
+        rotationId: rotation.value.id,
+        offsetX: offsetX,
+        offsetY: offsetY
       }
       evt.dataTransfer.dropEffect = 'move'
       evt.dataTransfer.effectAllowed = 'move'

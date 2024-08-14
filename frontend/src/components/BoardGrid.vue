@@ -48,7 +48,10 @@
         return
       }
       const piece_data = JSON.parse(raw_data)
-      const corrected_index = index + piece_data.dx + piece_data.dy*props.width
+      const cellRect = evt.target.getBoundingClientRect()
+      const amendX = Math.floor((evt.clientX - cellRect.left - piece_data.offsetX) / props.cellSize)
+      const amendY = Math.floor((evt.clientY - cellRect.top - piece_data.offsetY) / props.cellSize)
+      const corrected_index = index + piece_data.dx + amendX + (piece_data.dy + amendY)*props.width
       emit('install', piece_data.pieceId, piece_data.rotationId, corrected_index)
   }
 
