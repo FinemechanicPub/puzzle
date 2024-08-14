@@ -167,6 +167,10 @@
     transform: translate(v-bind(touchShiftX), v-bind(touchShiftY));
     touch-action: none;
   }
+  .padded{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 </style>
 
 <template>
@@ -193,8 +197,11 @@
       </button>
     </div>
     <div class="flex-center-content">
-      <button class="centered transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip')">
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', false)">
         🔃
+      </button>
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', true)">
+        🔁
       </button>
     </div>
   </div>

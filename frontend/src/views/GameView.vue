@@ -174,10 +174,13 @@
         }
     }
 
-    function onFlip(piece_index){
+    function onFlip(horizontal, piece_index){
         const piece = availablePieces.value[piece_index]
         const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
         piece.base_version = (piece.base_version + cycleLength) % piece.rotations.length
+        if (horizontal){
+            onRotate(2, true, piece_index)
+        }
     }
 </script>
 

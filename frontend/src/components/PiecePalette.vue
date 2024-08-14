@@ -24,7 +24,7 @@
         <div class="palette-item" :key="piece.id" v-for="(piece, index) in props.availablePieces">
             <PieceItem
                 @rotate="(turns, canFlip) => emit('rotate', turns, canFlip, index)"
-                @flip="emit('flip', index)"
+                @flip="(horizontal) => emit('flip', horizontal, index)"
                 @piece-touch="onPieceTouch"
                 :piece="piece"
                 :cell-size="cellSize"
