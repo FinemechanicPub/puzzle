@@ -110,7 +110,9 @@
     function handleInstall(id, rotationId, index){
         console.log('handleInstall', id, rotationId)
         const piece = game.value.pieces.find((piece) => piece.id == id)
+        if (piece === undefined) return;
         const rotation = piece.rotations.find((rotation) => rotation.id == rotationId)
+        if (rotation === undefined) return;
         console.log('rotation found: ', rotation.id)
         if (hasCollision(index, rotation.points)){
             return
