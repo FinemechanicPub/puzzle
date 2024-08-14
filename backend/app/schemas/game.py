@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 from pydantic_core.core_schema import FieldValidationInfo
 
 
@@ -45,6 +45,11 @@ class GamePieceRotationsResponse(BaseModel):
     count: int
 
     rotations: list[Rotation]
+
+    @computed_field
+    @property
+    def base_version(self) -> int:
+        return 0
 
     model_config = ConfigDict(from_attributes=True)
 
