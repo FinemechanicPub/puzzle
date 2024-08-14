@@ -198,6 +198,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        row-gap: 10px;
     }
     .piece-frame{
         margin: 5px;
