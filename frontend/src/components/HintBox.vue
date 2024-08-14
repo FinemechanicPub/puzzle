@@ -13,11 +13,14 @@
     const loading = ref(false)
     const error = ref(null)
     const hint = ref(null)
+    const info = ref(null)
     const hintActive = ref(true)
 
     const message = computed(
         () => loading.value ? " ...запрашиваю Центр... " : (
-            hint.value ? "могу подсказать ход" : error.value
+            hint.value ? "могу подсказать ход" : (
+                info.value ? info.value : error.value
+            )
         )
     )
 
@@ -25,6 +28,7 @@
 
     async function fetchHint(){
         hint.value = null
+        info.value = null
         error.value = null
         if (!hintActive.value) return;
 
@@ -47,7 +51,7 @@
             // complete = 2
             // deadlock = 3
             if (data.status == 3) {
-                error.value = "безвыходная ситуация"
+                info.value = "безвыходная ситуация"
             } else if (data.status == 2) {
                 error.value = ""
             } else {
