@@ -157,6 +157,28 @@
             handleInstall(piece_data.pieceId, piece_data.rotationId, corrected_index)
         }
     }
+
+    function onRotate(turns, canFlip, piece_index) {
+        const piece = availablePieces.value[piece_index]
+        const length = piece.rotations.length
+        const index = piece.base_version
+        if (canFlip){
+        const half_length = length / 2
+        if (index < half_length){
+            piece.base_version = (half_length + index + turns) % half_length
+        } else {
+            piece.base_version = half_length + (index - turns) % half_length
+        }
+        } else { // no flips for this piece
+            piece.base_version = (length + index + turns) % length
+        }
+    }
+
+    function onFlip(piece_index){
+        const piece = availablePieces.value[piece_index]
+        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
+        piece.base_version = (piece.base_version + cycleLength) % piece.rotations.length
+    }
 </script>
 
 <style scoped>
@@ -229,6 +251,6 @@
         </div>
         <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
+        <PiecePalette @rotate="onRotate" @flip="onFlip" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
     </div>
 </template>

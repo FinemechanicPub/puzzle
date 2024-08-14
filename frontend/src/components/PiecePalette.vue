@@ -6,7 +6,7 @@
         cellSize: Number
     })
 
-    const emit = defineEmits(["pieceTouch"])
+    const emit = defineEmits(["pieceTouch", "rotate", "flip"])
 
     function onPieceTouch(data){
         emit("pieceTouch", data)
@@ -21,8 +21,14 @@
 
 <template>
 	<div class="piece-palette" v-auto-animate>
-        <div class="palette-item" :key="piece.id" v-for="piece in props.availablePieces">
-            <PieceItem @piece-touch="onPieceTouch" :piece="piece" :cell-size="cellSize"/>
+        <div class="palette-item" :key="piece.id" v-for="(piece, index) in props.availablePieces">
+            <PieceItem
+                @rotate="(turns, canFlip) => emit('rotate', turns, canFlip, index)"
+                @flip="emit('flip', index)"
+                @piece-touch="onPieceTouch"
+                :piece="piece"
+                :cell-size="cellSize"
+            />
         </div>
     </div>
 </template>
