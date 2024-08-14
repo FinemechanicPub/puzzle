@@ -158,29 +158,14 @@
         }
     }
 
-    function onRotate(turns, canFlip, piece_index) {
+    function onRotate(to_index, piece_index) {
         const piece = availablePieces.value[piece_index]
-        const length = piece.rotations.length
-        const index = piece.base_version
-        if (canFlip){
-        const half_length = length / 2
-        if (index < half_length){
-            piece.base_version = (half_length + index + turns) % half_length
-        } else {
-            piece.base_version = half_length + (index - turns) % half_length
-        }
-        } else { // no flips for this piece
-            piece.base_version = (length + index + turns) % length
-        }
+        piece.base_version = to_index
     }
 
-    function onFlip(horizontal, piece_index){
+    function onFlip(to_index, piece_index){
         const piece = availablePieces.value[piece_index]
-        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
-        piece.base_version = (piece.base_version + cycleLength) % piece.rotations.length
-        if (horizontal){
-            onRotate(2, true, piece_index)
-        }
+        piece.base_version = to_index
     }
 </script>
 

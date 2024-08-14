@@ -23,8 +23,8 @@
 	<div class="piece-palette" v-auto-animate>
         <div class="palette-item" :key="piece.id" v-for="(piece, index) in props.availablePieces">
             <PieceItem
-                @rotate="(turns, canFlip) => emit('rotate', turns, canFlip, index)"
-                @flip="(horizontal) => emit('flip', horizontal, index)"
+                @rotate="(to_index) => emit('rotate', to_index, index)"
+                @flip="(to_index) => emit('flip', to_index, index)"
                 @piece-touch="onPieceTouch"
                 :piece="piece"
                 :cell-size="cellSize"

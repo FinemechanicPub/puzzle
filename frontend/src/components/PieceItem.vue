@@ -119,6 +119,32 @@
     emit("pieceTouch", piece_data)
   }
 
+
+  function rotate(index, turns) {
+        const piece = props.piece
+        const length = piece.rotations.length
+        if (canFlip.value){
+        const half_length = length / 2
+        if (index < half_length){
+            return (half_length + index + turns) % half_length
+        } else {
+           return half_length + (index - turns) % half_length
+        }
+        } else { // no flips for this piece
+            return (length + index + turns) % length
+        }
+    }
+
+    function flip(index, horizontal){
+        const piece = props.piece
+        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
+        const new_index = (index + cycleLength) % piece.rotations.length
+        if (horizontal && flipIndex.value > 2){
+            return rotate(new_index, 2)
+        }
+        return new_index
+    }
+
 </script>
 
 <style scoped>
@@ -132,7 +158,6 @@
     aspect-ratio: 1/ 1;
     width: v-bind(cell_width);
     display: flex;
-    /* justify-content: center; */
     margin: 1px;
   }
   .colored {
@@ -176,7 +201,7 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('rotate', 1, canFlip)">
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('rotate', rotate(props.piece.base_version, 1))">
         ↪️
       </button>
       <div class="piece-box movable">
@@ -192,15 +217,15 @@
           </div>
         </div>
       </div>
-      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('rotate', -1, canFlip)">
+      <button class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('rotate', rotate(props.piece.base_version, -1))">
         ↩️
       </button>
     </div>
     <div class="flex-center-content">
-      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', false)">
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', flip(props.piece.base_version, false))">
         🔃
       </button>
-      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', true)">
+      <button class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('flip', flip(props.piece.base_version, true))">
         🔁
       </button>
     </div>
