@@ -143,7 +143,7 @@
                 <div>
                     <img :src="thumbnailUrl(game)" alt="game thumbnail">
                 </div>
-                <button @click="router.push({name: 'game', params: {id: game.id}})" class="cta-button">
+                <button type="button" @click="router.push({name: 'game', params: {id: game.id}})" class="cta-button">
                   Играть
                 </button>
             </div>
