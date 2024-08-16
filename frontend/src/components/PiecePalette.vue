@@ -16,6 +16,7 @@
 <style scoped>
     .palette-item{
         align-content: center;
+        height: fit-content;
     }
 </style>
 

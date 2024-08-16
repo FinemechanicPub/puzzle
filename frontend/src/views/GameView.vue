@@ -177,7 +177,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        row-gap: 10px;
+        align-items: center;
     }
     .piece-frame{
         margin: 5px;
