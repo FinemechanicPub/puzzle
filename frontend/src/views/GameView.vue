@@ -16,10 +16,9 @@
     const app = getCurrentInstance();
     onMounted(() => {
         fetchData(props.id)
-
-        console.log("start tour")
-        app.proxy.$tours["gameTour"].start();
     })
+
+    const hintbox = ref(null)
 
     const cellSize = 30
     const loading = ref(false)
@@ -243,9 +242,9 @@
             </div>
         </div>
         <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
-        <HintBox id="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-            <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
+        <HintBox id="hintbox" ref="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
+        <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
         </div>
-        <GameTour/>
+        <GameTour :hasHint="hintbox ? hintbox.hasHint : false"/>
         <button @click="app.proxy.$tours['gameTour'].start()">Справка</button>
     </template>
