@@ -7,7 +7,7 @@
         gameId: Number,
         installedPices: Array
     })
-
+   
     const emit = defineEmits(['hint'])
     
     const loading = ref(false)
@@ -15,10 +15,11 @@
     const hint = ref(null)
     const complete = ref(false)
     const hintActive = ref(true)
-
+    const hasHint = computed(() => hint.value !== null)
+    
     const message = computed(
         () => loading.value ? " ...запрашиваю Центр... " : (
-            hint.value ? "могу подсказать ход" : "безвыходная ситуация"
+            hasHint.value ? "могу подсказать ход" : "безвыходная ситуация"
         )
     )
 
@@ -65,6 +66,10 @@
             loading.value = false
         }
     }
+
+    defineExpose({
+        hasHint: hasHint
+    })
 </script>
 
 <style scoped>
@@ -81,7 +86,8 @@
         <p v-if="hintActive && !complete" class="hint-item">
             {{ message }}
         </p>
-        <button id="robotmove" type="button" title="пусть ходит робот" @click="emit('hint', hint)" class="hint-item transparent-button" v-if="hint">🆗</button>
+        <button id="robotmove" type="button" title="пусть ходит робот" @click="emit('hint', hint)" class="hint-item transparent-button" v-if="hasHint">🆗</button>
+        <p id="robotmove" v-else> </p>
         <button type="button" title="повторить запрос" @click="fetchHint" class="hint-item transparent-button" v-if="error">↩️</button>
     </div>
 </template>
