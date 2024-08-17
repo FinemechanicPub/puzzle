@@ -166,6 +166,7 @@
   .container-row{
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
   .piece-box{
     display: flex;
