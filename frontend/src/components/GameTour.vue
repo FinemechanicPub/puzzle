@@ -1,7 +1,8 @@
 <script setup>
   import { computed } from 'vue';
   const props = defineProps({
-    hasHint: Number
+    hasHint: Boolean,
+    hasPieces: Boolean
   })
 
   const options = {
@@ -28,15 +29,21 @@
         header: {
             title: 'Магазин фигур'
         },
-        content: "Здесь лежат все доступные фигуры. Фигура устанавливается на доску перетаскиванием."
+        content: "Здесь лежат все доступные фигуры. Фигура устанавливается на доску перетаскиванием.",
+        params:{
+          highlight: props.hasPieces
+        }
+    },
+    {
+        target: 'div.palette-item, #palette',
+        content: "Если навести курсор на фигуру, появятся кнопки вращения и переворота. Вращение и переворот доступны не для всех фигур.",
+        params:{
+          highlight: props.hasPieces
+        }
     },
     {
         target: 'div.square:nth-child(1)',
         content: "Чтобы удалить фигуру с доски обратно в магазин, щелкните по любой её клетке."
-    },
-    {
-        target: 'div.palette-item, #palette',
-        content: "Если навести курсор на фигуру, появятся кнопки вращения и переворота, если это можно сделать."
     },
     {
         target: '#hintbox',

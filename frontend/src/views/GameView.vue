@@ -245,6 +245,6 @@
         <HintBox id="hintbox" ref="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
         <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
         </div>
-        <GameTour :hasHint="hintbox ? hintbox.hasHint : false"/>
+        <GameTour v-if="game && hintbox" :hasHint="hintbox.hasHint" :hasPieces="availablePieces.length > 0"/>
         <button @click="app.proxy.$tours['gameTour'].start()">Справка</button>
     </template>
