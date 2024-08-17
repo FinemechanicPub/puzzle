@@ -75,13 +75,13 @@
 
 <template>
     <div class="hint-box">
-        <button type="button" :title="complete ? 'отключено' : hintActive ? 'выключить' : 'включить'" @click="hintActive = !hintActive" :disabled="complete" class="hint-item transparent-button">
+        <button id="robotswitch" type="button" :title="complete ? 'отключено' : hintActive ? 'выключить' : 'включить'" @click="hintActive = !hintActive" :disabled="complete" class="hint-item transparent-button">
             🤖
         </button>
         <p v-if="hintActive && !complete" class="hint-item">
             {{ message }}
         </p>
-        <button type="button" title="пусть ходит робот" @click="emit('hint', hint)" class="hint-item transparent-button" v-if="hint">🆗</button>
+        <button id="robotmove" type="button" title="пусть ходит робот" @click="emit('hint', hint)" class="hint-item transparent-button" v-if="hint">🆗</button>
         <button type="button" title="повторить запрос" @click="fetchHint" class="hint-item transparent-button" v-if="error">↩️</button>
     </div>
 </template>
