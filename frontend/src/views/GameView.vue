@@ -1,8 +1,9 @@
 <script setup>
-    import { computed, ref, watch, watchEffect } from 'vue';
+    import { computed, ref, watch, watchEffect, onMounted, getCurrentInstance } from 'vue';
     import divmod from '@/utils/divmod';
     import counter from '@/utils/counter'
     import BoardGrid from '@/components/BoardGrid.vue';
+    import GameTour from '@/components/GameTour.vue'
     import PiecePalette from '@/components/PiecePalette.vue'
     import HintBox from '@/components/HintBox.vue'
     import { gamesGetGame } from '@/api/generated'
@@ -11,6 +12,15 @@
     const props = defineProps({
         id: String
     })
+
+    const app = getCurrentInstance();
+    onMounted(() => {
+        fetchData(props.id)
+
+        console.log("start tour")
+        app.proxy.$tours["gameTour"].start();
+    })
+
     const cellSize = 30
     const loading = ref(false)
     const error = ref(null)
@@ -36,7 +46,7 @@
     const board = ref(null)
 
     // watch the params of the route to fetch the data again
-    watch(() => props.id, fetchData, { immediate: true })
+    watch(() => props.id, fetchData, { immediate: false })
     watchEffect(saveGame)
 
     function saveGame(){
@@ -232,8 +242,10 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
-        <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
-    </div>
-</template>
+        <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
+        <HintBox id="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
+            <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
+        </div>
+        <GameTour/>
+        <button @click="app.proxy.$tours['gameTour'].start()">Справка</button>
+    </template>
