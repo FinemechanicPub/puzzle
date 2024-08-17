@@ -176,7 +176,7 @@
     .content {
         width: 90%;
         margin: auto;
-        padding: 2ch;
+        padding: 0.5rem;
     }
     .center{
         display: flex;
@@ -237,7 +237,7 @@
         <p>{{ error }}</p>
     </div>
     <div v-if="game" class="content flex-center-content one-column">
-        <button id="info" type="button" class="transparent-button align-right" @click="app.proxy.$tours['gameTour'].start()">ℹ️</button>
+        <button id="info" type="button" title="инструкции" class="transparent-button align-right" @click="app.proxy.$tours['gameTour'].start()">ℹ️</button>
         <h2>{{ game.title }}</h2>
         <div v-auto-animate>
             <div :key=1 v-if="gameComplete" class="card-green">
