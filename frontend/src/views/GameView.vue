@@ -225,6 +225,9 @@
     .big{
         font-size: larger;
     }
+    .align-right{
+        align-self: flex-end;
+    }
 </style>
 
 <template>
@@ -234,6 +237,7 @@
         <p>{{ error }}</p>
     </div>
     <div v-if="game" class="content flex-center-content one-column">
+        <button id="info" type="button" class="transparent-button align-right" @click="app.proxy.$tours['gameTour'].start()">ℹ️</button>
         <h2>{{ game.title }}</h2>
         <div v-auto-animate>
             <div :key=1 v-if="gameComplete" class="card-green">
@@ -244,7 +248,6 @@
         <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
         <HintBox id="hintbox" ref="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
         <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
-        </div>
-        <GameTour v-if="game && hintbox" :hasHint="hintbox.hasHint" :hasPieces="availablePieces.length > 0"/>
-        <button @click="app.proxy.$tours['gameTour'].start()">Справка</button>
-    </template>
+    </div>
+    <GameTour v-if="game && hintbox" :hasHint="hintbox.hasHint" :hasPieces="availablePieces.length > 0"/>    
+</template>
