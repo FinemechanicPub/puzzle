@@ -98,7 +98,8 @@ async def remove_game(
     response_class=Response,
 )
 async def game_thumbnail(
-    game_id: int, session: AsyncSession = Depends(get_async_session)
+    game_id: int,
+    session: AsyncSession = Depends(get_async_session),
 ):
     game = await game_extended_repository.get(session, game_id)
     if not game:
@@ -114,4 +115,8 @@ async def game_thumbnail(
     )
     with BytesIO() as data:
         image.save(data, "png")
-        return Response(content=data.getvalue(), media_type="image/png")
+        return Response(
+            content=data.getvalue(),
+            media_type="image/png",
+            headers={"Cache-Control": "max-age=604800"},
+        )

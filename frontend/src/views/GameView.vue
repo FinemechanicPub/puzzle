@@ -1,8 +1,9 @@
 <script setup>
-    import { computed, ref, watch, watchEffect } from 'vue';
+    import { computed, ref, watch, watchEffect, onMounted, getCurrentInstance } from 'vue';
     import divmod from '@/utils/divmod';
     import counter from '@/utils/counter'
     import BoardGrid from '@/components/BoardGrid.vue';
+    import GameTour from '@/components/GameTour.vue'
     import PiecePalette from '@/components/PiecePalette.vue'
     import HintBox from '@/components/HintBox.vue'
     import { gamesGetGame } from '@/api/generated'
@@ -11,6 +12,14 @@
     const props = defineProps({
         id: String
     })
+
+    const app = getCurrentInstance();
+    onMounted(() => {
+        fetchData(props.id)
+    })
+
+    const hintbox = ref(null)
+
     const cellSize = 30
     const loading = ref(false)
     const error = ref(null)
@@ -36,7 +45,7 @@
     const board = ref(null)
 
     // watch the params of the route to fetch the data again
-    watch(() => props.id, fetchData, { immediate: true })
+    watch(() => props.id, fetchData, { immediate: false })
     watchEffect(saveGame)
 
     function saveGame(){
@@ -167,7 +176,7 @@
     .content {
         width: 90%;
         margin: auto;
-        padding: 2ch;
+        padding: 0.5rem;
     }
     .center{
         display: flex;
@@ -177,7 +186,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        row-gap: 10px;
+        align-items: center;
     }
     .piece-frame{
         margin: 5px;
@@ -216,6 +225,9 @@
     .big{
         font-size: larger;
     }
+    .align-right{
+        align-self: flex-end;
+    }
 </style>
 
 <template>
@@ -225,6 +237,7 @@
         <p>{{ error }}</p>
     </div>
     <div v-if="game" class="content flex-center-content one-column">
+        <button id="info" type="button" title="инструкции" class="transparent-button align-right" @click="app.proxy.$tours['gameTour'].start()">ℹ️</button>
         <h2>{{ game.title }}</h2>
         <div v-auto-animate>
             <div :key=1 v-if="gameComplete" class="card-green">
@@ -232,8 +245,9 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <BoardGrid ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
-        <HintBox @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>            
+        <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
+        <HintBox id="hintbox" ref="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
+        <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
     </div>
+    <GameTour v-if="game && hintbox" :hasHint="hintbox.hasHint" :hasPieces="availablePieces.length > 0"/>    
 </template>

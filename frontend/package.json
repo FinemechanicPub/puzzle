@@ -13,7 +13,8 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "vue": "^3.4.15",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "vue3-tour": "^1.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.6.0",

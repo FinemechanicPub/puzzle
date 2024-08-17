@@ -2,6 +2,9 @@
 
 </script>
 
+<style src="vue3-tour/dist/vue3-tour.css">
+</style>
+
 <style scoped>
 header{
   display: flex;
