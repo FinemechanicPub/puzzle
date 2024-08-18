@@ -45,7 +45,11 @@ color: rgb(44, 62, 80)
   background-color: transparent;
   background-repeat: no-repeat;
   border: none;
-  cursor: pointer;
+  /* pointer cursor causes button background to blink when clicked in mobile browsers */
+  /* https://stackoverflow.com/questions/21003535/anyway-to-prevent-the-blue-highlighting-of-elements-in-chrome-when-clicking-quic */
+  /* cursor: pointer; */ 
   overflow: hidden;
   outline: none;
+  width: fit-content;
+  padding: 0;
 }
