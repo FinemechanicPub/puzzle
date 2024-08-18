@@ -227,7 +227,7 @@
         🔃
       </button>
       <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
-        🔁
+        🔄
       </button>
     </div>
   </div>
