@@ -17,6 +17,7 @@
     .palette-item{
         align-content: center;
         height: fit-content;
+        padding: 0.5rem 0.5rem;
     }
 </style>
 
