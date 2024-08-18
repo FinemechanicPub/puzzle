@@ -19,7 +19,9 @@
     
     const message = computed(
         () => loading.value ? " ...запрашиваю Центр... " : (
-            hasHint.value ? "могу подсказать ход" : "безвыходная ситуация"
+            error.value ? error.value : (
+                hasHint.value ? "могу подсказать ход" : "безвыходная ситуация"
+            )
         )
     )
 
