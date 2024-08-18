@@ -75,9 +75,13 @@
 </script>
 
 <style scoped>
-.hint-box{
-    padding: 1rem;
-}
+    .hint-box{
+        display: inline-flex;
+        align-items: center;
+        height: 2rem;
+        margin: 0.5rem auto;
+        gap: 0.5rem;
+    }
 </style>
 
 <template>

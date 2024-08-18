@@ -216,12 +216,7 @@
         margin: 1ch auto;
         width: -moz-fit-content;
         width: fit-content;
-    }
-    .hint-box{
-        display: inline-flex;
-        margin: auto;
-        gap: 1ch;
-    }
+    }    
     .big{
         font-size: larger;
     }
