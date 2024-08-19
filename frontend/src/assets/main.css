@@ -17,7 +17,7 @@ h1, h2 {
 header {
   background: hsla(160, 100%, 37%, 1);
   box-shadow: 0 0 .2rem #0000001a,0 .2rem .4rem #0003;
-  /* margin: auto auto 20px auto; */
+  margin-bottom: 0.6rem;
 }
 
 header > h1 {
