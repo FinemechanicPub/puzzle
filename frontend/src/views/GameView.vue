@@ -174,7 +174,6 @@
 
 <style scoped>
     .content {
-        width: 90%;
         margin: auto;
         padding: 0.5rem;
     }
