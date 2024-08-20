@@ -168,10 +168,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* width: v-bind(box_width);
-    height: v-bind(box_width); */
     width: calc(var(--cell-width) * v-bind(diameter));
     height: calc(var(--cell-width) * v-bind(diameter));
+    margin: 0.3rem;
   }
   .invisible {
     visibility: hidden;
