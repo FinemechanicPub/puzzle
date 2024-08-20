@@ -20,7 +20,6 @@
 
     const hintbox = ref(null)
 
-    const cellSize = 30
     const loading = ref(false)
     const error = ref(null)
     const game = ref(null)
@@ -239,9 +238,9 @@
                 <p>Доска заполнена!</p>
             </div>
         </div>
-        <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :cell-size="cellSize" :installed_pieces="installedPieces" />
+        <BoardGrid id="board" ref="board" @install="handleInstall" @remove="handleRemove" :width="game.width" :height="game.height" :installed_pieces="installedPieces" />
         <HintBox id="hintbox" ref="hintbox" @hint="hint => handleInstall(...hint)" :gameId="game.id" :installedPices="installedPieces" />
-        <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces" :cell-size="cellSize"/>
+        <PiecePalette id="palette" @changeVersion="onChangeVersion" @piece-touch="onPieceTouch" :availablePieces="availablePieces"/>
     </div>
     <GameTour v-if="game && hintbox" :hasHint="hintbox.hasHint" :hasPieces="availablePieces.length > 0"/>    
 </template>

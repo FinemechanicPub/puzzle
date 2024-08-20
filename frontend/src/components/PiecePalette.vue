@@ -3,7 +3,6 @@
 
     const props = defineProps({
         availablePieces: Array,
-        cellSize: Number
     })
 
     const emit = defineEmits(["pieceTouch", "changeVersion"])
@@ -28,7 +27,6 @@
                 @changeVersion="(versionIndex) => emit('changeVersion', versionIndex, index)"
                 @piece-touch="onPieceTouch"
                 :piece="piece"
-                :cell-size="cellSize"
             />
         </div>
     </div>
