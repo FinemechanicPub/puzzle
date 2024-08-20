@@ -156,8 +156,9 @@
   }
   .piece-cell {
     aspect-ratio: 1/ 1;
-    width: v-bind(cell_width);
-    display: flex;
+    /* width: v-bind(cell_width); */
+    width: calc(var(--cell-width) - 2px);
+    /* display: flex; */
     margin: 1px;
   }
   .colored {
@@ -172,8 +173,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: v-bind(box_width);
-    height: v-bind(box_width);
+    /* width: v-bind(box_width);
+    height: v-bind(box_width); */
+    width: calc(var(--cell-width) * v-bind(diameter));
+    height: calc(var(--cell-width) * v-bind(diameter));
   }
   .invisible {
     visibility: hidden;

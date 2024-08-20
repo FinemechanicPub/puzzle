@@ -70,7 +70,7 @@
   }
   .square {
     aspect-ratio: 1/ 1;
-    width: v-bind(cell_width);
+    width: var(--cell-width);
     border: 1px solid gray;
   }
   .centered {
