@@ -5,6 +5,7 @@
   margin: 0 auto;
   padding: 0;
   font-weight: normal;
+  --cell-width: 27px;
 }
 
 a {
@@ -17,7 +18,7 @@ h1, h2 {
 header {
   background: hsla(160, 100%, 37%, 1);
   box-shadow: 0 0 .2rem #0000001a,0 .2rem .4rem #0003;
-  /* margin: auto auto 20px auto; */
+  margin-bottom: 0.6rem;
 }
 
 header > h1 {
@@ -45,7 +46,11 @@ color: rgb(44, 62, 80)
   background-color: transparent;
   background-repeat: no-repeat;
   border: none;
-  cursor: pointer;
+  /* pointer cursor causes button background to blink when clicked in mobile browsers */
+  /* https://stackoverflow.com/questions/21003535/anyway-to-prevent-the-blue-highlighting-of-elements-in-chrome-when-clicking-quic */
+  /* cursor: pointer; */ 
   overflow: hidden;
   outline: none;
+  width: fit-content;
+  padding: 0;
 }

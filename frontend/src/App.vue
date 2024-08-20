@@ -8,7 +8,7 @@
 <style scoped>
 header{
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: left;
 }
 nav {

@@ -34,9 +34,12 @@ services:
       - puzzle
     healthcheck:
       test: "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"
-      interval: 3s
+      interval: 5m
       timeout: 5s
-      retries: 5
+      retries: 3
+      # requires Docker Engine version 25.0 or later
+      start_period: 20s
+      start_interval: 5s
   nginx:
     image: ${FRONTEND_IMAGE}
     container_name: puzzle_nginx

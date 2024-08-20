@@ -5,13 +5,10 @@
 
   const props = defineProps({
     piece: Object,
-    cellSize: Number
   })
   const emit = defineEmits(['pieceTouch', 'changeVersion'])
 
   const cells = ref([])
-
-  const cell_width = `${props.cellSize - 2}px`
 
   const hovering = ref(false)
 
@@ -22,7 +19,6 @@
   const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
   const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
   const diameter = computed(() => (1 + Math.max(maxX.value - minX.value, maxY.value)))
-  const box_width = computed(() => `${diameter.value*(props.cellSize)}px`)
   const grid = computed(make_grid)
   const width = computed(() => maxX.value - minX.value + 1)
   const canRotate = computed(() => props.piece.rotations.length > 1)
@@ -55,9 +51,10 @@
       console.log('dragging piece')
       const [dy, dx] = divmod(mouse_index.value, width.value)
       const pieceRect = evt.target.getBoundingClientRect()
-      const halfSize = props.cellSize / 2
-      const offsetX = Math.round(evt.clientX - pieceRect.left) % props.cellSize - halfSize
-      const offsetY = Math.round(evt.clientY - pieceRect.top) % props.cellSize - halfSize
+      const cellSize = Math.max(pieceRect.height, pieceRect.width) / diameter.value      
+      const halfSize = cellSize / 2
+      const offsetX = Math.round(evt.clientX - pieceRect.left) % cellSize - halfSize
+      const offsetY = Math.round(evt.clientY - pieceRect.top) % cellSize - halfSize
       const piece_data = {
         dy: -dy,
         dx: -dx - minX.value,
@@ -156,8 +153,7 @@
   }
   .piece-cell {
     aspect-ratio: 1/ 1;
-    width: v-bind(cell_width);
-    display: flex;
+    width: calc(var(--cell-width) - 2px);
     margin: 1px;
   }
   .colored {
@@ -172,8 +168,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: v-bind(box_width);
-    height: v-bind(box_width);
+    width: calc(var(--cell-width) * v-bind(diameter));
+    height: calc(var(--cell-width) * v-bind(diameter));
+    margin: 0.3rem;
   }
   .invisible {
     visibility: hidden;
@@ -227,7 +224,7 @@
         🔃
       </button>
       <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
-        🔁
+        🔄
       </button>
     </div>
   </div>

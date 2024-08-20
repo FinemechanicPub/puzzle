@@ -6,12 +6,10 @@
   const props = defineProps({
     width: Number,
     height: Number,
-    cellSize: Number,
     installed_pieces: Array
   })
   const emit = defineEmits(['install', 'remove'])
 
-  const cell_width = `${props.cellSize}px`
   const board = ref(null)
   const grid = ref(Array(props.height).fill().map(()=>Array(props.width).fill(0xffffff)))
 
@@ -48,10 +46,7 @@
         return
       }
       const piece_data = JSON.parse(raw_data)
-      const cellRect = evt.target.getBoundingClientRect()
-      const amendX = Math.floor((evt.clientX - cellRect.left - piece_data.offsetX) / props.cellSize)
-      const amendY = Math.floor((evt.clientY - cellRect.top - piece_data.offsetY) / props.cellSize)
-      const corrected_index = index + piece_data.dx + amendX + (piece_data.dy + amendY)*props.width
+      const corrected_index = index + piece_data.dx + piece_data.dy*props.width
       emit('install', piece_data.pieceId, piece_data.rotationId, corrected_index)
   }
 
@@ -70,7 +65,7 @@
   }
   .square {
     aspect-ratio: 1/ 1;
-    width: v-bind(cell_width);
+    width: var(--cell-width);
     border: 1px solid gray;
   }
   .centered {

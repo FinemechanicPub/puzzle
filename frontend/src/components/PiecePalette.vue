@@ -3,7 +3,6 @@
 
     const props = defineProps({
         availablePieces: Array,
-        cellSize: Number
     })
 
     const emit = defineEmits(["pieceTouch", "changeVersion"])
@@ -17,6 +16,7 @@
     .palette-item{
         align-content: center;
         height: fit-content;
+        padding: 0.5rem 0.5rem;
     }
 </style>
 
@@ -27,7 +27,6 @@
                 @changeVersion="(versionIndex) => emit('changeVersion', versionIndex, index)"
                 @piece-touch="onPieceTouch"
                 :piece="piece"
-                :cell-size="cellSize"
             />
         </div>
     </div>
