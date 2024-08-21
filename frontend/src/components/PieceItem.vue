@@ -3,6 +3,7 @@
 
   import divmod from '@/utils/divmod'
   import { usePoints } from '@/composables/points'
+  import { useTransform } from '@/composables/transform'
 
   const props = defineProps({
     piece: Object,
@@ -17,9 +18,7 @@
   const points = computed(() => rotation.value.points)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
   const {left, width, diameter, grid } = usePoints(points)
-  const canRotate = computed(() => props.piece.rotations.length > 1)
-  const flipIndex = computed(() => 1 + props.piece.rotations.findLastIndex((item) => item.flipped === 0))
-  const canFlip = computed(() => flipIndex.value < props.piece.rotations.length)
+  const { flip, rotate } = useTransform(props.piece.rotations)
 
   const mouse_index = ref(null)
 
@@ -102,33 +101,6 @@
     console.log("touch end")
     emit("pieceTouch", piece_data)
   }
-
-
-  function rotate(index, turns) {
-        const piece = props.piece
-        const length = piece.rotations.length
-        if (canFlip.value){
-        const half_length = length / 2
-        if (index < half_length){
-            return (half_length + index + turns) % half_length
-        } else {
-           return half_length + (index - turns) % half_length
-        }
-        } else { // no flips for this piece
-            return (length + index + turns) % length
-        }
-    }
-
-    function flip(index, horizontal){
-        const piece = props.piece
-        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
-        const new_index = (index + cycleLength) % piece.rotations.length
-        if (horizontal && flipIndex.value > 2){
-            return rotate(new_index, 2)
-        }
-        return new_index
-    }
-
 </script>
 
 <style scoped>
@@ -186,7 +158,7 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button type="button" title="повернуть влево" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
+      <button type="button" title="повернуть влево" class="transparent-button" :class="{invisible: !(hovering && rotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
         ↪️
       </button>
       <div class="piece-box movable">
@@ -202,15 +174,15 @@
           </div>
         </div>
       </div>
-      <button type="button" title="повернуть вправо" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
+      <button type="button" title="повернуть вправо" class="transparent-button" :class="{invisible: !(hovering && rotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
         ↩️
       </button>
     </div>
     <div class="flex-center-content">
-      <button type="button" title="перевернуть сверху вниз" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
+      <button type="button" title="перевернуть сверху вниз" class="centered padded transparent-button" :class="{invisible: !(hovering && flip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
         🔃
       </button>
-      <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
+      <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && flip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
         🔄
       </button>
     </div>
