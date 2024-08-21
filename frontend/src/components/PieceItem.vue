@@ -129,7 +129,8 @@
     justify-content: center;
     width: calc(var(--cell-width) * v-bind(diameter));
     height: calc(var(--cell-width) * v-bind(diameter));
-    margin: 0.3rem;
+    /* margin: 0.3rem; */
+    margin:5px;
   }
   .invisible {
     visibility: hidden;
