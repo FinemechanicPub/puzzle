@@ -2,6 +2,7 @@
   import { computed, ref } from 'vue'
 
   import divmod from '@/utils/divmod'
+  import { usePoints } from '@/composables/points'
 
   const props = defineProps({
     piece: Object,
@@ -15,12 +16,7 @@
   const rotation = computed(() => props.piece.rotations[props.piece.base_version]) 
   const points = computed(() => rotation.value.points)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
-  const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
-  const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
-  const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
-  const diameter = computed(() => (1 + Math.max(maxX.value - minX.value, maxY.value)))
-  const grid = computed(make_grid)
-  const width = computed(() => maxX.value - minX.value + 1)
+  const {left, width, diameter, grid } = usePoints(points)
   const canRotate = computed(() => props.piece.rotations.length > 1)
   const flipIndex = computed(() => 1 + props.piece.rotations.findLastIndex((item) => item.flipped === 0))
   const canFlip = computed(() => flipIndex.value < props.piece.rotations.length)
@@ -32,15 +28,6 @@
   const scrollShift = ref(0)
   const touchShiftX = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[0] - touchStart.value[0] : 0) + "px")
   const touchShiftY = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[1] - touchStart.value[1] - scrollShift.value : 0) + "px")
-
-
-  function make_grid(){
-    const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
-    for (const [y, x] of points.value){
-      grid[y][x - minX.value] = true
-    }
-    return grid
-  }
 
   function on_mouse_down(index){
     console.log(`mouse down in cell #${index}`)
@@ -57,7 +44,7 @@
       const offsetY = Math.round(evt.clientY - pieceRect.top) % cellSize - halfSize
       const piece_data = {
         dy: -dy,
-        dx: -dx - minX.value,
+        dx: -dx - left.value,
         pieceId: props.piece.id,
         rotationId: rotation.value.id,
         offsetX: offsetX,
@@ -106,7 +93,7 @@
     const [dy, dx] = divmod(mouse_index.value, width.value)
     const piece_data = {
       dy: -dy,
-      dx: -dx - minX.value,
+      dx: -dx - left.value,
       pieceId: props.piece.id,
       rotationId: rotation.value.id,
       touchXY: touchCurrent.value
