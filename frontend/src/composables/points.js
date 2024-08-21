@@ -26,5 +26,5 @@ export function usePoints(points){
 
     watchEffect(process)
 
-    return {left, width, diameter, grid }
+    return { left, width, diameter, grid }
 }

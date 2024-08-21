@@ -17,7 +17,7 @@
   const rotation = computed(() => props.piece.rotations[props.piece.base_version]) 
   const points = computed(() => rotation.value.points)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
-  const {left, width, diameter, grid } = usePoints(points)
+  const { left, width, diameter, grid } = usePoints(points)
   const { flip, rotate } = useTransform(props.piece.rotations)
 
   const mouse_index = ref(null)
