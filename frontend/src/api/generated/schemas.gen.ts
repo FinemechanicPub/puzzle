@@ -229,6 +229,126 @@ export const $LoginRequest = {
     title: 'LoginRequest'
 } as const;
 
+export const $MenuBase = {
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1,
+            title: 'Title'
+        },
+        query: {
+            additionalProperties: {
+                anyOf: [
+                    {
+                        type: 'string'
+                    },
+                    {
+                        type: 'integer'
+                    }
+                ]
+            },
+            type: 'object',
+            title: 'Query'
+        },
+        order: {
+            type: 'integer',
+            minimum: 0,
+            title: 'Order'
+        }
+    },
+    type: 'object',
+    required: ['title', 'query', 'order'],
+    title: 'MenuBase'
+} as const;
+
+export const $MenuResponse = {
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1,
+            title: 'Title'
+        },
+        query: {
+            additionalProperties: {
+                anyOf: [
+                    {
+                        type: 'string'
+                    },
+                    {
+                        type: 'integer'
+                    }
+                ]
+            },
+            type: 'object',
+            title: 'Query'
+        },
+        order: {
+            type: 'integer',
+            minimum: 0,
+            title: 'Order'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['title', 'query', 'order', 'id'],
+    title: 'MenuResponse'
+} as const;
+
+export const $MenuUpdateRequest = {
+    properties: {
+        title: {
+            anyOf: [
+                {
+                    type: 'string',
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Title'
+        },
+        query: {
+            anyOf: [
+                {
+                    additionalProperties: {
+                        anyOf: [
+                            {
+                                type: 'string'
+                            },
+                            {
+                                type: 'integer'
+                            }
+                        ]
+                    },
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Query'
+        },
+        order: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    minimum: 0
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Order'
+        }
+    },
+    type: 'object',
+    title: 'MenuUpdateRequest'
+} as const;
+
 export const $PieceBase = {
     properties: {
         name: {

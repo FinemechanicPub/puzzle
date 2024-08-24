@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { MainPageSuggestionData, MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, GamesGameThumbnailData, GamesGameThumbnailResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
+import type { MainPageSuggestionData, MainPageSuggestionResponse, GamesGetGameData, GamesGetGameResponse, GamesRemoveGameData, GamesRemoveGameResponse, GamesListGamesData, GamesListGamesResponse, GamesCreateGameData, GamesCreateGameResponse, GamesGameThumbnailData, GamesGameThumbnailResponse, MainListMenuResponse, MainCreateMenuData, MainCreateMenuResponse, MainUpdateMenuData, MainUpdateMenuResponse, MainDeleteMenuData, MainDeleteMenuResponse, PiecesGetPieceData, PiecesGetPieceResponse, PiecesRemovePieceData, PiecesRemovePieceResponse, PiecesListPiecesData, PiecesListPiecesResponse, PiecesCreatePieceData, PiecesCreatePieceResponse, GamesHintData, GamesHintResponse, AuthenticationLoginData, AuthenticationLoginResponse, AuthenticationLogoutResponse, UsersUsersCurrentUserResponse, UsersUsersPatchCurrentUserData, UsersUsersPatchCurrentUserResponse, UsersUsersUserData, UsersUsersUserResponse, UsersUsersPatchUserData, UsersUsersPatchUserResponse, UsersUsersDeleteUserData, UsersUsersDeleteUserResponse } from './types.gen';
 
 /**
  * Suggestion
@@ -117,6 +117,72 @@ export const gamesGameThumbnail = (data: GamesGameThumbnailData): CancelableProm
     },
     errors: {
         404: 'Game not found',
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * List Menu
+ * @returns MenuResponse Successful Response
+ * @throws ApiError
+ */
+export const mainListMenu = (): CancelablePromise<MainListMenuResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/main/menu/'
+}); };
+
+/**
+ * Create Menu
+ * @param data The data for the request.
+ * @param data.requestBody
+ * @returns MenuResponse Successful Response
+ * @throws ApiError
+ */
+export const mainCreateMenu = (data: MainCreateMenuData): CancelablePromise<MainCreateMenuResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/main/menu/',
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Update Menu
+ * @param data The data for the request.
+ * @param data.menuId
+ * @param data.requestBody
+ * @returns MenuResponse Successful Response
+ * @throws ApiError
+ */
+export const mainUpdateMenu = (data: MainUpdateMenuData): CancelablePromise<MainUpdateMenuResponse> => { return __request(OpenAPI, {
+    method: 'PATCH',
+    url: '/api/v1/main/menu/{menu_id}/',
+    path: {
+        menu_id: data.menuId
+    },
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Delete Menu
+ * @param data The data for the request.
+ * @param data.menuId
+ * @returns void Successful Response
+ * @throws ApiError
+ */
+export const mainDeleteMenu = (data: MainDeleteMenuData): CancelablePromise<MainDeleteMenuResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
+    url: '/api/v1/main/menu/{menu_id}/',
+    path: {
+        menu_id: data.menuId
+    },
+    errors: {
         422: 'Validation Error'
     }
 }); };
