@@ -101,7 +101,7 @@ def create():
 @click.argument("height", type=click.INT)
 @click.argument("width", type=click.INT)
 @click.argument("piece_size", type=click.INT)
-@click.argument("limit", type=click.INT, default=100)
+@click.argument("limit", type=click.INT, default=500)
 def create_games(
     height: int,
     width: int,
