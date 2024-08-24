@@ -92,7 +92,9 @@ def get_database_strategy(
         get_access_token_db
     ),
 ) -> DatabaseStrategy:
-    return DatabaseStrategy(access_token_db, lifetime_seconds=3600)
+    return DatabaseStrategy(
+        access_token_db, lifetime_seconds=settings.token_seconds_lifetime
+    )
 
 
 cookie_transport = CookieTransport(cookie_name="puzzleuserauth")
