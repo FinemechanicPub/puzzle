@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     first_superuser_email: EmailStr | Literal[""] = ""
     first_superuser_password: str = ""
     unverified_user_can_login: bool = True
+    token_seconds_lifetime: int = 60 * 60 * 24 * 30
     max_cells: int = 120
     page_limit: int = 20
     max_page: int = 100

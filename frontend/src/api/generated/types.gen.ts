@@ -60,6 +60,31 @@ export type LoginRequest = {
     password: string;
 };
 
+export type MenuBase = {
+    title: string;
+    query: {
+        [key: string]: (string | number);
+    };
+    order: number;
+};
+
+export type MenuResponse = {
+    title: string;
+    query: {
+        [key: string]: (string | number);
+    };
+    order: number;
+    id: number;
+};
+
+export type MenuUpdateRequest = {
+    title?: string | null;
+    query?: {
+    [key: string]: (string | number);
+} | null;
+    order?: number | null;
+};
+
 export type PieceBase = {
     name: string;
     points: Array<[
@@ -161,6 +186,27 @@ export type GamesGameThumbnailData = {
 };
 
 export type GamesGameThumbnailResponse = unknown;
+
+export type MainListMenuResponse = Array<MenuResponse>;
+
+export type MainCreateMenuData = {
+    requestBody: MenuBase;
+};
+
+export type MainCreateMenuResponse = MenuResponse;
+
+export type MainUpdateMenuData = {
+    menuId: number;
+    requestBody: MenuUpdateRequest;
+};
+
+export type MainUpdateMenuResponse = MenuResponse;
+
+export type MainDeleteMenuData = {
+    menuId: number;
+};
+
+export type MainDeleteMenuResponse = void;
 
 export type PiecesGetPieceData = {
     pieceId: number;
@@ -312,6 +358,57 @@ export type $OpenApiTs = {
                  * Game not found
                  */
                 404: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/main/menu/': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<MenuResponse>;
+            };
+        };
+        post: {
+            req: MainCreateMenuData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                201: MenuResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/main/menu/{menu_id}/': {
+        patch: {
+            req: MainUpdateMenuData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: MenuResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: MainDeleteMenuData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                204: void;
                 /**
                  * Validation Error
                  */

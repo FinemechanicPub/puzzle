@@ -2,6 +2,8 @@
   import { computed, ref } from 'vue'
 
   import divmod from '@/utils/divmod'
+  import { usePoints } from '@/composables/points'
+  import { useTransform } from '@/composables/transform'
 
   const props = defineProps({
     piece: Object,
@@ -15,15 +17,8 @@
   const rotation = computed(() => props.piece.rotations[props.piece.base_version]) 
   const points = computed(() => rotation.value.points)
   const colorString =  computed(() => `#${props.piece.color.toString(16)}`)
-  const maxX = computed(() => Math.max(...points.value.map((point) => point[1])))
-  const minX = computed(() => Math.min(...points.value.map((point) => point[1])))
-  const maxY = computed(() => Math.max(...points.value.map((point) => point[0])))
-  const diameter = computed(() => (1 + Math.max(maxX.value - minX.value, maxY.value)))
-  const grid = computed(make_grid)
-  const width = computed(() => maxX.value - minX.value + 1)
-  const canRotate = computed(() => props.piece.rotations.length > 1)
-  const flipIndex = computed(() => 1 + props.piece.rotations.findLastIndex((item) => item.flipped === 0))
-  const canFlip = computed(() => flipIndex.value < props.piece.rotations.length)
+  const { left, width, diameter, grid } = usePoints(points)
+  const { flip, rotate } = useTransform(props.piece.rotations)
 
   const mouse_index = ref(null)
 
@@ -32,15 +27,6 @@
   const scrollShift = ref(0)
   const touchShiftX = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[0] - touchStart.value[0] : 0) + "px")
   const touchShiftY = computed(() => Math.round(touchCurrent.value.length ? touchCurrent.value[1] - touchStart.value[1] - scrollShift.value : 0) + "px")
-
-
-  function make_grid(){
-    const grid = Array(maxY.value + 1).fill().map(()=>Array(maxX.value - minX.value + 1).fill(false))
-    for (const [y, x] of points.value){
-      grid[y][x - minX.value] = true
-    }
-    return grid
-  }
 
   function on_mouse_down(index){
     console.log(`mouse down in cell #${index}`)
@@ -57,7 +43,7 @@
       const offsetY = Math.round(evt.clientY - pieceRect.top) % cellSize - halfSize
       const piece_data = {
         dy: -dy,
-        dx: -dx - minX.value,
+        dx: -dx - left.value,
         pieceId: props.piece.id,
         rotationId: rotation.value.id,
         offsetX: offsetX,
@@ -106,7 +92,7 @@
     const [dy, dx] = divmod(mouse_index.value, width.value)
     const piece_data = {
       dy: -dy,
-      dx: -dx - minX.value,
+      dx: -dx - left.value,
       pieceId: props.piece.id,
       rotationId: rotation.value.id,
       touchXY: touchCurrent.value
@@ -115,33 +101,6 @@
     console.log("touch end")
     emit("pieceTouch", piece_data)
   }
-
-
-  function rotate(index, turns) {
-        const piece = props.piece
-        const length = piece.rotations.length
-        if (canFlip.value){
-        const half_length = length / 2
-        if (index < half_length){
-            return (half_length + index + turns) % half_length
-        } else {
-           return half_length + (index - turns) % half_length
-        }
-        } else { // no flips for this piece
-            return (length + index + turns) % length
-        }
-    }
-
-    function flip(index, horizontal){
-        const piece = props.piece
-        const cycleLength = piece.rotations.length > 2 ? Math.floor(piece.rotations.length / 2) : 0
-        const new_index = (index + cycleLength) % piece.rotations.length
-        if (horizontal && flipIndex.value > 2){
-            return rotate(new_index, 2)
-        }
-        return new_index
-    }
-
 </script>
 
 <style scoped>
@@ -170,7 +129,8 @@
     justify-content: center;
     width: calc(var(--cell-width) * v-bind(diameter));
     height: calc(var(--cell-width) * v-bind(diameter));
-    margin: 0.3rem;
+    /* margin: 0.3rem; */
+    margin:5px;
   }
   .invisible {
     visibility: hidden;
@@ -199,7 +159,7 @@
 <template>
   <div class="hover" @mouseenter="hovering=true" @mouseleave="hovering=false">
     <div class="container-row" >
-      <button type="button" title="повернуть влево" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
+      <button type="button" title="повернуть влево" class="transparent-button" :class="{invisible: !(hovering && rotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, 1))">
         ↪️
       </button>
       <div class="piece-box movable">
@@ -215,15 +175,15 @@
           </div>
         </div>
       </div>
-      <button type="button" title="повернуть вправо" class="transparent-button" :class="{invisible: !(hovering && canRotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
+      <button type="button" title="повернуть вправо" class="transparent-button" :class="{invisible: !(hovering && rotate)}" @click="emit('changeVersion', rotate(props.piece.base_version, -1))">
         ↩️
       </button>
     </div>
     <div class="flex-center-content">
-      <button type="button" title="перевернуть сверху вниз" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
+      <button type="button" title="перевернуть сверху вниз" class="centered padded transparent-button" :class="{invisible: !(hovering && flip)}" @click="emit('changeVersion', flip(props.piece.base_version, false))">
         🔃
       </button>
-      <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && canFlip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
+      <button type="button" title="перевернуть слева направо" class="centered padded transparent-button" :class="{invisible: !(hovering && flip)}" @click="emit('changeVersion', flip(props.piece.base_version, true))">
         🔄
       </button>
     </div>
