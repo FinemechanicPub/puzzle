@@ -5,7 +5,7 @@ from pydantic import (
     computed_field,
     field_validator,
 )
-from pydantic_core.core_schema import FieldValidationInfo
+from pydantic_core.core_schema import ValidationInfo
 
 
 class PieceColor(BaseModel):
@@ -13,7 +13,7 @@ class PieceColor(BaseModel):
     color: int | str
 
     @field_validator("color")
-    def validate_color(cls, value, info: FieldValidationInfo):
+    def validate_color(cls, value, info: ValidationInfo):
         if isinstance(value, str):
             return int(value, 16)
         if isinstance(value, int):
