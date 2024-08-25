@@ -14,6 +14,7 @@ ModelType = TypeVar("ModelType", bound=Base)
 class RepositoryBase(Generic[ModelType]):
 
     force_unique = False
+    order_by = ""
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
@@ -44,6 +45,8 @@ class RepositoryBase(Generic[ModelType]):
             statement = statement.where(*clause)
         if random:
             statement = statement.order_by(func.random())
+        elif self.order_by:
+            statement = statement.order_by(self.order_by)
         db_objs = await session.execute(statement.offset(offset).limit(limit))
         refined_objs = db_objs.unique() if self.force_unique else db_objs
         return refined_objs.scalars().all()
