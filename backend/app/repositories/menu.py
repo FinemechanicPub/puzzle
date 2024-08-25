@@ -3,7 +3,7 @@ from app.repositories.repository import RepositoryBase
 
 
 class MenuRepository(RepositoryBase[Menu]):
-    pass
+    order_by = "order"
 
 
 menu_repository = MenuRepository(Menu)
