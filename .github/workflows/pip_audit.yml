@@ -13,6 +13,7 @@ jobs:
       run:
         working-directory: backend
     steps:
+      - uses: actions/checkout@v4
       - uses: pypa/gh-action-pip-audit@v1.0.0
         with:
           inputs: requirements.txt
