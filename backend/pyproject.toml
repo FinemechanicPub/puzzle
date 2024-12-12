@@ -24,6 +24,7 @@ pillow = "^10.4.0"
 click = "^8.1.7"
 pydantic-settings = "^2.4.0"
 cachetools = "^5.4.0"
+cryptography = "^43.0.1"
 
 [tool.poetry.group.dev.dependencies]
 aiosqlite = "^0.20.0"

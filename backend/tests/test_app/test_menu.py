@@ -92,3 +92,21 @@ async def test_menu_update(session: AsyncSession, user_client: AsyncClient):
     assert menu.title == SAMPLE_1["title"]
     assert menu.order == SAMPLE_1["order"]
     assert menu.query == SAMPLE_1["query"]
+
+
+CASES_ORDER = [[SAMPLE_1, SAMPLE_2], [SAMPLE_2, SAMPLE_1]]
+
+
+@pytest.mark.parametrize("menus", CASES_ORDER)
+async def test_menu_order(session: AsyncSession, user_client: AsyncClient, menus):
+    session.add_all(Menu(**menu) for menu in menus)
+    await session.commit()
+
+    async with user_client as client:
+        response = await client.get(url=app.url_path_for("list_menu"))
+        assert response.status_code == status.HTTP_200_OK
+        menu_data = response.json()
+        assert len(menu_data) == 2
+        for menu, expected in zip(menu_data, (SAMPLE_1, SAMPLE_2)):
+            del menu["id"]
+            assert menu == expected

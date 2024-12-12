@@ -54,9 +54,7 @@ async def transaction(
     connection: AsyncConnection,
 ) -> AsyncGenerator[AsyncTransaction, None]:
     async with connection.begin() as transaction:
-        print("Yield transaction", id(transaction))
         yield transaction
-        print("Roll back transaction", id(transaction))
         await transaction.rollback()
 
 
@@ -68,9 +66,7 @@ async def session(
         bind=connection,
         join_transaction_mode=SAVEPOINT_MODE,
     )
-    print("Yield session", id(session))
     yield async_session
-    print("Close session", id(session))
 
 
 @pytest.fixture()
