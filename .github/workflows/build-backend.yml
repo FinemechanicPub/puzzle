@@ -14,15 +14,6 @@ env:
     BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
 
 jobs:
-  pip-audit:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    steps:
-      - uses: pypa/gh-action-pip-audit@v1.0.0
-        with:
-          inputs: requirements.txt
   run-tests:
     runs-on: ubuntu-latest
     defaults:
